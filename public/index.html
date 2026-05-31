@@ -66,6 +66,13 @@
           </svg>
           <span>Image to PDF</span>
         </button>
+        <button class="tab-btn" data-tab="protect">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="tab-icon">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>Protect PDF</span>
+        </button>
       </nav>
     </div>
 
@@ -450,6 +457,103 @@
               <a href="#" class="btn btn-primary" id="imgToPdfDownloadBtn">
                 <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" class="download-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 Download PDF
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 4. PROTECT PDF PANEL -->
+      <div class="tool-panel grid-panel hidden" id="panelProtect">
+        <!-- Dropzone Section -->
+        <section class="upload-section">
+          <div class="card glass-card">
+            <div class="drop-zone" id="protectDropZone">
+              <input type="file" id="protectFileInput" class="file-input" accept=".pdf" />
+              <div class="drop-content">
+                <div class="drop-illustration">
+                  <svg viewBox="0 0 24 24" width="56" height="56" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                </div>
+                <h2 class="drop-title">Drag & drop PDF to protect</h2>
+                <p class="drop-subtitle">or <span class="browse-link">browse directories</span></p>
+                <div class="file-info-badge hidden" id="protectFileInfo">
+                  <span class="file-icon-mini">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                  </span>
+                  <span class="file-name" id="protectFileName">document.pdf</span>
+                  <span class="file-size" id="protectFileSize">0.0 MB</span>
+                  <button class="remove-file-btn" id="protectRemoveBtn" title="Remove file">&times;</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section class="settings-section">
+          <div class="card glass-card settings-card">
+            <div class="card-header">
+              <h3>Encryption Details</h3>
+              <span class="badge">Security</span>
+            </div>
+
+            <!-- Password Input -->
+            <div class="form-group" style="display:flex; flex-direction:column; gap:8px;">
+              <label class="form-label" style="font-size: 0.88rem; font-weight: 500; color: var(--text-muted);">Enter Password</label>
+              <input type="password" id="protectPasswordInput" placeholder="Secret password..." style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:10px; padding:12px; color:var(--text-main); font-family:var(--font-family); font-size:0.95rem; outline:none; transition:border-color 0.2s;" />
+              <p style="font-size:0.75rem; color:var(--text-dim); margin-top:4px;">You will need this password to open the protected file.</p>
+            </div>
+
+            <div class="trigger-area" style="margin-top:auto; padding-top:16px;">
+              <!-- Using the custom button the user provided -->
+              <button class="cssbuttons-io-button" id="protectBtn" disabled>
+                Lock PDF
+                <div class="icon">
+                  <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"></path>
+                  </svg>
+                </div>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section hidden" id="protectResults" style="grid-column:1 / -1;">
+          <div class="card glass-card results-card">
+            <div class="card-header">
+              <h3>Protection Applied</h3>
+              <span class="badge badge-success">Encrypted</span>
+            </div>
+
+            <div class="results-visual" style="border:none; margin:0; padding:10px 0; justify-content:center; gap:40px;">
+              <div class="success-ring-badge" style="background:rgba(163, 112, 240, 0.05); border:1px solid rgba(163, 112, 240, 0.15); border-radius:50%; width:100px; height:100px; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 20px rgba(163, 112, 240, 0.1);">
+                <svg viewBox="0 0 24 24" width="48" height="48" stroke="#a370f0" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <div class="stats-comparison" style="min-width: 280px;">
+                <div class="stat-row">
+                  <span class="stat-lbl">File Status:</span>
+                  <span class="stat-val" style="color:#a370f0; font-weight:700;">Password Protected</span>
+                </div>
+                <div class="stat-row progress-stat">
+                  <span class="stat-lbl">Status:</span>
+                  <span class="stat-val status-completed">Ready for Download</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="action-bar" style="margin-top: 16px;">
+              <button class="btn btn-secondary" id="protectResetBtn">Protect Another</button>
+              <a href="#" class="btn btn-primary" id="protectDownloadBtn" style="background:linear-gradient(135deg, #a370f0 0%, #7b52b9 100%);">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" class="download-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download Protected PDF
               </a>
             </div>
           </div>

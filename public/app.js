@@ -58,6 +58,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const imgToPdfDownloadBtn = document.getElementById('imgToPdfDownloadBtn');
   const imgToPdfResetBtn = document.getElementById('imgToPdfResetBtn');
 
+  // DOM Elements - 4. Protect PDF Tool
+  const panelProtect = document.getElementById('panelProtect');
+  const protectDropZone = document.getElementById('protectDropZone');
+  const protectFileInput = document.getElementById('protectFileInput');
+  const protectFileInfo = document.getElementById('protectFileInfo');
+  const protectFileName = document.getElementById('protectFileName');
+  const protectFileSize = document.getElementById('protectFileSize');
+  const protectRemoveBtn = document.getElementById('protectRemoveBtn');
+  const protectPasswordInput = document.getElementById('protectPasswordInput');
+  const protectBtn = document.getElementById('protectBtn');
+  const protectResults = document.getElementById('protectResults');
+  const protectResetBtn = document.getElementById('protectResetBtn');
+  const protectDownloadBtn = document.getElementById('protectDownloadBtn');
+
   // ==========================================
   // Application State
   // ==========================================
@@ -78,6 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let imgToPdfSelectedLayout = 'original';
   let imgToPdfSelectedMargin = '0';
 
+  // 4. Protect PDF State
+  let protectSelectedFile = null;
+  let isProtecting = false;
+
   // ==========================================
   // Router Tab Control
   // ==========================================
@@ -97,6 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('panelPdfToImg').classList.remove('hidden');
       } else if (activeTabName === 'img-to-pdf') {
         document.getElementById('panelImgToPdf').classList.remove('hidden');
+      } else if (activeTabName === 'protect') {
+        document.getElementById('panelProtect').classList.remove('hidden');
       }
     });
   });
@@ -665,6 +685,140 @@ document.addEventListener('DOMContentLoaded', () => {
     renderImgQueue();
     imgToPdfResults.classList.add('hidden');
     updateImgToPdfBtnState();
+  });
+
+  // ==========================================
+  // 4. Protect PDF Logic
+  // ==========================================
+
+  function updateProtectButtonState() {
+    if (protectSelectedFile && isGhostscriptWorking && protectPasswordInput.value.length > 0 && !isProtecting) {
+      protectBtn.disabled = false;
+    } else {
+      protectBtn.disabled = true;
+    }
+  }
+
+  protectPasswordInput.addEventListener('input', updateProtectButtonState);
+
+  setupDragAndDrop(protectDropZone, protectFileInput, (file) => {
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+      alert('Nano Doc only supports PDF files.');
+      return;
+    }
+    protectSelectedFile = file;
+    protectFileName.textContent = file.name;
+    protectFileSize.textContent = formatBytes(file.size);
+    
+    protectDropZone.querySelector('.drop-content > .drop-illustration').classList.add('hidden');
+    protectDropZone.querySelector('.drop-title').classList.add('hidden');
+    protectDropZone.querySelector('.drop-subtitle').classList.add('hidden');
+    protectFileInfo.classList.remove('hidden');
+    
+    updateProtectButtonState();
+  });
+
+  protectRemoveBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    protectSelectedFile = null;
+    protectFileInput.value = '';
+    
+    protectFileInfo.classList.add('hidden');
+    protectDropZone.querySelector('.drop-content > .drop-illustration').classList.remove('hidden');
+    protectDropZone.querySelector('.drop-title').classList.remove('hidden');
+    protectDropZone.querySelector('.drop-subtitle').classList.remove('hidden');
+    
+    updateProtectButtonState();
+  });
+
+  async function pollProtectJobStatus(jobId) {
+    try {
+      const res = await fetch(`/api/status/${jobId}`);
+      if (!res.ok) throw new Error('Status API Error');
+      const job = await res.json();
+
+      if (job.status === 'completed') {
+        protectDownloadBtn.setAttribute('href', job.downloadUrl);
+        protectResults.classList.remove('hidden');
+        protectResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        protectBtn.innerHTML = 'Protected!';
+        protectDropZone.style.pointerEvents = 'auto';
+        protectDropZone.style.opacity = '1';
+        protectPasswordInput.disabled = false;
+        isProtecting = false;
+      } else if (job.status === 'failed') {
+        alert(`Protection Failed:\n${job.error || 'Ghostscript error'}`);
+        resetProtectUI();
+      } else {
+        setTimeout(() => pollProtectJobStatus(jobId), 2000);
+      }
+    } catch (e) {
+      console.error('Polling error:', e);
+      alert('Lost connection to server while protecting.');
+      resetProtectUI();
+    }
+  }
+
+  function resetProtectUI() {
+    protectBtn.disabled = false;
+    protectBtn.innerHTML = `Lock PDF
+      <div class="icon">
+        <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"></path>
+        </svg>
+      </div>`;
+    protectDropZone.style.pointerEvents = 'auto';
+    protectDropZone.style.opacity = '1';
+    protectPasswordInput.disabled = false;
+    isProtecting = false;
+  }
+
+  protectBtn.addEventListener('click', async () => {
+    if (!protectSelectedFile || !protectPasswordInput.value) return;
+
+    const formData = new FormData();
+    formData.append('pdf', protectSelectedFile);
+    formData.append('password', protectPasswordInput.value);
+
+    protectBtn.disabled = true;
+    isProtecting = true;
+    protectBtn.innerHTML = `Protecting...`;
+    
+    protectDropZone.style.pointerEvents = 'none';
+    protectDropZone.style.opacity = '0.5';
+    protectPasswordInput.disabled = true;
+
+    try {
+      const response = await fetch('/api/protect', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Server error');
+      
+      pollProtectJobStatus(data.jobId);
+    } catch (err) {
+      console.error(err);
+      alert(`Upload Failed:\n${err.message}`);
+      resetProtectUI();
+    }
+  });
+
+  protectResetBtn.addEventListener('click', () => {
+    protectSelectedFile = null;
+    protectFileInput.value = '';
+    protectPasswordInput.value = '';
+    protectResults.classList.add('hidden');
+    
+    protectFileInfo.classList.add('hidden');
+    protectDropZone.querySelector('.drop-content > .drop-illustration').classList.remove('hidden');
+    protectDropZone.querySelector('.drop-title').classList.remove('hidden');
+    protectDropZone.querySelector('.drop-subtitle').classList.remove('hidden');
+    
+    updateProtectButtonState();
   });
 
   // Watch for dynamic updates to Ghostscript diagnostic status

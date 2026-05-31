@@ -3,12 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabButtons = document.querySelectorAll('.tab-btn');
   const toolPanels = document.querySelectorAll('.tool-panel');
 
-  // DOM Elements - Diagnostics Status
-  const gsStatusBadge = document.getElementById('gsStatusBadge');
-  const gsStatusText = document.getElementById('gsStatusText');
-  const troubleBanner = document.getElementById('troubleBanner');
-  const troubleCodeBlock = document.getElementById('troubleCodeBlock');
-
   // DOM Elements - 1. Compress PDF Tool
   const dropZone = document.getElementById('dropZone');
   const fileInput = document.getElementById('fileInput');
@@ -67,11 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // Application State
   // ==========================================
-  let isGhostscriptWorking = false;
+  let isGhostscriptWorking = true;
 
   // 1. Compress PDF State
   let compressSelectedFile = null;
   let compressSelectedQuality = 'ebook';
+  let isCompressing = false;
 
   // 2. PDF to Image State
   let pdfToImgSelectedFile = null;
@@ -116,26 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const data = await response.json();
       isGhostscriptWorking = data.working;
-      
-      if (data.working) {
-        gsStatusBadge.className = 'status-indicator-badge online';
-        gsStatusText.textContent = `GS v${data.version} Connected`;
-        troubleBanner.classList.add('hidden');
-      } else {
-        gsStatusBadge.className = 'status-indicator-badge offline';
-        gsStatusText.textContent = 'GS Disconnected';
-        troubleBanner.classList.remove('hidden');
-        
-        if (data.platform === 'win32') {
-          troubleCodeBlock.textContent = `GHOSTSCRIPT_PATH=C:\\Program Files (x86)\\gs\\gs${data.version !== 'Unknown' ? data.version : '10.07.1'}\\bin\\gswin32c.exe`;
-        } else {
-          troubleCodeBlock.textContent = `# Check package installation or install Ghostscript\n# macOS: brew install ghostscript\n# Debian/Ubuntu: sudo apt-get install ghostscript`;
-        }
-      }
     } catch (error) {
       console.error('Failed to query diagnostics API:', error);
-      gsStatusBadge.className = 'status-indicator-badge offline';
-      gsStatusText.textContent = 'Engine Offline';
     }
     
     // Initial update of trigger button lockouts
@@ -232,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   presetCards.forEach(card => {
     card.addEventListener('click', () => {
+      if (isCompressing) return; // Prevent changing preset during processing
       presetCards.forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
       compressSelectedQuality = card.getAttribute('data-quality');
@@ -252,8 +230,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   compressBtn.addEventListener('click', async () => {
-    if (!compressSelectedFile || !isGhostscriptWorking) return;
+    if (!compressSelectedFile || !isGhostscriptWorking || isCompressing) return;
 
+    isCompressing = true;
+    presetCards.forEach(c => {
+      c.style.opacity = '0.5';
+      c.style.cursor = 'not-allowed';
+    });
     compressBtn.disabled = true;
     btnText.textContent = 'Processing PDF...';
     btnLoader.classList.remove('hidden');
@@ -263,16 +246,16 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('pdf', compressSelectedFile);
     formData.append('quality', compressSelectedQuality);
 
-    try {
-      const response = await fetch('/api/compress', {
-        method: 'POST',
-        body: formData
+    const unlockUI = () => {
+      isCompressing = false;
+      presetCards.forEach(c => {
+        c.style.opacity = '1';
+        c.style.cursor = 'pointer';
       });
+      dropZone.style.pointerEvents = 'auto';
+    };
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Compression error occurred');
-
-      // Success Results
+    const renderSuccess = (data) => {
       originalSizeResult.textContent = formatBytes(data.originalSize);
       compressedSizeResult.textContent = formatBytes(data.compressedSize);
       
@@ -293,15 +276,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
       btnLoader.classList.add('hidden');
       btnText.textContent = 'Compression Complete';
-      dropZone.style.pointerEvents = 'auto';
+      unlockUI();
+    };
 
-    } catch (err) {
+    const handleError = (err) => {
       console.error(err);
       alert(`Compression Failed:\n${err.message}`);
       compressBtn.disabled = false;
       btnText.textContent = 'Optimize Document';
       btnLoader.classList.add('hidden');
-      dropZone.style.pointerEvents = 'auto';
+      unlockUI();
+    };
+
+    const pollJobStatus = async (jobId) => {
+      try {
+        const res = await fetch(`/api/status/${jobId}`);
+        const data = await res.json();
+        
+        if (!res.ok) throw new Error(data.error || 'Job not found');
+        
+        if (data.status === 'completed') {
+          renderSuccess(data);
+        } else if (data.status === 'failed') {
+          throw new Error(data.error || 'Processing failed');
+        } else if (data.status === 'processing') {
+          setTimeout(() => pollJobStatus(jobId), 2000);
+        }
+      } catch (err) {
+        handleError(err);
+      }
+    };
+
+    try {
+      const response = await fetch('/api/compress', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Compression error occurred');
+
+      if (data.status === 'processing') {
+        pollJobStatus(data.jobId);
+      } else {
+        renderSuccess(data);
+      }
+    } catch (err) {
+      handleError(err);
     }
   });
 
@@ -315,6 +336,11 @@ document.addEventListener('DOMContentLoaded', () => {
     compressBtn.disabled = true;
     btnText.textContent = 'Optimize Document';
     dropZone.style.pointerEvents = 'auto';
+    isCompressing = false;
+    presetCards.forEach(c => {
+      c.style.opacity = '1';
+      c.style.cursor = 'pointer';
+    });
     runDiagnostics();
   });
 

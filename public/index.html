@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NanoDoc | Local PDF Optimizer</title>
+  <title>AeroCompress | Local Ghostscript PDF Optimizer</title>
   <meta name="description" content="A super-fast, high-fidelity local PDF compressor powered by Ghostscript. Modern layout, drag-and-drop, and space analytics.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,39 +26,17 @@
           </svg>
         </div>
         <div class="logo-text">
-          <h1>NanoDoc</h1>
-          <span class="sub-logo">Make pdf small</span>
+          <h1>AeroCompress</h1>
+          <span class="sub-logo">Ghostscript Engine</span>
         </div>
       </div>
 
       <!-- Ghostscript Status indicator -->
       <div class="status-indicator-badge offline" id="gsStatusBadge">
         <span class="pulse-dot"></span>
-        <span class="status-text" id="gsStatusText">Detecting ...</span>
+        <span class="status-text" id="gsStatusText">Detecting Ghostscript...</span>
       </div>
     </header>
-
-    <!-- Error/Warning Troubleshooter Banner -->
-    <section class="diagnostic-banner hidden" id="troubleBanner">
-      <div class="trouble-header">
-        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" class="warning-icon">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-          <line x1="12" y1="9" x2="12" y2="13"></line>
-          <line x1="12" y1="17" x2="12.01" y2="17"></line>
-        </svg>
-        <h3>Ghostscript Action Required</h3>
-      </div>
-      <div class="trouble-body">
-        <p>Ghostscript was not auto-detected on your system PATH or in default program folders. To activate compression, please complete one of the following:</p>
-        <ul class="steps-list">
-          <li><strong>Step 1:</strong> Ensure you installed the Ghostscript release. Download it from the <a href="https://www.ghostscript.com/download/gsdnld.html" target="_blank" rel="noopener">Official Ghostscript Portal</a>.</li>
-          <li><strong>Step 2:</strong> Restart this server terminal or IDE window to allow your system's path variables to refresh.</li>
-          <li><strong>Step 3:</strong> Manually point the server to your Ghostscript executable in the <code>.env</code> file:
-            <pre><code id="troubleCodeBlock">GHOSTSCRIPT_PATH=C:\Program Files\gs\gs10.03.0\bin\gswin64c.exe</code></pre>
-          </li>
-        </ul>
-      </div>
-    </section>
 
     <!-- Tab Navigation Bar -->
     <div class="tabs-nav-container">
@@ -480,7 +458,7 @@
     </main>
 
     <footer class="app-footer">
-      <p>AeroCompress runs 100% locally on your machine. Documents are never transmitted to external servers.</p>
+      <p>AeroCompress ensures your documents are processed securely and swiftly.</p>
     </footer>
   </div>
   <script src="app.js"></script>

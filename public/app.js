@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Drag & drop configuration
   setupDragAndDrop(dropZone, fileInput, (file) => {
     if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-      alert('Teachy only supports PDF files.');
+      alert('Nano Doc only supports PDF files.');
       return;
     }
     compressSelectedFile = file;

@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. Compress PDF State
   let compressSelectedFile = null;
   let compressSelectedQuality = 'ebook';
+  let isCompressing = false;
 
   // 2. PDF to Image State
   let pdfToImgSelectedFile = null;
@@ -232,6 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   presetCards.forEach(card => {
     card.addEventListener('click', () => {
+      if (isCompressing) return; // Prevent changing preset during processing
       presetCards.forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
       compressSelectedQuality = card.getAttribute('data-quality');
@@ -252,8 +254,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   compressBtn.addEventListener('click', async () => {
-    if (!compressSelectedFile || !isGhostscriptWorking) return;
+    if (!compressSelectedFile || !isGhostscriptWorking || isCompressing) return;
 
+    isCompressing = true;
+    presetCards.forEach(c => {
+      c.style.opacity = '0.5';
+      c.style.cursor = 'not-allowed';
+    });
     compressBtn.disabled = true;
     btnText.textContent = 'Processing PDF...';
     btnLoader.classList.remove('hidden');
@@ -263,16 +270,16 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('pdf', compressSelectedFile);
     formData.append('quality', compressSelectedQuality);
 
-    try {
-      const response = await fetch('/api/compress', {
-        method: 'POST',
-        body: formData
+    const unlockUI = () => {
+      isCompressing = false;
+      presetCards.forEach(c => {
+        c.style.opacity = '1';
+        c.style.cursor = 'pointer';
       });
+      dropZone.style.pointerEvents = 'auto';
+    };
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Compression error occurred');
-
-      // Success Results
+    const renderSuccess = (data) => {
       originalSizeResult.textContent = formatBytes(data.originalSize);
       compressedSizeResult.textContent = formatBytes(data.compressedSize);
       
@@ -293,15 +300,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
       btnLoader.classList.add('hidden');
       btnText.textContent = 'Compression Complete';
-      dropZone.style.pointerEvents = 'auto';
+      unlockUI();
+    };
 
-    } catch (err) {
+    const handleError = (err) => {
       console.error(err);
       alert(`Compression Failed:\n${err.message}`);
       compressBtn.disabled = false;
       btnText.textContent = 'Optimize Document';
       btnLoader.classList.add('hidden');
-      dropZone.style.pointerEvents = 'auto';
+      unlockUI();
+    };
+
+    const pollJobStatus = async (jobId) => {
+      try {
+        const res = await fetch(`/api/status/${jobId}`);
+        const data = await res.json();
+        
+        if (!res.ok) throw new Error(data.error || 'Job not found');
+        
+        if (data.status === 'completed') {
+          renderSuccess(data);
+        } else if (data.status === 'failed') {
+          throw new Error(data.error || 'Processing failed');
+        } else if (data.status === 'processing') {
+          setTimeout(() => pollJobStatus(jobId), 2000);
+        }
+      } catch (err) {
+        handleError(err);
+      }
+    };
+
+    try {
+      const response = await fetch('/api/compress', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Compression error occurred');
+
+      if (data.status === 'processing') {
+        pollJobStatus(data.jobId);
+      } else {
+        renderSuccess(data);
+      }
+    } catch (err) {
+      handleError(err);
     }
   });
 
@@ -315,6 +360,11 @@ document.addEventListener('DOMContentLoaded', () => {
     compressBtn.disabled = true;
     btnText.textContent = 'Optimize Document';
     dropZone.style.pointerEvents = 'auto';
+    isCompressing = false;
+    presetCards.forEach(c => {
+      c.style.opacity = '1';
+      c.style.cursor = 'pointer';
+    });
     runDiagnostics();
   });
 

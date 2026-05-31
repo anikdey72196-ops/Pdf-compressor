@@ -3,12 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabButtons = document.querySelectorAll('.tab-btn');
   const toolPanels = document.querySelectorAll('.tool-panel');
 
-  // DOM Elements - Diagnostics Status
-  const gsStatusBadge = document.getElementById('gsStatusBadge');
-  const gsStatusText = document.getElementById('gsStatusText');
-  const troubleBanner = document.getElementById('troubleBanner');
-  const troubleCodeBlock = document.getElementById('troubleCodeBlock');
-
   // DOM Elements - 1. Compress PDF Tool
   const dropZone = document.getElementById('dropZone');
   const fileInput = document.getElementById('fileInput');
@@ -67,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // Application State
   // ==========================================
-  let isGhostscriptWorking = false;
+  let isGhostscriptWorking = true;
 
   // 1. Compress PDF State
   let compressSelectedFile = null;
@@ -117,26 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const data = await response.json();
       isGhostscriptWorking = data.working;
-      
-      if (data.working) {
-        gsStatusBadge.className = 'status-indicator-badge online';
-        gsStatusText.textContent = `GS v${data.version} Connected`;
-        troubleBanner.classList.add('hidden');
-      } else {
-        gsStatusBadge.className = 'status-indicator-badge offline';
-        gsStatusText.textContent = 'GS Disconnected';
-        troubleBanner.classList.remove('hidden');
-        
-        if (data.platform === 'win32') {
-          troubleCodeBlock.textContent = `GHOSTSCRIPT_PATH=C:\\Program Files (x86)\\gs\\gs${data.version !== 'Unknown' ? data.version : '10.07.1'}\\bin\\gswin32c.exe`;
-        } else {
-          troubleCodeBlock.textContent = `# Check package installation or install Ghostscript\n# macOS: brew install ghostscript\n# Debian/Ubuntu: sudo apt-get install ghostscript`;
-        }
-      }
     } catch (error) {
       console.error('Failed to query diagnostics API:', error);
-      gsStatusBadge.className = 'status-indicator-badge offline';
-      gsStatusText.textContent = 'Engine Offline';
     }
     
     // Initial update of trigger button lockouts

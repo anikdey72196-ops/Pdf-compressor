@@ -8,28 +8,28 @@
 :root {
   --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
-  /* Obsidian Color Palette */
-  --bg-color: #060913;
-  --bg-card: rgba(16, 22, 38, 0.65);
-  --border-color: rgba(255, 255, 255, 0.07);
-  --border-focus: rgba(0, 242, 254, 0.5);
+  /* Light Blue Color Palette */
+  --bg-color: #f8f9ff;
+  --bg-card: #ffffff;
+  --border-color: #c3c6d7;
+  --border-focus: #3b82f6;
   
   /* Brand Accents */
-  --color-primary: #00f2fe;
-  --color-secondary: #4facfe;
-  --color-accent-grad: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  --color-primary: #3b82f6;
+  --color-secondary: #60a5fa;
+  --color-accent-grad: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
   --color-success: #10b981;
   --color-warning: #f59e0b;
-  --color-danger: #ef4444;
+  --color-danger: #ba1a1a;
   
   /* Text Hues */
-  --text-main: #f1f5f9;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
+  --text-main: #0b1c30;
+  --text-muted: #434655;
+  --text-dim: #565e74;
   
   /* Shadow Systems */
-  --card-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-  --glow-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --glow-shadow: 0 0 20px rgba(0, 74, 198, 0.15);
 }
 
 body {
@@ -111,9 +111,7 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.5px;
-  background: linear-gradient(120deg, #ffffff 40%, var(--color-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #0b1c30;
 }
 
 .sub-logo {
@@ -771,7 +769,7 @@ body {
 
 .tool-tabs-nav {
   display: flex;
-  background: rgba(16, 22, 38, 0.4);
+  background: rgba(255, 255, 255, 0.7);
   border: 1px solid var(--border-color);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -799,14 +797,14 @@ body {
 
 .tab-btn:hover {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(0, 74, 198, 0.05);
 }
 
 .tab-btn.active {
-  color: var(--color-primary);
-  background: rgba(0, 242, 254, 0.07);
-  border: 1px solid rgba(0, 242, 254, 0.15);
-  box-shadow: 0 0 15px rgba(0, 242, 254, 0.05);
+  color: #ffffff;
+  background: var(--color-secondary);
+  border: 1px solid var(--color-primary);
+  box-shadow: 0 0 15px rgba(0, 74, 198, 0.15);
 }
 
 .tab-icon {

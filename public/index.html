@@ -1,570 +1,248 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zip doc | PDF Optimizer</title>
-  <meta name="description" content="A super-fast, high-fidelity PDF compressor. Modern layout, drag-and-drop, and space analytics.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OptiZIP - Professional Archive Optimization</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS & Config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "surface-variant": "#d3e4fe",
+                        "surface-dim": "#cbdbf5",
+                        "on-primary-container": "#eeefff",
+                        "on-surface": "#0b1c30",
+                        "tertiary-fixed-dim": "#adc6ff",
+                        "tertiary": "#0051b1",
+                        "on-tertiary-container": "#edf0ff",
+                        "primary": "#004ac6",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#e5eeff",
+                        "on-primary-fixed": "#00174b",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-bright": "#f8f9ff",
+                        "surface-container-high": "#dce9ff",
+                        "surface-tint": "#0053db",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "primary-container": "#2563eb",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "on-secondary-container": "#5c647a",
+                        "on-tertiary-fixed-variant": "#004395",
+                        "background": "#f8f9ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "secondary-container": "#dae2fd",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#001a42",
+                        "secondary-fixed": "#dae2fd",
+                        "tertiary-container": "#0f69dc",
+                        "on-secondary-fixed": "#131b2e",
+                        "secondary": "#565e74",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#c3c6d7",
+                        "outline": "#737686",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#d8e2ff",
+                        "inverse-primary": "#b4c5ff",
+                        "surface": "#f8f9ff",
+                        "on-background": "#0b1c30",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "primary-fixed": "#dbe1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "16px",
+                        "container-max": "1200px",
+                        "lg": "40px",
+                        "md": "24px",
+                        "xs": "8px",
+                        "xl": "80px",
+                        "base": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "display": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.25", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom styles to handle specific shadowing requests from guidance */
+        .elevation-1 {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .elevation-2 {
+            box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.08);
+        }
+    </style>
 </head>
-<body>
-  <!-- Ambient background glow elements -->
-  <div class="glow-sphere glow-sphere-1"></div>
-  <div class="glow-sphere glow-sphere-2"></div>
-
-  <div class="app-container">
-    <header class="app-header">
-      <div class="logo-area">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-          </svg>
-        </div>
-        <div class="logo-text">
-          <h1>Zip doc</h1>
-          <span class="sub-logo">Compresser Engine</span>
-        </div>
-      </div>
-
-      <!-- Ghostscript Status indicator -->
-      <div class="status-indicator-badge offline" id="gsStatusBadge">
-        <span class="pulse-dot"></span>
-        <span class="status-text" id="gsStatusText">Detecting pdf...</span>
-      </div>
-    </header>
-
-    <!-- Tab Navigation Bar -->
-    <div class="tabs-nav-container">
-      <nav class="tool-tabs-nav">
-        <button class="tab-btn active" data-tab="compress">
-          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="tab-icon">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <line x1="12" y1="3" x2="12" y2="21"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-          </svg>
-          <span>Compress PDF</span>
-        </button>
-        <button class="tab-btn" data-tab="pdf-to-img">
-          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="tab-icon">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <circle cx="8.5" cy="8.5" r="1.5"/>
-            <polyline points="21 15 16 10 5 21"/>
-          </svg>
-          <span>PDF to Image</span>
-        </button>
-        <button class="tab-btn" data-tab="img-to-pdf">
-          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="tab-icon">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="12" y1="18" x2="12" y2="12"/>
-            <line x1="9" y1="15" x2="15" y2="15"/>
-          </svg>
-          <span>Image to PDF</span>
-        </button>
-        <button class="tab-btn" data-tab="protect">
-          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="tab-icon">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-          </svg>
-          <span>Protect PDF</span>
-        </button>
-      </nav>
-    </div>
-
-    <main class="app-main">
-      <!-- 1. COMPRESS PDF PANEL -->
-      <div class="tool-panel grid-panel" id="panelCompress">
-        <!-- File upload Card -->
-        <section class="upload-section">
-          <div class="card glass-card">
-            <div class="drop-zone" id="dropZone">
-              <input type="file" id="fileInput" class="file-input" accept=".pdf" />
-              <div class="drop-content">
-                <div class="drop-illustration">
-                  <svg viewBox="0 0 24 24" width="56" height="56" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="12" y1="18" x2="12" y2="12"></line>
-                    <polyline points="9 15 12 12 15 15"></polyline>
-                  </svg>
-                </div>
-                <h2 class="drop-title">Drag & drop your PDF here</h2>
-                <p class="drop-subtitle">or <span class="browse-link">browse directories</span></p>
-                <div class="file-info-badge hidden" id="queuedFileInfo">
-                  <span class="file-icon-mini">
-                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                  </span>
-                  <span class="file-name" id="queuedFileName">sample_report.pdf</span>
-                  <span class="file-size" id="queuedFileSize">24.5 MB</span>
-                  <button class="remove-file-btn" id="removeFileBtn" title="Remove file">&times;</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Options & Trigger Card -->
-        <section class="settings-section">
-          <div class="card glass-card settings-card">
-            <div class="card-header">
-              <h3>Compression Level</h3>
-              <span class="badge">Select Profile</span>
-            </div>
-
-            <div class="presets-grid">
-              <!-- Screen quality card -->
-              <div class="preset-card" data-quality="screen">
-                <div class="preset-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                </div>
-                <div class="preset-details">
-                  <h4>Low Quality (72 DPI)</h4>
-                  <p>Maximum compression. Ideal for rapid emailing & mobile display.</p>
-                  <span class="size-projection small-size">Smallest Size</span>
-                </div>
-              </div>
-
-              <!-- eBook quality card (default) -->
-              <div class="preset-card selected" data-quality="ebook">
-                <div class="preset-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                </div>
-                <div class="preset-details">
-                  <h4>Medium Quality (150 DPI)</h4>
-                  <p>Perfect ebook standard. Clean text sharpness with high compression.</p>
-                  <span class="size-projection medium-size">Recommended</span>
-                </div>
-              </div>
-
-              <!-- Print quality card -->
-              <div class="preset-card" data-quality="printer">
-                <div class="preset-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                </div>
-                <div class="preset-details">
-                  <h4>High Quality (300 DPI)</h4>
-                  <p>Office and physical print target. Keeps sharp vector detailing.</p>
-                  <span class="size-projection high-size">Balanced</span>
-                </div>
-              </div>
-
-              <!-- Prepress quality card -->
-              <div class="preset-card" data-quality="prepress">
-                <div class="preset-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><line x1="12" y1="2" x2="12" y2="22"></line></svg>
-                </div>
-                <div class="preset-details">
-                  <h4>Maximum Quality (300 DPI)</h4>
-                  <p>Preserves extreme color spaces. Minimal compression for archives.</p>
-                  <span class="size-projection max-size">Large Size</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="trigger-area">
-              <button class="btn btn-primary btn-block" id="compressBtn" disabled>
-                <span class="btn-text">Optimize Document</span>
-                <span class="btn-loader hidden"></span>
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Results/Queue Card -->
-        <section class="results-section hidden" id="resultsSection">
-          <div class="card glass-card results-card">
-            <div class="card-header">
-              <h3>Compression Result</h3>
-              <span class="badge badge-success">Saved Successfully</span>
-            </div>
-
-            <div class="results-visual">
-              <div class="savings-ring">
-                <svg class="progress-ring-svg" width="160" height="160">
-                  <circle class="progress-ring-bg" stroke="rgba(255,255,255,0.06)" stroke-width="12" fill="transparent" r="70" cx="80" cy="80"/>
-                  <circle class="progress-ring-fill" id="savingsRingFill" stroke="url(#savingsGradient)" stroke-width="12" stroke-dasharray="439.82" stroke-dashoffset="439.82" fill="transparent" r="70" cx="80" cy="80" stroke-linecap="round"/>
-                  <defs>
-                    <linearGradient id="savingsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#00f2fe" />
-                      <stop offset="100%" stop-color="#4facfe" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div class="savings-content">
-                  <span class="savings-val" id="savingsVal">0%</span>
-                  <span class="savings-lbl">SAVED</span>
-                </div>
-              </div>
-
-              <div class="stats-comparison">
-                <div class="stat-row">
-                  <span class="stat-lbl">Original File:</span>
-                  <span class="stat-val font-light" id="originalSizeResult">0.00 MB</span>
-                </div>
-                <div class="stat-row">
-                  <span class="stat-lbl">Optimized File:</span>
-                  <span class="stat-val accent-glow" id="compressedSizeResult">0.00 MB</span>
-                </div>
-                <div class="stat-row progress-stat">
-                  <span class="stat-lbl">Status:</span>
-                  <span class="stat-val status-completed">Ready for Download</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="action-bar">
-              <button class="btn btn-secondary" id="resetBtn">Compress Another</button>
-              <a href="#" class="btn btn-primary" id="downloadBtn">
-                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" class="download-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Download PDF
-              </a>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <!-- 2. PDF TO IMAGE PANEL -->
-      <div class="tool-panel grid-panel hidden" id="panelPdfToImg">
-        <!-- Dropzone Section -->
-        <section class="upload-section">
-          <div class="card glass-card">
-            <div class="drop-zone" id="pdfToImageDropZone">
-              <input type="file" id="pdfToImageFileInput" class="file-input" accept=".pdf" />
-              <div class="drop-content">
-                <div class="drop-illustration">
-                  <svg viewBox="0 0 24 24" width="56" height="56" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                    <polyline points="21 15 16 10 5 21"/>
-                  </svg>
-                </div>
-                <h2 class="drop-title">Drag & drop PDF to convert</h2>
-                <p class="drop-subtitle">or <span class="browse-link">browse directories</span></p>
-                <div class="file-info-badge hidden" id="pdfToImgFileInfo">
-                  <span class="file-icon-mini">
-                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                  </span>
-                  <span class="file-name" id="pdfToImgFileName">document.pdf</span>
-                  <span class="file-size" id="pdfToImgFileSize">0.0 MB</span>
-                  <button class="remove-file-btn" id="pdfToImgRemoveBtn" title="Remove file">&times;</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Settings Section -->
-        <section class="settings-section">
-          <div class="card glass-card settings-card">
-            <div class="card-header">
-              <h3>Convert Settings</h3>
-              <span class="badge">Configuration</span>
-            </div>
-
-            <!-- Format Selector -->
-            <div class="form-group" style="display:flex; flex-direction:column; gap:8px;">
-              <label class="form-label" style="font-size: 0.88rem; font-weight: 500; color: var(--text-muted);">Image Format</label>
-              <div class="segment-selector" id="pdfToImgFormatSelector" style="display:flex; background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:10px; padding:4px;">
-                <button class="segment-btn active" data-format="png" style="flex:1; background:none; border:none; padding:8px; border-radius:6px; color:var(--text-main); font-weight:600; cursor:pointer; font-family:var(--font-family); font-size:0.85rem; transition:all 0.2s;">PNG</button>
-                <button class="segment-btn" data-format="jpeg" style="flex:1; background:none; border:none; padding:8px; border-radius:6px; color:var(--text-muted); font-weight:500; cursor:pointer; font-family:var(--font-family); font-size:0.85rem; transition:all 0.2s;">JPEG</button>
-              </div>
-            </div>
-
-            <!-- Resolution Preset Grid -->
-            <div class="form-group" style="margin-top: 18px;">
-              <label class="form-label" style="font-size: 0.88rem; font-weight: 500; color: var(--text-muted); display:block; margin-bottom:8px;">Resolution / Quality</label>
-              <div class="presets-grid" id="pdfToImgDpiGrid">
-                <!-- 72 DPI -->
-                <div class="preset-card" data-dpi="72">
-                  <div class="preset-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
-                  </div>
-                  <div class="preset-details">
-                    <h4>Draft Resolution (72 DPI)</h4>
-                    <p>Small file sizes, fast processing. Good for simple layouts.</p>
-                    <span class="size-projection small-size">Web Fast</span>
-                  </div>
-                </div>
-
-                <!-- 150 DPI (default) -->
-                <div class="preset-card selected" data-dpi="150">
-                  <div class="preset-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
-                  </div>
-                  <div class="preset-details">
-                    <h4>High Resolution (150 DPI)</h4>
-                    <p>Optimal clarity and detail. Perfect for reading text documents.</p>
-                    <span class="size-projection medium-size">Recommended</span>
-                  </div>
-                </div>
-
-                <!-- 300 DPI -->
-                <div class="preset-card" data-dpi="300">
-                  <div class="preset-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                  </div>
-                  <div class="preset-details">
-                    <h4>Print Resolution (300 DPI)</h4>
-                    <p>Maximum detail, ideal for photos and high-resolution printing.</p>
-                    <span class="size-projection high-size">Maximum Quality</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="trigger-area" style="margin-top:auto; padding-top:16px;">
-              <button class="btn btn-primary btn-block" id="pdfToImageBtn" disabled>
-                <span class="btn-text">Convert to Images</span>
-                <span class="btn-loader hidden"></span>
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Dynamic Page Gallery Results Section -->
-        <section class="results-section hidden" id="pdfToImageResults" style="grid-column:1 / -1;">
-          <div class="card glass-card results-card">
-            <div class="card-header">
-              <h3>Converted Pages Gallery</h3>
-              <span class="badge badge-success" id="pdfToImgPagesBadge">0 Pages</span>
-            </div>
-
-            <!-- Page previews gallery list -->
-            <div class="gallery-container" style="max-height:480px; overflow-y:auto; padding:8px; border-radius:12px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); margin-bottom:20px;">
-              <div class="gallery-grid" id="pdfToImageGallery" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:16px;">
-                <!-- Converted image pages will render dynamically here -->
-              </div>
-            </div>
-
-            <div class="action-bar">
-              <button class="btn btn-secondary" id="pdfToImgResetBtn">Convert Another</button>
-              <a href="#" class="btn btn-primary" id="pdfToImgDownloadZipBtn">
-                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" class="download-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Download All (ZIP)
-              </a>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <!-- 3. IMAGE TO PDF PANEL -->
-      <div class="tool-panel grid-panel hidden" id="panelImgToPdf">
-        <!-- Multiple Images Dropzone & Re-order list -->
-        <section class="upload-section">
-          <div class="card glass-card" style="display: flex; flex-direction: column; gap: 16px; min-height: 380px;">
-            <div class="drop-zone" id="imgToPdfDropZone">
-              <input type="file" id="imgToPdfFileInput" class="file-input" accept="image/png, image/jpeg" multiple />
-              <div class="drop-content">
-                <div class="drop-illustration">
-                  <svg viewBox="0 0 24 24" width="56" height="56" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                    <line x1="12" y1="8" x2="12" y2="16"/>
-                    <line x1="8" y1="12" x2="16" y2="12"/>
-                  </svg>
-                </div>
-                <h2 class="drop-title">Drag & drop images here</h2>
-                <p class="drop-subtitle">or <span class="browse-link">browse directories</span></p>
-                <p class="drop-small-text" style="font-size:0.75rem; color:var(--text-dim); margin-top:4px;">Accepts PNG, JPG, JPEG</p>
-              </div>
-            </div>
-
-            <!-- Beautiful, Sortable uploaded images list -->
-            <div class="sortable-list-container hidden" id="imgToPdfListContainer" style="display:flex; flex-direction:column; gap:12px; border-top:1px solid var(--border-color); padding-top:16px;">
-              <div class="sortable-list-header" style="display:flex; justify-content:space-between; align-items:center;">
-                <h4 style="font-size:0.9rem; font-weight:600; color:var(--text-main);">Reorder & Compile Queue</h4>
-                <span class="badge" id="imgToPdfQueueCount">0 Images</span>
-              </div>
-              <div class="sortable-image-list" id="imgToPdfSortableList" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; padding-right:4px;">
-                <!-- Dynamically generated uploaded image rows will render here -->
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Compile Settings Card -->
-        <section class="settings-section">
-          <div class="card glass-card settings-card">
-            <div class="card-header">
-              <h3>Compile Settings</h3>
-              <span class="badge">Options</span>
-            </div>
-
-            <!-- Page Size Layout Toggle -->
-            <div class="form-group" style="display:flex; flex-direction:column; gap:8px;">
-              <label class="form-label" style="font-size: 0.88rem; font-weight: 500; color: var(--text-muted);">Page Dimensions</label>
-              <div class="segment-selector" id="imgToPdfLayoutSelector" style="display:flex; background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:10px; padding:4px;">
-                <button class="segment-btn active" data-layout="original" style="flex:1; background:none; border:none; padding:8px; border-radius:6px; color:var(--text-main); font-weight:600; cursor:pointer; font-family:var(--font-family); font-size:0.82rem; transition:all 0.2s; white-space:nowrap;">Fit Image Size</button>
-                <button class="segment-btn" data-layout="a4" style="flex:1; background:none; border:none; padding:8px; border-radius:6px; color:var(--text-muted); font-weight:500; cursor:pointer; font-family:var(--font-family); font-size:0.82rem; transition:all 0.2s; white-space:nowrap;">Standard A4</button>
-              </div>
-            </div>
-
-            <!-- Page Margins Toggle -->
-            <div class="form-group" style="margin-top: 18px; display:flex; flex-direction:column; gap:8px;">
-              <label class="form-label" style="font-size: 0.88rem; font-weight: 500; color: var(--text-muted);">Page Margins</label>
-              <div class="segment-selector" id="imgToPdfMarginSelector" style="display:flex; background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:10px; padding:4px;">
-                <button class="segment-btn active" data-margin="0" style="flex:1; background:none; border:none; padding:8px; border-radius:6px; color:var(--text-main); font-weight:600; cursor:pointer; font-family:var(--font-family); font-size:0.82rem; transition:all 0.2s; white-space:nowrap;">Full Bleed (0px)</button>
-                <button class="segment-btn" data-margin="20" style="flex:1; background:none; border:none; padding:8px; border-radius:6px; color:var(--text-muted); font-weight:500; cursor:pointer; font-family:var(--font-family); font-size:0.82rem; transition:all 0.2s; white-space:nowrap;">Clean Margin (20px)</button>
-              </div>
-            </div>
-
-            <div class="trigger-area" style="margin-top: auto; padding-top: 24px;">
-              <button class="btn btn-primary btn-block" id="imgToPdfBtn" disabled>
-                <span class="btn-text">Compile into PDF</span>
-                <span class="btn-loader hidden"></span>
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Compilation Result -->
-        <section class="results-section hidden" id="imgToPdfResults" style="grid-column:1 / -1;">
-          <div class="card glass-card results-card">
-            <div class="card-header">
-              <h3>PDF Compilation Finished</h3>
-              <span class="badge badge-success">Completed</span>
-            </div>
-
-            <div class="results-visual" style="border:none; margin:0; padding:10px 0; justify-content:center; gap:40px;">
-              <div class="success-ring-badge" style="background:rgba(0, 242, 254, 0.05); border:1px solid rgba(0, 242, 254, 0.15); border-radius:50%; width:100px; height:100px; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 20px rgba(0,242,254,0.1);">
-                <svg viewBox="0 0 24 24" width="48" height="48" stroke="var(--color-primary)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                  <polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
-              </div>
-              <div class="stats-comparison" style="min-width: 280px;">
-                <div class="stat-row">
-                  <span class="stat-lbl">Total Pages compiled:</span>
-                  <span class="stat-val" id="imgToPdfPagesResult" style="color:var(--color-primary); font-weight:700;">0 Pages</span>
-                </div>
-                <div class="stat-row">
-                  <span class="stat-lbl">Output format:</span>
-                  <span class="stat-val font-light">PDF Document</span>
-                </div>
-                <div class="stat-row progress-stat">
-                  <span class="stat-lbl">Status:</span>
-                  <span class="stat-val status-completed">Ready for Download</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="action-bar" style="margin-top: 16px;">
-              <button class="btn btn-secondary" id="imgToPdfResetBtn">Compile Another</button>
-              <a href="#" class="btn btn-primary" id="imgToPdfDownloadBtn">
-                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" class="download-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Download PDF
-              </a>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <!-- 4. PROTECT PDF PANEL -->
-      <div class="tool-panel grid-panel hidden" id="panelProtect">
-        <!-- Dropzone Section -->
-        <section class="upload-section">
-          <div class="card glass-card">
-            <div class="drop-zone" id="protectDropZone">
-              <input type="file" id="protectFileInput" class="file-input" accept=".pdf" />
-              <div class="drop-content">
-                <div class="drop-illustration">
-                  <svg viewBox="0 0 24 24" width="56" height="56" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                  </svg>
-                </div>
-                <h2 class="drop-title">Drag & drop PDF to protect</h2>
-                <p class="drop-subtitle">or <span class="browse-link">browse directories</span></p>
-                <div class="file-info-badge hidden" id="protectFileInfo">
-                  <span class="file-icon-mini">
-                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                  </span>
-                  <span class="file-name" id="protectFileName">document.pdf</span>
-                  <span class="file-size" id="protectFileSize">0.0 MB</span>
-                  <button class="remove-file-btn" id="protectRemoveBtn" title="Remove file">&times;</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Settings Section -->
-        <section class="settings-section">
-          <div class="card glass-card settings-card">
-            <div class="card-header">
-              <h3>Encryption Details</h3>
-              <span class="badge">Security</span>
-            </div>
-
-            <!-- Password Input -->
-            <div class="form-group" style="display:flex; flex-direction:column; gap:8px;">
-              <label class="form-label" style="font-size: 0.88rem; font-weight: 500; color: var(--text-muted);">Enter Password</label>
-              <input type="password" id="protectPasswordInput" placeholder="Secret password..." style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:10px; padding:12px; color:var(--text-main); font-family:var(--font-family); font-size:0.95rem; outline:none; transition:border-color 0.2s;" />
-              <p style="font-size:0.75rem; color:var(--text-dim); margin-top:4px;">You will need this password to open the protected file.</p>
-            </div>
-
-            <div class="trigger-area" style="margin-top:auto; padding-top:16px;">
-              <!-- Using the custom button the user provided -->
-              <button class="cssbuttons-io-button" id="protectBtn" disabled>
-                Lock PDF
-                <div class="icon">
-                  <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"></path>
-                  </svg>
-                </div>
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Results Section -->
-        <section class="results-section hidden" id="protectResults" style="grid-column:1 / -1;">
-          <div class="card glass-card results-card">
-            <div class="card-header">
-              <h3>Protection Applied</h3>
-              <span class="badge badge-success">Encrypted</span>
-            </div>
-
-            <div class="results-visual" style="border:none; margin:0; padding:10px 0; justify-content:center; gap:40px;">
-              <div class="success-ring-badge" style="background:rgba(163, 112, 240, 0.05); border:1px solid rgba(163, 112, 240, 0.15); border-radius:50%; width:100px; height:100px; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 20px rgba(163, 112, 240, 0.1);">
-                <svg viewBox="0 0 24 24" width="48" height="48" stroke="#a370f0" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
-              </div>
-              <div class="stats-comparison" style="min-width: 280px;">
-                <div class="stat-row">
-                  <span class="stat-lbl">File Status:</span>
-                  <span class="stat-val" style="color:#a370f0; font-weight:700;">Password Protected</span>
-                </div>
-                <div class="stat-row progress-stat">
-                  <span class="stat-lbl">Status:</span>
-                  <span class="stat-val status-completed">Ready for Download</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="action-bar" style="margin-top: 16px;">
-              <button class="btn btn-secondary" id="protectResetBtn">Protect Another</button>
-              <a href="#" class="btn btn-primary" id="protectDownloadBtn" style="background:linear-gradient(135deg, #a370f0 0%, #7b52b9 100%);">
-                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" class="download-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Download Protected PDF
-              </a>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
-
-    <footer class="app-footer">
-      <p>Nano Doc ensures your documents are processed securely and swiftly.</p>
-    </footer>
-  </div>
-  <script src="app.js"></script>
+<body class="bg-background text-on-background flex flex-col min-h-screen font-body-md text-body-md">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-50 bg-surface border-b border-outline-variant shadow-sm">
+<div class="flex flex-col md:flex-row justify-between items-center px-md py-sm max-w-container-max mx-auto gap-sm">
+<div class="flex items-center gap-sm cursor-pointer active:opacity-80 transition-opacity w-full md:w-auto">
+<div class="bg-primary p-xs rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary" style="font-variation-settings: 'FILL' 1;">folder_zip</span>
+</div>
+<div>
+<h1 class="font-display text-headline-md font-bold text-on-surface leading-none">OptiZIP</h1>
+<span class="text-label-sm text-secondary uppercase tracking-wider">Archive Engine</span>
+</div>
+<div class="ml-auto md:hidden flex items-center gap-2 bg-surface-container-high px-3 py-1 rounded-full border border-outline-variant">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-label-sm text-on-surface-variant">Detecting files...</span>
+</div>
+</div>
+<!-- Desktop Nav -->
+<div class="hidden md:flex items-center gap-2 bg-surface-container-high px-3 py-1 rounded-full border border-outline-variant">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-label-sm text-on-surface-variant">Detecting files...</span>
+</div>
+</div>
+</header>
+<!-- Secondary Navigation (Tabs) -->
+<div class="w-full border-b border-outline-variant bg-surface-container-lowest overflow-x-auto">
+<div class="flex items-center justify-start md:justify-center px-sm py-2 max-w-container-max mx-auto min-w-max gap-2">
+<a class="flex items-center gap-2 px-sm py-2 rounded-lg bg-primary-container text-on-primary-container font-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">compress</span>
+            Compress ZIP
+        </a>
+<a class="flex items-center gap-2 px-sm py-2 rounded-lg text-secondary hover:bg-surface-container transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]">unarchive</span>
+            Extract ZIP
+        </a>
+<a class="flex items-center gap-2 px-sm py-2 rounded-lg text-secondary hover:bg-surface-container transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]">archive</span>
+            Create ZIP
+        </a>
+<a class="flex items-center gap-2 px-sm py-2 rounded-lg text-secondary hover:bg-surface-container transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+            Protect ZIP
+        </a>
+</div>
+</div>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col items-center w-full max-w-container-max mx-auto px-sm md:px-gutter py-md md:py-lg gap-md mb-xl">
+<div class="w-full grid grid-cols-1 md:grid-cols-2 gap-md md:gap-lg h-full">
+<!-- Left Column: Upload Zone -->
+<div class="bg-surface-container-lowest border-2 border-dashed border-outline-variant rounded-2xl flex flex-col items-center justify-center p-xl min-h-[400px] hover:border-primary hover:bg-surface-container-low transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-[64px] text-primary mb-sm group-hover:scale-110 transition-transform">upload_file</span>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-xs text-center">Drag &amp; drop your files here</h2>
+<p class="font-body-md text-body-md text-on-surface-variant text-center">
+                or <span class="text-primary font-semibold hover:underline">browse directories</span>
+</p>
+</div>
+<!-- Right Column: Compression Levels -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-sm md:p-md flex flex-col">
+<div class="flex justify-between items-center mb-sm">
+<h2 class="font-headline-md text-headline-md-mobile text-on-surface">Compression Level</h2>
+<button class="text-label-sm font-label-sm text-secondary hover:text-primary transition-colors uppercase tracking-wider">Select Profile</button>
+</div>
+<div class="flex flex-col gap-sm flex-grow overflow-y-auto">
+<!-- Store Only -->
+<div class="border border-outline-variant rounded-xl p-sm hover:bg-surface-container-low cursor-pointer transition-colors flex items-start gap-sm">
+<span class="material-symbols-outlined text-secondary mt-1">inventory_2</span>
+<div class="flex flex-col">
+<h3 class="font-label-md text-label-md font-bold text-on-surface">Store Only</h3>
+<p class="font-body-sm text-sm text-secondary mt-1 mb-2">No compression. Groups files together extremely fast.</p>
+<span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-1 rounded w-max uppercase">Fastest</span>
+</div>
+</div>
+<!-- Fast Compression -->
+<div class="border border-outline-variant rounded-xl p-sm hover:bg-surface-container-low cursor-pointer transition-colors flex items-start gap-sm">
+<span class="material-symbols-outlined text-secondary mt-1">speed</span>
+<div class="flex flex-col">
+<h3 class="font-label-md text-label-md font-bold text-on-surface">Fast Compression</h3>
+<p class="font-body-sm text-sm text-secondary mt-1 mb-2">High speed compression. Ideal for quick archiving.</p>
+<span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-1 rounded w-max uppercase">Fast Speed</span>
+</div>
+</div>
+<!-- Standard Compression (Selected/Recommended) -->
+<div class="border-2 border-primary bg-surface-container-low rounded-xl p-sm cursor-pointer transition-colors flex items-start gap-sm relative overflow-hidden">
+<span class="material-symbols-outlined text-primary mt-1">balance</span>
+<div class="flex flex-col">
+<h3 class="font-label-md text-label-md font-bold text-on-surface">Standard Compression</h3>
+<p class="font-body-sm text-sm text-on-surface-variant mt-1 mb-2">Perfect balance of file size and speed. Recommended for everyday use.</p>
+<span class="bg-primary text-on-primary text-[10px] font-bold px-2 py-1 rounded w-max uppercase">Recommended</span>
+</div>
+</div>
+<!-- Maximum Compression -->
+<div class="border border-outline-variant rounded-xl p-sm hover:bg-surface-container-low cursor-pointer transition-colors flex items-start gap-sm">
+<span class="material-symbols-outlined text-secondary mt-1">zoom_in_map</span>
+<div class="flex flex-col">
+<h3 class="font-label-md text-label-md font-bold text-on-surface">Maximum Compression</h3>
+<p class="font-body-sm text-sm text-secondary mt-1 mb-2">Smallest possible file size. Takes longer to compress.</p>
+<span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-1 rounded w-max uppercase">Smallest Size</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-md mt-auto bg-surface-container-low border-t border-outline-variant pb-xl md:pb-md">
+<div class="flex flex-col md:flex-row justify-between items-center px-md max-w-container-max mx-auto gap-sm">
+<div class="font-display text-label-md font-bold text-primary">OptiZIP</div>
+<p class="font-body-md text-label-sm text-on-surface-variant text-center md:text-left">© 2024 OptiZIP. Professional Archive Optimization.</p>
+</div>
+</footer>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-sm py-xs bg-surface border-t border-outline-variant shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] md:hidden z-50">
+<!-- Active Tab: Compress -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-6 py-1 transition-all duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">compress</span>
+<span class="font-label-sm text-label-sm mt-1">Compress</span>
+</a>
+<!-- Inactive Tab: My Files -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary transition-all duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-sm text-label-sm mt-1">My Files</span>
+</a>
+<!-- Inactive Tab: Settings -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary transition-all duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm text-label-sm mt-1">Settings</span>
+</a>
+</nav>
 </body>
 </html>

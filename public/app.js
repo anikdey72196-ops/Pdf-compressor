@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const files = dt.files;
       if (files.length > 0) {
         if (multiple) {
-          Array.from(files).forEach(onFileSelect);
+          onFileSelect(Array.from(files));
         } else {
           onFileSelect(files[0]);
         }
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const files = inputElement.files;
       if (files.length > 0) {
         if (multiple) {
-          Array.from(files).forEach(onFileSelect);
+          onFileSelect(Array.from(files));
         } else {
           onFileSelect(files[0]);
         }
@@ -547,21 +547,34 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Multiple drag-and-drop handles for compiling image list queue
-  setupDragAndDrop(imgToPdfDropZone, imgToPdfFileInput, (file) => {
-    const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
-    const allowed = ['.png', '.jpg', '.jpeg'];
-    if (!allowed.includes(ext)) {
-      alert('Only PNG, JPG, JPEG image formats are supported.');
-      return;
+  setupDragAndDrop(imgToPdfDropZone, imgToPdfFileInput, (files) => {
+    let added = false;
+    let invalidFiles = 0;
+
+    files.forEach(file => {
+      const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+      const allowed = ['.png', '.jpg', '.jpeg'];
+      if (!allowed.includes(ext)) {
+        invalidFiles++;
+        return;
+      }
+
+      // Generate blob preview URL
+      const previewUrl = URL.createObjectURL(file);
+      imgToPdfSelectedFiles.push({ file, previewUrl });
+      added = true;
+    });
+
+    if (invalidFiles > 0) {
+      alert(`${invalidFiles} file(s) skipped. Only PNG, JPG, JPEG image formats are supported.`);
     }
 
-    // Generate blob preview URL
-    const previewUrl = URL.createObjectURL(file);
-    imgToPdfSelectedFiles.push({ file, previewUrl });
-
-    renderImgQueue();
-    imgToPdfResults.classList.add('hidden');
-    updateImgToPdfBtnState();
+    if (added) {
+      // Batch DOM update
+      renderImgQueue();
+      imgToPdfResults.classList.add('hidden');
+      updateImgToPdfBtnState();
+    }
   }, true);
 
   // Redraws the sorting list element queue

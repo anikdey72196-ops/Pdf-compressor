@@ -566,8 +566,14 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
 
     const pdfDoc = await PDFDocument.create();
 
-    for (const file of sortedFiles) {
-      const imageBytes = fs.readFileSync(file.path);
+    // Read files concurrently to avoid blocking the event loop with synchronous I/O
+    const readPromises = sortedFiles.map(async (file) => {
+      const imageBytes = await fs.promises.readFile(file.path);
+      return { file, imageBytes };
+    });
+    const filesWithBytes = await Promise.all(readPromises);
+
+    for (const { file, imageBytes } of filesWithBytes) {
       const ext = path.extname(file.originalname).toLowerCase();
       
       let img;
@@ -621,16 +627,18 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     const pdfFilename = `compiled-${uniqueSuffix}.pdf`;
     const outputPath = path.join(COMPRESSED_DIR, pdfFilename);
     
-    fs.writeFileSync(outputPath, pdfBytes);
+    await fs.promises.writeFile(outputPath, pdfBytes);
 
-    // Clean up temporary image files
-    sortedFiles.forEach(file => {
+    // Clean up temporary image files asynchronously
+    await Promise.all(sortedFiles.map(async file => {
       try {
-        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+        await fs.promises.unlink(file.path);
       } catch (e) {
-        console.error('Failed to delete temp image file:', e);
+        if (e.code !== 'ENOENT') {
+          console.error('Failed to delete temp image file:', e);
+        }
       }
-    });
+    }));
 
     console.log(`[SUCCESS] Compiled PDF "${pdfFilename}" from ${sortedFiles.length} images.`);
 

@@ -1,0 +1,3 @@
+## 2024-05-24 - Avoiding Synchronous I/O in High-Throughput API Endpoints
+**Learning:** Using synchronous operations like `fs.readFileSync` and `fs.writeFileSync` in Express route handlers blocks the Node.js event loop. This leads to severe performance degradation under high concurrent load, as all other incoming requests must wait until the file I/O operations complete.
+**Action:** Always favor asynchronous I/O (`fs.promises`) inside request handlers, especially when dealing with potentially large files (like images or PDFs). Use `Promise.all` for cleanup tasks instead of running synchronous deletes sequentially.

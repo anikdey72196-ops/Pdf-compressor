@@ -1,0 +1,3 @@
+## 2024-05-18 - Avoid synchronous file reading in route handlers
+**Learning:** Using `fs.readFileSync` inside Node.js Express route handlers, especially within loops handling multiple files (like image compilation), is a critical anti-pattern. Because Node.js is single-threaded, synchronous I/O operations block the entire event loop, severely degrading the server's ability to handle concurrent requests and increasing overall latency.
+**Action:** Always use asynchronous file operations like `fs.promises.readFile` inside route handlers, especially when dealing with potentially large files or multiple files in a loop.

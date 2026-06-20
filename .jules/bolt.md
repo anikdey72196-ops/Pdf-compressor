@@ -1,0 +1,3 @@
+## 2024-06-20 - Synchronous I/O in Loop Blocks Event Loop
+**Learning:** Using `fs.readFileSync` inside a loop for endpoints that process multiple files (like compiling images into a PDF) blocks the Node.js event loop significantly, reducing overall throughput and causing lag.
+**Action:** Always prefer asynchronous file reading (`fs.promises.readFile`). However, using `Promise.all` to read all files concurrently can cause memory spikes if there are many large files. Instead, use `await fs.promises.readFile` inside the loop to sequentially read them without blocking the event loop or causing memory issues.

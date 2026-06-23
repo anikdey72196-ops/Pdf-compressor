@@ -1,0 +1,3 @@
+## 2024-06-23 - Sequential Image Embedding Bottleneck
+**Learning:** In the image-to-pdf compilation route, `fs.readFileSync` and `pdfDoc.embedPng/embedJpg` were executed sequentially inside a loop. Node.js is single-threaded, so blocking I/O and CPU-intensive embedding caused severe bottlenecks for requests with many images. The codebase pattern of batch processing files (up to 50) exacerbates this.
+**Action:** When working with batches of independent file reads and PDF operations in this codebase, always leverage `fs.promises` and `Promise.all()` to parallelize I/O and async tasks before doing sequential layouts.

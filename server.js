@@ -566,19 +566,24 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
 
     const pdfDoc = await PDFDocument.create();
 
-    for (const file of sortedFiles) {
-      const imageBytes = fs.readFileSync(file.path);
+    // Optimize: Read and embed images in parallel, without blocking event loop
+    const embeddedImages = await Promise.all(sortedFiles.map(async (file) => {
       const ext = path.extname(file.originalname).toLowerCase();
-      
-      let img;
-      if (ext === '.png') {
-        img = await pdfDoc.embedPng(imageBytes);
-      } else if (ext === '.jpg' || ext === '.jpeg') {
-        img = await pdfDoc.embedJpg(imageBytes);
-      } else {
-        // Skip unsupported
-        continue;
+      if (!['.png', '.jpg', '.jpeg'].includes(ext)) {
+        return null;
       }
+
+      const imageBytes = await fs.promises.readFile(file.path);
+      
+      if (ext === '.png') {
+        return await pdfDoc.embedPng(imageBytes);
+      } else {
+        return await pdfDoc.embedJpg(imageBytes);
+      }
+    }));
+
+    for (const img of embeddedImages) {
+      if (!img) continue; // Skip unsupported that returned null
 
       if (layout === 'a4') {
         // Standard A4: 595.27 x 841.89 points

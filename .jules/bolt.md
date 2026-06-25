@@ -1,0 +1,3 @@
+## 2024-05-18 - [Optimized Batch Processing in Express with Async I/O]
+**Learning:** Avoid blocking the Node.js event loop with synchronous file operations (`fs.readFileSync`, `fs.writeFileSync`, `fs.unlinkSync`) inside endpoints handling loops or batch processing (such as `/api/image-to-pdf` dealing with multiple images). Synchronous I/O stops the server from handling other concurrent requests, leading to slow response times and possible timeouts.
+**Action:** Always prefer asynchronous file operations using `fs.promises` combined with `Promise.all()` to parallelize I/O and asynchronous tasks for batch processing. Ensure proper error handling, especially handling `ENOENT` on `unlink`.

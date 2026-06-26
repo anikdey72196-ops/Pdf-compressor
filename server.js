@@ -566,8 +566,10 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
 
     const pdfDoc = await PDFDocument.create();
 
+    // ⚡ Bolt Optimization: Use async fs.promises.readFile to prevent blocking the Node.js event loop
+    // Processed sequentially in loop to prevent OOM errors when processing up to 50 large images
     for (const file of sortedFiles) {
-      const imageBytes = fs.readFileSync(file.path);
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       
       let img;

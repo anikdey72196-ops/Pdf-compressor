@@ -1,0 +1,3 @@
+## 2024-05-18 - Replacing fs.readFileSync with async I/O
+**Learning:** In Node.js server architectures, especially those handling multiple files like our batch image-to-pdf API, using synchronous I/O operations (`fs.readFileSync`) within loops blocks the event loop. This leads to substantial latency spikes when the server is handling multiple large image inputs.
+**Action:** Always favor `fs.promises.readFile` combined with `Promise.all()` to parallelize file reads and asynchronous operations (like embedding), preventing blocking of the main thread and keeping the application responsive under load.

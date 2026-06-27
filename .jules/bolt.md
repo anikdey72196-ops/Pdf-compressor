@@ -1,0 +1,3 @@
+## 2026-06-27 - Asynchronous sequential file reads for large batched tasks
+**Learning:** When batch processing multiple large files (like images for PDF compilation), synchronous read operations (e.g., `fs.readFileSync`) block the Node.js event loop, crippling server concurrency. However, firing off all reads at once using `Promise.all(files.map(...))` causes massive memory spikes leading to Out Of Memory (OOM) errors.
+**Action:** Always use asynchronous read methods (`await fs.promises.readFile`), but process them sequentially inside a `for...of` loop when dealing with large payloads. This balances event loop freedom with safe memory utilization.

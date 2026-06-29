@@ -567,7 +567,9 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     const pdfDoc = await PDFDocument.create();
 
     for (const file of sortedFiles) {
-      const imageBytes = fs.readFileSync(file.path);
+      // ⚡ Bolt: Using await fs.promises.readFile sequentially instead of fs.readFileSync
+      // prevents blocking the event loop while avoiding memory spikes from concurrent reads.
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       
       let img;
@@ -621,7 +623,9 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     const pdfFilename = `compiled-${uniqueSuffix}.pdf`;
     const outputPath = path.join(COMPRESSED_DIR, pdfFilename);
     
-    fs.writeFileSync(outputPath, pdfBytes);
+    // ⚡ Bolt: Using await fs.promises.writeFile instead of fs.writeFileSync
+    // prevents blocking the event loop when writing the large PDF file to disk.
+    await fs.promises.writeFile(outputPath, pdfBytes);
 
     // Clean up temporary image files
     sortedFiles.forEach(file => {

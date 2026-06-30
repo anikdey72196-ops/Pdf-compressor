@@ -567,7 +567,8 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     const pdfDoc = await PDFDocument.create();
 
     for (const file of sortedFiles) {
-      const imageBytes = fs.readFileSync(file.path);
+      // ⚡ Bolt: Use async file read to avoid blocking event loop while preserving sequential order to avoid memory spikes
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       
       let img;
@@ -621,16 +622,18 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     const pdfFilename = `compiled-${uniqueSuffix}.pdf`;
     const outputPath = path.join(COMPRESSED_DIR, pdfFilename);
     
-    fs.writeFileSync(outputPath, pdfBytes);
+    // ⚡ Bolt: Use async write to prevent blocking event loop
+    await fs.promises.writeFile(outputPath, pdfBytes);
 
     // Clean up temporary image files
-    sortedFiles.forEach(file => {
+    // ⚡ Bolt: Use for...of with async unlink instead of synchronous forEach
+    for (const file of sortedFiles) {
       try {
-        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+        if (fs.existsSync(file.path)) await fs.promises.unlink(file.path);
       } catch (e) {
         console.error('Failed to delete temp image file:', e);
       }
-    });
+    }
 
     console.log(`[SUCCESS] Compiled PDF "${pdfFilename}" from ${sortedFiles.length} images.`);
 

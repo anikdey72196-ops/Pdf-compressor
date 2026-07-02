@@ -1,0 +1,3 @@
+## 2024-07-02 - Optimize Image Batch Processing
+**Learning:** When batch processing multiple large files (e.g., up to 20MB images), using synchronous file operations (like `fs.readFileSync`) severely blocks the Node.js event loop, crippling server responsiveness. However, blindly switching to concurrent asynchronous operations with `Promise.all()` can lead to severe memory spikes and Out of Memory (OOM) errors if all large files are loaded into memory simultaneously.
+**Action:** Process large files sequentially with `await fs.promises.readFile()` inside a `for...of` loop rather than concurrently to maintain a stable memory footprint while preventing event loop blocking. Applied this approach to the `/api/image-to-pdf` endpoint's file reading and cleanup phases.

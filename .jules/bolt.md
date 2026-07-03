@@ -1,0 +1,3 @@
+## 2026-07-03 - Avoid OOM memory spikes in batch file reading
+**Learning:** In a Node.js Express application handling large files like PDFs or image batches, avoiding blocking the event loop is paramount, so we prefer async `fs.promises`. However, when processing multiple large files (like images to be compiled to PDF), using `Promise.all()` to read them concurrently can lead to severe memory spikes and Out of Memory (OOM) errors.
+**Action:** When iterating over a batch of large files to process them (e.g. embedding into a single PDF document), prefer sequential execution with `await fs.promises.readFile()` inside a `for` loop over concurrent reading to balance event loop availability with memory safety.

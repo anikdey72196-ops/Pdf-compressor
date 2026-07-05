@@ -1,0 +1,3 @@
+## 2024-05-15 - Node.js Event Loop Blocking
+**Learning:** Found synchronous file system operations (`fs.readFileSync`, `fs.writeFileSync`) being used during API route processing (`/api/image-to-pdf`), which blocks the entire Node.js event loop for all concurrent users when handling large images or generating PDFs.
+**Action:** Replaced synchronous operations with `fs.promises.readFile` and `fs.promises.writeFile` to keep the application concurrent and responsive during I/O bound tasks. Batch processing of images should still be sequential using `await` inside loops to prevent memory spikes (OOM).

@@ -567,7 +567,9 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     const pdfDoc = await PDFDocument.create();
 
     for (const file of sortedFiles) {
-      const imageBytes = fs.readFileSync(file.path);
+      // ⚡ Bolt: Read file asynchronously to avoid blocking the event loop during batch processing.
+      // We read files sequentially inside the loop rather than using Promise.all to prevent memory spikes (OOM).
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       
       let img;

@@ -1,0 +1,4 @@
+
+## 2026-07-08 - Asynchronous Sequential Batch Processing in Node.js
+**Learning:** When batch processing multiple large files (like images for PDF compilation), completely blocking the Node.js event loop with synchronous file operations (like `fs.readFileSync`) creates severe performance bottlenecks. Conversely, loading all large files into memory simultaneously using `Promise.all()` with `fs.promises.readFile()` causes memory spikes and Out of Memory (OOM) errors.
+**Action:** The ideal performance pattern for this specific codebase architecture is to use *sequential* asynchronous processing (using an `await fs.promises.readFile` inside a standard `for...of` loop). This successfully avoids blocking the main event loop while preventing memory over-allocation by only processing one file at a time. I also used `await fs.promises.writeFile` to keep the eventual save non-blocking.

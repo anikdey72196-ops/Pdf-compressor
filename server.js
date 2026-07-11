@@ -566,8 +566,10 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
 
     const pdfDoc = await PDFDocument.create();
 
+    // ⚡ BOLT: Process sequentially to prevent memory spikes (OOM) associated with Promise.all()
+    // on multiple large files, but use async fs.promises to avoid blocking the event loop.
     for (const file of sortedFiles) {
-      const imageBytes = fs.readFileSync(file.path);
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       
       let img;
@@ -621,7 +623,8 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     const pdfFilename = `compiled-${uniqueSuffix}.pdf`;
     const outputPath = path.join(COMPRESSED_DIR, pdfFilename);
     
-    fs.writeFileSync(outputPath, pdfBytes);
+    // ⚡ BOLT: Use async writeFile to avoid blocking the event loop for large PDFs
+    await fs.promises.writeFile(outputPath, pdfBytes);
 
     // Clean up temporary image files
     sortedFiles.forEach(file => {

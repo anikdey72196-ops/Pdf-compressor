@@ -1,0 +1,3 @@
+## 2024-07-12 - Synchronous vs Asynchronous Sequential File Processing
+**Learning:** In the `/api/image-to-pdf` endpoint, processing large batches of images with `Promise.all()` (concurrent processing) can lead to severe memory spikes and Out of Memory (OOM) errors. However, using synchronous file reads (`fs.readFileSync`) to process them sequentially blocks the Node.js event loop, degrading performance for other requests.
+**Action:** Always process large batches of files sequentially using a `for...of` loop with `await fs.promises.readFile()` instead of synchronous reads or concurrent `Promise.all()`. This prevents memory spikes while maintaining non-blocking asynchronous execution.

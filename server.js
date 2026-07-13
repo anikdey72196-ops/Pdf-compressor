@@ -567,7 +567,12 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     const pdfDoc = await PDFDocument.create();
 
     for (const file of sortedFiles) {
-      const imageBytes = fs.readFileSync(file.path);
+      // ⚡ Bolt Optimization: Use sequential async reads (`await fs.promises.readFile`) instead of sync reads (`fs.readFileSync`).
+      // 💡 What: Replaced blocking synchronous file read with an awaited asynchronous read.
+      // 🎯 Why: `fs.readFileSync` completely blocks the Node.js event loop, preventing the server from handling other concurrent requests while reading potentially large image files. Using `Promise.all` would spike memory (OOM risk). Sequential async processing keeps the event loop free while controlling memory.
+      // 📊 Impact: Improves concurrent request throughput and reduces latency spikes during high-load image compilations.
+      // 🔬 Measurement: Benchmarking concurrent requests while an image compilation is ongoing will show zero dropped/blocked requests.
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       
       let img;
@@ -621,7 +626,10 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     const pdfFilename = `compiled-${uniqueSuffix}.pdf`;
     const outputPath = path.join(COMPRESSED_DIR, pdfFilename);
     
-    fs.writeFileSync(outputPath, pdfBytes);
+    // ⚡ Bolt Optimization: Use async write (`await fs.promises.writeFile`) instead of sync write.
+    // 💡 What: Replaced blocking synchronous file write.
+    // 🎯 Why: Large compiled PDFs can block the event loop while being written to disk synchronously.
+    await fs.promises.writeFile(outputPath, pdfBytes);
 
     // Clean up temporary image files
     sortedFiles.forEach(file => {

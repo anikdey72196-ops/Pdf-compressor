@@ -1,0 +1,3 @@
+## 2024-05-24 - Avoiding memory spikes in batch file reads
+**Learning:** When batch processing multiple large files (like images), using `Promise.all` with `fs.promises.readFile` can cause severe memory spikes and Out of Memory (OOM) errors. It's better to process them sequentially with `await fs.promises.readFile()` inside a `for...of` loop to keep memory usage stable, even if it's slightly slower than concurrent execution. Also, synchronous operations like `fs.readFileSync` should be avoided to prevent blocking the Node.js event loop.
+**Action:** Always consider the memory implications of `Promise.all` when dealing with file I/O or large data sets. Default to sequential processing unless the data size is known to be small and strictly bounded.

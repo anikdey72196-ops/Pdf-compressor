@@ -1,0 +1,3 @@
+## 2024-07-18 - Async IO for Batch Image Processing
+**Learning:** When batch processing multiple large files (e.g., images for compilation into a PDF), processing them sequentially with `await fs.promises.readFile()` is necessary. While `Promise.all()` might seem like a faster asynchronous approach, doing so with many large files causes severe memory spikes and Out of Memory (OOM) errors in this Node.js architecture.
+**Action:** Use sequential `for...of` loops with `await fs.promises.readFile()` for batch file processing to balance memory safety with non-blocking I/O. Do not use `Promise.all()` for large file buffer operations.

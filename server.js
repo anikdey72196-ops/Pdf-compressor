@@ -566,8 +566,17 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
 
     const pdfDoc = await PDFDocument.create();
 
+    // PERFORMANCE OPTIMIZATION: Non-blocking I/O to avoid event loop stalls.
+    // Processed sequentially (for...of) rather than Promise.all() to prevent
+    // OOM errors during concurrent processing of many large images.
     for (const file of sortedFiles) {
       // ⚡ Bolt: Use async file read to avoid blocking the event loop on large images
+      // ⚡ Bolt Optimization: Use async fs.promises.readFile instead of synchronous fs.readFileSync.
+      // This prevents blocking the Node.js event loop when reading multiple/large image files sequentially,
+      // improving concurrent request handling.
+      // ⚡ Bolt: Replace synchronous fs.readFileSync with async fs.promises.readFile
+      // to prevent blocking the Node.js event loop.
+      // We keep the sequential loop to avoid memory spikes (OOM) during batch processing.
       const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       
@@ -634,6 +643,21 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
         console.error('Failed to delete temp image file:', e);
       }
     }
+    // ⚡ Bolt Optimization: Use async fs.promises.writeFile instead of synchronous fs.writeFileSync.
+    // This ensures the event loop is not blocked during large file writes.
+    // PERFORMANCE OPTIMIZATION: Write output asynchronously to free event loop
+    // ⚡ Bolt: Replace synchronous fs.writeFileSync with async fs.promises.writeFile
+    await fs.promises.writeFile(outputPath, pdfBytes);
+
+    // Clean up temporary image files
+    // ⚡ Bolt: Use Promise.all with async unlink instead of sync in a loop
+    await Promise.all(sortedFiles.map(file =>
+      fs.promises.unlink(file.path).catch(e => {
+        if (e.code !== 'ENOENT') {
+          console.error('Failed to delete temp image file:', e);
+        }
+      })
+    ));
 
     console.log(`[SUCCESS] Compiled PDF "${pdfFilename}" from ${sortedFiles.length} images.`);
 

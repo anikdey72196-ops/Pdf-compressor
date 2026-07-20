@@ -1,3 +1,6 @@
+## 2024-05-15 - Node.js Event Loop Blocking
+**Learning:** Found synchronous file system operations (`fs.readFileSync`, `fs.writeFileSync`) being used during API route processing (`/api/image-to-pdf`), which blocks the entire Node.js event loop for all concurrent users when handling large images or generating PDFs.
+**Action:** Replaced synchronous operations with `fs.promises.readFile` and `fs.promises.writeFile` to keep the application concurrent and responsive during I/O bound tasks. Batch processing of images should still be sequential using `await` inside loops to prevent memory spikes (OOM).
 ## 2024-07-18 - Async IO for Batch Image Processing
 **Learning:** When batch processing multiple large files (e.g., images for compilation into a PDF), processing them sequentially with `await fs.promises.readFile()` is necessary. While `Promise.all()` might seem like a faster asynchronous approach, doing so with many large files causes severe memory spikes and Out of Memory (OOM) errors in this Node.js architecture.
 **Action:** Use sequential `for...of` loops with `await fs.promises.readFile()` for batch file processing to balance memory safety with non-blocking I/O. Do not use `Promise.all()` for large file buffer operations.

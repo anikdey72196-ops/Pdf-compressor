@@ -566,9 +566,6 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
 
     const pdfDoc = await PDFDocument.create();
 
-    // ⚡ BOLT: Process sequentially to prevent memory spikes (OOM) associated with Promise.all()
-    // on multiple large files, but use async fs.promises to avoid blocking the event loop.
-    for (const file of sortedFiles) {
     // PERFORMANCE OPTIMIZATION: Non-blocking I/O to avoid event loop stalls.
     // Processed sequentially (for...of) rather than Promise.all() to prevent
     // OOM errors during concurrent processing of many large images.
@@ -645,21 +642,6 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     
     // ⚡ BOLT: Use async writeFile to avoid blocking the event loop for large PDFs
     // ⚡ Bolt Optimization: Use async write (`await fs.promises.writeFile`) instead of sync write.
-    // 💡 What: Replaced blocking synchronous file write.
-    // 🎯 Why: Large compiled PDFs can block the event loop while being written to disk synchronously.
-    // ⚡ Bolt: Use async writeFile to avoid blocking event loop
-    // ⚡ Bolt: Use async file write to avoid blocking the event loop
-    await fs.promises.writeFile(outputPath, pdfBytes);
-
-    // Clean up temporary image files
-    // ⚡ Bolt: Use async file unlink to avoid blocking the event loop
-    for (const file of sortedFiles) {
-      try {
-        if (fs.existsSync(file.path)) await fs.promises.unlink(file.path);
-      } catch (e) {
-        console.error('Failed to delete temp image file:', e);
-      }
-    }
     // ⚡ Bolt Optimization: Use async fs.promises.writeFile instead of synchronous fs.writeFileSync.
     // This ensures the event loop is not blocked during large file writes.
     // PERFORMANCE OPTIMIZATION: Write output asynchronously to free event loop

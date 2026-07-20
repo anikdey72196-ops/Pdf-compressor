@@ -570,6 +570,8 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     // Processed sequentially (for...of) rather than Promise.all() to prevent
     // OOM errors during concurrent processing of many large images.
     for (const file of sortedFiles) {
+      // ⚡ Bolt: Use async readFile to avoid blocking event loop.
+      // Sequential await prevents OOM errors on large batch jobs.
       // ⚡ Bolt: Use async file read to avoid blocking the event loop on large images
       // ⚡ Bolt Optimization: Use async fs.promises.readFile instead of synchronous fs.readFileSync.
       // This prevents blocking the Node.js event loop when reading multiple/large image files sequentially,
@@ -631,6 +633,7 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     const pdfFilename = `compiled-${uniqueSuffix}.pdf`;
     const outputPath = path.join(COMPRESSED_DIR, pdfFilename);
     
+    // ⚡ Bolt: Use async writeFile to avoid blocking event loop
     // ⚡ Bolt: Use async file write to avoid blocking the event loop
     await fs.promises.writeFile(outputPath, pdfBytes);
 

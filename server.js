@@ -570,6 +570,8 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     // Processed sequentially (for...of) rather than Promise.all() to prevent
     // OOM errors during concurrent processing of many large images.
     for (const file of sortedFiles) {
+      // ⚡ Bolt: Read files asynchronously sequentially to avoid blocking the event loop
+      // We don't use Promise.all here to prevent severe memory spikes/OOM errors with large batches
       // ⚡ Bolt Optimization: Use sequential async reads (`await fs.promises.readFile`) instead of sync reads (`fs.readFileSync`).
       // 💡 What: Replaced blocking synchronous file read with an awaited asynchronous read.
       // 🎯 Why: `fs.readFileSync` completely blocks the Node.js event loop, preventing the server from handling other concurrent requests while reading potentially large image files. Using `Promise.all` would spike memory (OOM risk). Sequential async processing keeps the event loop free while controlling memory.

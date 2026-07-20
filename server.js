@@ -566,6 +566,9 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
 
     const pdfDoc = await PDFDocument.create();
 
+    // ⚡ BOLT: Process sequentially to prevent memory spikes (OOM) associated with Promise.all()
+    // on multiple large files, but use async fs.promises to avoid blocking the event loop.
+    for (const file of sortedFiles) {
     // PERFORMANCE OPTIMIZATION: Non-blocking I/O to avoid event loop stalls.
     // Processed sequentially (for...of) rather than Promise.all() to prevent
     // OOM errors during concurrent processing of many large images.
@@ -640,6 +643,7 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
     const pdfFilename = `compiled-${uniqueSuffix}.pdf`;
     const outputPath = path.join(COMPRESSED_DIR, pdfFilename);
     
+    // ⚡ BOLT: Use async writeFile to avoid blocking the event loop for large PDFs
     // ⚡ Bolt Optimization: Use async write (`await fs.promises.writeFile`) instead of sync write.
     // 💡 What: Replaced blocking synchronous file write.
     // 🎯 Why: Large compiled PDFs can block the event loop while being written to disk synchronously.

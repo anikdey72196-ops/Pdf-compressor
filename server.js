@@ -672,7 +672,7 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
 });
 
 // Periodic sweeping cleanup job (runs every 10 minutes)
-setInterval(() => {
+setInterval(async () => {
   const now = Date.now();
   const maxAge = 15 * 60 * 1000; // Delete files older than 15 minutes
 
@@ -683,22 +683,32 @@ setInterval(() => {
     }
   });
 
-  [UPLOADS_DIR, COMPRESSED_DIR].forEach((dir) => {
-    if (fs.existsSync(dir)) {
-      fs.readdirSync(dir).forEach((file) => {
-        const filePath = path.join(dir, file);
-        try {
-          const stats = fs.statSync(filePath);
-          if (now - stats.mtimeMs > maxAge) {
-            fs.unlinkSync(filePath);
-            console.log(`[Sweeper] Auto-cleaned expired file: ${file}`);
+  // ⚡ Bolt Optimization: Use asynchronous filesystem operations for periodic sweeping.
+  // 💡 What: Replaced `fs.readdirSync`, `fs.statSync`, and `fs.unlinkSync` with `fs.promises` equivalents.
+  // 🎯 Why: Synchronous I/O blocks the Node.js event loop. During periodic sweeps, this could stall all concurrent API requests if many expired files need to be processed.
+  // 📊 Impact: Eliminates event loop blocking every 10 minutes, preventing unpredictable latency spikes.
+  // 🔬 Measurement: Benchmark concurrent API requests during the sweeping interval; zero requests should be blocked or dropped.
+  for (const dir of [UPLOADS_DIR, COMPRESSED_DIR]) {
+    try {
+      if (fs.existsSync(dir)) {
+        const files = await fs.promises.readdir(dir);
+        for (const file of files) {
+          const filePath = path.join(dir, file);
+          try {
+            const stats = await fs.promises.stat(filePath);
+            if (now - stats.mtimeMs > maxAge) {
+              await fs.promises.unlink(filePath);
+              console.log(`[Sweeper] Auto-cleaned expired file: ${file}`);
+            }
+          } catch (e) {
+            console.error(`[Sweeper] Error cleaning file ${file}:`, e.message);
           }
-        } catch (e) {
-          console.error(`[Sweeper] Error cleaning file ${file}:`, e.message);
         }
-      });
+      }
+    } catch (e) {
+      console.error(`[Sweeper] Error reading directory ${dir}:`, e.message);
     }
-  });
+  }
 }, 10 * 60 * 1000);
 
 // Global Error Handler for Multer

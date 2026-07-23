@@ -672,7 +672,7 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
 });
 
 // Periodic sweeping cleanup job (runs every 10 minutes)
-setInterval(() => {
+setInterval(async () => {
   const now = Date.now();
   const maxAge = 15 * 60 * 1000; // Delete files older than 15 minutes
 
@@ -683,22 +683,32 @@ setInterval(() => {
     }
   });
 
-  [UPLOADS_DIR, COMPRESSED_DIR].forEach((dir) => {
-    if (fs.existsSync(dir)) {
-      fs.readdirSync(dir).forEach((file) => {
+  // ⚡ Bolt Optimization: Use asynchronous file operations for background job
+  // 💡 What: Replaced blocking fs.readdirSync, fs.statSync, and fs.unlinkSync with sequential async equivalents using fs.promises.
+  // 🎯 Why: Synchronous operations block the Node.js event loop. If the sweeper runs while there are many files, all concurrent user API requests would freeze until the cleanup finished.
+  // 📊 Impact: Eliminates silent 10-minute global latency spikes during high server load.
+  // 🔬 Measurement: Benchmarking response times across 10-minute boundaries will show no event loop stalls.
+  for (const dir of [UPLOADS_DIR, COMPRESSED_DIR]) {
+    try {
+      await fs.promises.access(dir);
+      const files = await fs.promises.readdir(dir);
+
+      for (const file of files) {
         const filePath = path.join(dir, file);
         try {
-          const stats = fs.statSync(filePath);
+          const stats = await fs.promises.stat(filePath);
           if (now - stats.mtimeMs > maxAge) {
-            fs.unlinkSync(filePath);
+            await fs.promises.unlink(filePath);
             console.log(`[Sweeper] Auto-cleaned expired file: ${file}`);
           }
         } catch (e) {
           console.error(`[Sweeper] Error cleaning file ${file}:`, e.message);
         }
-      });
+      }
+    } catch (err) {
+      // Directory doesn't exist or is unreadable, skip
     }
-  });
+  }
 }, 10 * 60 * 1000);
 
 // Global Error Handler for Multer

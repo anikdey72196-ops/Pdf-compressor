@@ -144,7 +144,7 @@ function validateGhostscript() {
     }
   };
 
-  execFile(executable, testArgs, callback);
+  execFile(executable, testArgs, { windowsHide: true }, callback);
 }
 
 validateGhostscript();
@@ -267,7 +267,7 @@ app.post('/api/compress', upload.single('pdf'), (req, res) => {
   };
 
   // Run Ghostscript command asynchronously in the background
-  execFile(executable, gsArgs, handleCompressionResult);
+  execFile(executable, gsArgs, { windowsHide: true }, handleCompressionResult);
 });
 
 /**
@@ -359,7 +359,7 @@ app.post('/api/protect', upload.single('pdf'), (req, res) => {
     };
   };
 
-  execFile(executable, gsArgs, handleProtectResult);
+  execFile(executable, gsArgs, { windowsHide: true }, handleProtectResult);
 });
 
 /**
@@ -530,7 +530,7 @@ app.post('/api/pdf-to-image', upload.single('pdf'), (req, res) => {
   };
 
   // Run Ghostscript command
-  execFile(executable, gsArgs, handleConversionResult);
+  execFile(executable, gsArgs, { windowsHide: true }, handleConversionResult);
 });
 
 /**

@@ -97,35 +97,65 @@ document.addEventListener('DOMContentLoaded', () => {
   let isProtecting = false;
 
   // ==========================================
-  // Router Tab Control
+  // Router Category & Sub-Tool Control
   // ==========================================
-  tabButtons.forEach(btn => {
+  const catTabButtons = document.querySelectorAll('.cat-tab-btn');
+  const subTabButtons = document.querySelectorAll('.sub-tab-btn');
+  const subGroupPdf = document.getElementById('subGroupPdf');
+  const subGroupImage = document.getElementById('subGroupImage');
+
+  function openToolPanel(tabName) {
+    toolPanels.forEach(p => p.classList.add('hidden'));
+    subTabButtons.forEach(b => b.classList.remove('active'));
+
+    const activeSubBtn = document.querySelector(`.sub-tab-btn[data-tab="${tabName}"]`);
+    if (activeSubBtn) activeSubBtn.classList.add('active');
+
+    if (tabName === 'compress') {
+      document.getElementById('panelCompress').classList.remove('hidden');
+    } else if (tabName === 'compress-img') {
+      document.getElementById('panelCompressImg').classList.remove('hidden');
+    } else if (tabName === 'pdf-to-img') {
+      document.getElementById('panelPdfToImg').classList.remove('hidden');
+    } else if (tabName === 'img-to-pdf') {
+      document.getElementById('panelImgToPdf').classList.remove('hidden');
+    } else if (tabName === 'img-to-word') {
+      document.getElementById('panelImgToWord').classList.remove('hidden');
+    } else if (tabName === 'office-to-pdf') {
+      document.getElementById('panelOfficeToPdf').classList.remove('hidden');
+    } else if (tabName === 'pdf-to-excel') {
+      document.getElementById('panelPdfToExcel').classList.remove('hidden');
+    } else if (tabName === 'protect') {
+      document.getElementById('panelProtect').classList.remove('hidden');
+    }
+  }
+
+  catTabButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      // Toggle Nav Active state
-      tabButtons.forEach(b => b.classList.remove('active'));
+      catTabButtons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      const cat = btn.getAttribute('data-cat');
 
-      // Toggle Panels Visibility
-      toolPanels.forEach(p => p.classList.add('hidden'));
-      const activeTabName = btn.getAttribute('data-tab');
-
-      if (activeTabName === 'compress') {
-        document.getElementById('panelCompress').classList.remove('hidden');
-      } else if (activeTabName === 'compress-img') {
-        document.getElementById('panelCompressImg').classList.remove('hidden');
-      } else if (activeTabName === 'pdf-to-img') {
-        document.getElementById('panelPdfToImg').classList.remove('hidden');
-      } else if (activeTabName === 'img-to-pdf') {
-        document.getElementById('panelImgToPdf').classList.remove('hidden');
-      } else if (activeTabName === 'img-to-word') {
-        document.getElementById('panelImgToWord').classList.remove('hidden');
-      } else if (activeTabName === 'office-to-pdf') {
-        document.getElementById('panelOfficeToPdf').classList.remove('hidden');
-      } else if (activeTabName === 'pdf-to-excel') {
-        document.getElementById('panelPdfToExcel').classList.remove('hidden');
-      } else if (activeTabName === 'protect') {
-        document.getElementById('panelProtect').classList.remove('hidden');
+      if (cat === 'pdf') {
+        subGroupPdf.classList.remove('hidden');
+        subGroupImage.classList.add('hidden');
+        openToolPanel('compress');
+      } else if (cat === 'image') {
+        subGroupImage.classList.remove('hidden');
+        subGroupPdf.classList.add('hidden');
+        openToolPanel('compress-img');
+      } else if (cat === 'protect') {
+        subGroupPdf.classList.add('hidden');
+        subGroupImage.classList.add('hidden');
+        openToolPanel('protect');
       }
+    });
+  });
+
+  subTabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabName = btn.getAttribute('data-tab');
+      openToolPanel(tabName);
     });
   });
 

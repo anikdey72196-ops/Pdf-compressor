@@ -767,49 +767,91 @@ body {
   z-index: 20;
 }
 
-.tool-tabs-nav {
+.category-tabs-nav {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  max-width: 100%;
-  overflow-x: auto;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   border: 1px solid var(--border-color);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding: 6px;
-  border-radius: 14px;
-  gap: 6px;
+  border-radius: 16px;
+  gap: 8px;
   box-shadow: var(--card-shadow);
 }
 
-.tab-btn {
+.cat-tab-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: none;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 10px;
+  border: 1px solid transparent;
+  padding: 10px 22px;
+  border-radius: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cat-tab-btn:hover {
+  color: var(--text-main);
+  background: rgba(0, 74, 198, 0.06);
+}
+
+.cat-tab-btn.active {
+  color: #ffffff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 15px rgba(0, 74, 198, 0.25);
+}
+
+.sub-nav-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+  margin-bottom: 8px;
+  z-index: 15;
+}
+
+.sub-tool-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 6px;
+  backdrop-filter: blur(10px);
+}
+
+.sub-tab-btn {
+  background: none;
+  border: 1px solid transparent;
+  padding: 6px 16px;
+  border-radius: 8px;
   color: var(--text-muted);
   font-family: var(--font-family);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s ease;
 }
 
-.tab-btn:hover {
+.sub-tab-btn:hover {
   color: var(--text-main);
   background: rgba(0, 74, 198, 0.05);
 }
 
-.tab-btn.active {
-  color: #ffffff;
-  background: var(--color-secondary);
-  border: 1px solid var(--color-primary);
-  box-shadow: 0 0 15px rgba(0, 74, 198, 0.15);
+.sub-tab-btn.active {
+  color: var(--color-primary);
+  background: rgba(0, 74, 198, 0.12);
+  border-color: rgba(0, 74, 198, 0.2);
+  font-weight: 700;
 }
 
 .tab-icon {

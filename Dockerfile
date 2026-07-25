@@ -1,7 +1,7 @@
 FROM node:18-bullseye-slim
 
-# Install ghostscript
-RUN apt-get update && apt-get install -y ghostscript && rm -rf /var/lib/apt/lists/*
+# Install ghostscript & libreoffice
+RUN apt-get update && apt-get install -y ghostscript libreoffice && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app

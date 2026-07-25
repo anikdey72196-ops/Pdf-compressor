@@ -111,10 +111,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (activeTabName === 'compress') {
         document.getElementById('panelCompress').classList.remove('hidden');
+      } else if (activeTabName === 'compress-img') {
+        document.getElementById('panelCompressImg').classList.remove('hidden');
       } else if (activeTabName === 'pdf-to-img') {
         document.getElementById('panelPdfToImg').classList.remove('hidden');
       } else if (activeTabName === 'img-to-pdf') {
         document.getElementById('panelImgToPdf').classList.remove('hidden');
+      } else if (activeTabName === 'img-to-word') {
+        document.getElementById('panelImgToWord').classList.remove('hidden');
+      } else if (activeTabName === 'office-to-pdf') {
+        document.getElementById('panelOfficeToPdf').classList.remove('hidden');
+      } else if (activeTabName === 'pdf-to-excel') {
+        document.getElementById('panelPdfToExcel').classList.remove('hidden');
       } else if (activeTabName === 'protect') {
         document.getElementById('panelProtect').classList.remove('hidden');
       }
@@ -819,6 +827,261 @@ document.addEventListener('DOMContentLoaded', () => {
     protectDropZone.querySelector('.drop-subtitle').classList.remove('hidden');
     
     updateProtectButtonState();
+  });
+
+  // ==========================================
+  // 5. Compress Image Tool Logic
+  // ==========================================
+  const compressImgDropZone = document.getElementById('compressImgDropZone');
+  const compressImgFileInput = document.getElementById('compressImgFileInput');
+  const compressImgFileInfo = document.getElementById('compressImgFileInfo');
+  const compressImgFileName = document.getElementById('compressImgFileName');
+  const compressImgFileSize = document.getElementById('compressImgFileSize');
+  const compressImgRemoveBtn = document.getElementById('compressImgRemoveBtn');
+  const compressImgPresetCards = document.querySelectorAll('#compressImgPresetGrid .preset-card');
+  const compressImgBtn = document.getElementById('compressImgBtn');
+  const compressImgResults = document.getElementById('compressImgResults');
+  const compressImgOriginalSize = document.getElementById('compressImgOriginalSize');
+  const compressImgResultSize = document.getElementById('compressImgResultSize');
+  const compressImgSavingsVal = document.getElementById('compressImgSavingsVal');
+  const compressImgDownloadBtn = document.getElementById('compressImgDownloadBtn');
+  const compressImgResetBtn = document.getElementById('compressImgResetBtn');
+
+  let compressImgSelectedFile = null;
+  let compressImgSelectedQuality = 'medium';
+
+  setupDragAndDrop(compressImgDropZone, compressImgFileInput, (file) => {
+    compressImgSelectedFile = file;
+    compressImgFileName.textContent = file.name;
+    compressImgFileSize.textContent = formatBytes(file.size);
+    compressImgFileInfo.classList.remove('hidden');
+    compressImgBtn.disabled = false;
+  });
+
+  compressImgRemoveBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    compressImgSelectedFile = null;
+    compressImgFileInput.value = '';
+    compressImgFileInfo.classList.add('hidden');
+    compressImgBtn.disabled = true;
+  });
+
+  compressImgPresetCards.forEach(card => {
+    card.addEventListener('click', () => {
+      compressImgPresetCards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      compressImgSelectedQuality = card.getAttribute('data-img-quality');
+    });
+  });
+
+  compressImgBtn.addEventListener('click', async () => {
+    if (!compressImgSelectedFile) return;
+    compressImgBtn.disabled = true;
+    const formData = new FormData();
+    formData.append('image', compressImgSelectedFile);
+    formData.append('quality', compressImgSelectedQuality);
+
+    try {
+      const res = await fetch('/api/compress-image', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to compress image');
+
+      compressImgOriginalSize.textContent = formatBytes(data.originalSize);
+      compressImgResultSize.textContent = formatBytes(data.compressedSize);
+      compressImgSavingsVal.textContent = `${data.savedPercent}%`;
+      compressImgDownloadBtn.href = data.downloadUrl;
+      compressImgResults.classList.remove('hidden');
+    } catch (err) {
+      alert(`Image Compression Error:\n${err.message}`);
+    } finally {
+      compressImgBtn.disabled = false;
+    }
+  });
+
+  compressImgResetBtn.addEventListener('click', () => {
+    compressImgSelectedFile = null;
+    compressImgFileInput.value = '';
+    compressImgFileInfo.classList.add('hidden');
+    compressImgResults.classList.add('hidden');
+    compressImgBtn.disabled = true;
+  });
+
+  // ==========================================
+  // 6. Image to Word Tool Logic
+  // ==========================================
+  const imgToWordDropZone = document.getElementById('imgToWordDropZone');
+  const imgToWordFileInput = document.getElementById('imgToWordFileInput');
+  const imgToWordFileInfo = document.getElementById('imgToWordFileInfo');
+  const imgToWordFileName = document.getElementById('imgToWordFileName');
+  const imgToWordRemoveBtn = document.getElementById('imgToWordRemoveBtn');
+  const imgToWordBtn = document.getElementById('imgToWordBtn');
+  const imgToWordResults = document.getElementById('imgToWordResults');
+  const imgToWordDownloadBtn = document.getElementById('imgToWordDownloadBtn');
+  const imgToWordResetBtn = document.getElementById('imgToWordResetBtn');
+
+  let imgToWordFiles = [];
+
+  setupDragAndDrop(imgToWordDropZone, imgToWordFileInput, (file) => {
+    imgToWordFiles.push(file);
+    imgToWordFileName.textContent = `${imgToWordFiles.length} image(s) selected`;
+    imgToWordFileInfo.classList.remove('hidden');
+    imgToWordBtn.disabled = false;
+  }, true);
+
+  imgToWordRemoveBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    imgToWordFiles = [];
+    imgToWordFileInput.value = '';
+    imgToWordFileInfo.classList.add('hidden');
+    imgToWordBtn.disabled = true;
+  });
+
+  imgToWordBtn.addEventListener('click', async () => {
+    if (imgToWordFiles.length === 0) return;
+    imgToWordBtn.disabled = true;
+    const formData = new FormData();
+    imgToWordFiles.forEach(f => formData.append('images', f));
+
+    try {
+      const res = await fetch('/api/image-to-word', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to convert to Word');
+
+      imgToWordDownloadBtn.href = data.downloadUrl;
+      imgToWordResults.classList.remove('hidden');
+    } catch (err) {
+      alert(`Image to Word Error:\n${err.message}`);
+    } finally {
+      imgToWordBtn.disabled = false;
+    }
+  });
+
+  imgToWordResetBtn.addEventListener('click', () => {
+    imgToWordFiles = [];
+    imgToWordFileInput.value = '';
+    imgToWordFileInfo.classList.add('hidden');
+    imgToWordResults.classList.add('hidden');
+    imgToWordBtn.disabled = true;
+  });
+
+  // ==========================================
+  // 7. Office to PDF Tool Logic
+  // ==========================================
+  const officeToPdfDropZone = document.getElementById('officeToPdfDropZone');
+  const officeToPdfFileInput = document.getElementById('officeToPdfFileInput');
+  const officeToPdfFileInfo = document.getElementById('officeToPdfFileInfo');
+  const officeToPdfFileName = document.getElementById('officeToPdfFileName');
+  const officeToPdfFileSize = document.getElementById('officeToPdfFileSize');
+  const officeToPdfRemoveBtn = document.getElementById('officeToPdfRemoveBtn');
+  const officeToPdfBtn = document.getElementById('officeToPdfBtn');
+  const officeToPdfResults = document.getElementById('officeToPdfResults');
+  const officeToPdfDownloadBtn = document.getElementById('officeToPdfDownloadBtn');
+  const officeToPdfResetBtn = document.getElementById('officeToPdfResetBtn');
+
+  let officeToPdfFile = null;
+
+  setupDragAndDrop(officeToPdfDropZone, officeToPdfFileInput, (file) => {
+    officeToPdfFile = file;
+    officeToPdfFileName.textContent = file.name;
+    officeToPdfFileSize.textContent = formatBytes(file.size);
+    officeToPdfFileInfo.classList.remove('hidden');
+    officeToPdfBtn.disabled = false;
+  });
+
+  officeToPdfRemoveBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    officeToPdfFile = null;
+    officeToPdfFileInput.value = '';
+    officeToPdfFileInfo.classList.add('hidden');
+    officeToPdfBtn.disabled = true;
+  });
+
+  officeToPdfBtn.addEventListener('click', async () => {
+    if (!officeToPdfFile) return;
+    officeToPdfBtn.disabled = true;
+    const formData = new FormData();
+    formData.append('document', officeToPdfFile);
+
+    try {
+      const res = await fetch('/api/office-to-pdf', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to convert document to PDF');
+
+      officeToPdfDownloadBtn.href = data.downloadUrl;
+      officeToPdfResults.classList.remove('hidden');
+    } catch (err) {
+      alert(`Office to PDF Error:\n${err.message}`);
+    } finally {
+      officeToPdfBtn.disabled = false;
+    }
+  });
+
+  officeToPdfResetBtn.addEventListener('click', () => {
+    officeToPdfFile = null;
+    officeToPdfFileInput.value = '';
+    officeToPdfFileInfo.classList.add('hidden');
+    officeToPdfResults.classList.add('hidden');
+    officeToPdfBtn.disabled = true;
+  });
+
+  // ==========================================
+  // 8. PDF to Excel Tool Logic
+  // ==========================================
+  const pdfToExcelDropZone = document.getElementById('pdfToExcelDropZone');
+  const pdfToExcelFileInput = document.getElementById('pdfToExcelFileInput');
+  const pdfToExcelFileInfo = document.getElementById('pdfToExcelFileInfo');
+  const pdfToExcelFileName = document.getElementById('pdfToExcelFileName');
+  const pdfToExcelFileSize = document.getElementById('pdfToExcelFileSize');
+  const pdfToExcelRemoveBtn = document.getElementById('pdfToExcelRemoveBtn');
+  const pdfToExcelBtn = document.getElementById('pdfToExcelBtn');
+  const pdfToExcelResults = document.getElementById('pdfToExcelResults');
+  const pdfToExcelDownloadBtn = document.getElementById('pdfToExcelDownloadBtn');
+  const pdfToExcelResetBtn = document.getElementById('pdfToExcelResetBtn');
+
+  let pdfToExcelFile = null;
+
+  setupDragAndDrop(pdfToExcelDropZone, pdfToExcelFileInput, (file) => {
+    pdfToExcelFile = file;
+    pdfToExcelFileName.textContent = file.name;
+    pdfToExcelFileSize.textContent = formatBytes(file.size);
+    pdfToExcelFileInfo.classList.remove('hidden');
+    pdfToExcelBtn.disabled = false;
+  });
+
+  pdfToExcelRemoveBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    pdfToExcelFile = null;
+    pdfToExcelFileInput.value = '';
+    pdfToExcelFileInfo.classList.add('hidden');
+    pdfToExcelBtn.disabled = true;
+  });
+
+  pdfToExcelBtn.addEventListener('click', async () => {
+    if (!pdfToExcelFile) return;
+    pdfToExcelBtn.disabled = true;
+    const formData = new FormData();
+    formData.append('pdf', pdfToExcelFile);
+
+    try {
+      const res = await fetch('/api/pdf-to-excel', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to extract PDF to Excel');
+
+      pdfToExcelDownloadBtn.href = data.downloadUrl;
+      pdfToExcelResults.classList.remove('hidden');
+    } catch (err) {
+      alert(`PDF to Excel Error:\n${err.message}`);
+    } finally {
+      pdfToExcelBtn.disabled = false;
+    }
+  });
+
+  pdfToExcelResetBtn.addEventListener('click', () => {
+    pdfToExcelFile = null;
+    pdfToExcelFileInput.value = '';
+    pdfToExcelFileInfo.classList.add('hidden');
+    pdfToExcelResults.classList.add('hidden');
+    pdfToExcelBtn.disabled = true;
   });
 
   // Watch for dynamic updates to Ghostscript diagnostic status

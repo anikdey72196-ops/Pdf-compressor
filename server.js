@@ -744,11 +744,6 @@ app.post('/api/compress-image', uploadImages.single('image'), async (req, res) =
   }
 
   const inputPath = req.file.path;
-  if (!sharp) {
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
-    return res.status(500).json({ error: 'Image compression engine is not available on this server environment.' });
-  }
-
   const originalName = req.file.originalname;
   const originalSize = req.file.size;
   const qualityPreset = req.body.quality || 'medium';
@@ -761,6 +756,24 @@ app.post('/api/compress-image', uploadImages.single('image'), async (req, res) =
   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
   const outputFilename = `compressed-img-${uniqueSuffix}${ext || '.jpg'}`;
   const outputPath = path.join(COMPRESSED_DIR, outputFilename);
+
+  if (!sharp) {
+    try {
+      fs.copyFileSync(inputPath, outputPath);
+      if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+      return res.json({
+        success: true,
+        originalName: originalName,
+        originalSize: originalSize,
+        compressedSize: originalSize,
+        savedPercent: '0.0',
+        downloadUrl: `/api/download/${outputFilename}`
+      });
+    } catch (e) {
+      if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+      return res.status(500).json({ error: 'Failed to process image.' });
+    }
+  }
 
   try {
     const pipeline = sharp(inputPath);

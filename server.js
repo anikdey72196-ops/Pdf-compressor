@@ -5,7 +5,12 @@ const path = require('path');
 const fs = require('fs');
 const AdmZip = require('adm-zip');
 const { PDFDocument } = require('pdf-lib');
-const sharp = require('sharp');
+let sharp;
+try {
+  sharp = require('sharp');
+} catch (e) {
+  console.warn('[WARNING] sharp native module failed to load:', e.message);
+}
 const docx = require('docx');
 const XLSX = require('xlsx');
 const pdfParse = require('pdf-parse');
@@ -739,6 +744,11 @@ app.post('/api/compress-image', uploadImages.single('image'), async (req, res) =
   }
 
   const inputPath = req.file.path;
+  if (!sharp) {
+    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    return res.status(500).json({ error: 'Image compression engine is not available on this server environment.' });
+  }
+
   const originalName = req.file.originalname;
   const originalSize = req.file.size;
   const qualityPreset = req.body.quality || 'medium';
@@ -795,14 +805,20 @@ app.post('/api/image-to-word', uploadImages.array('images', 20), async (req, res
 
     for (const file of req.files) {
       const imageBytes = fs.readFileSync(file.path);
-      const metadata = await sharp(file.path).metadata();
-      
-      const maxWidth = 550;
-      let imgWidth = metadata.width || 500;
-      let imgHeight = metadata.height || 600;
-      if (imgWidth > maxWidth) {
-        imgHeight = Math.round(imgHeight * (maxWidth / imgWidth));
-        imgWidth = maxWidth;
+      let imgWidth = 500;
+      let imgHeight = 600;
+
+      if (sharp) {
+        try {
+          const metadata = await sharp(file.path).metadata();
+          const maxWidth = 550;
+          imgWidth = metadata.width || 500;
+          imgHeight = metadata.height || 600;
+          if (imgWidth > maxWidth) {
+            imgHeight = Math.round(imgHeight * (maxWidth / imgWidth));
+            imgWidth = maxWidth;
+          }
+        } catch (e) {}
       }
 
       children.push(new docx.Paragraph({

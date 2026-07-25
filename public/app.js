@@ -127,6 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('panelPdfToExcel').classList.remove('hidden');
     } else if (tabName === 'protect') {
       document.getElementById('panelProtect').classList.remove('hidden');
+    } else if (tabName === 'unlock') {
+      document.getElementById('panelUnlock').classList.remove('hidden');
     }
   }
 
@@ -1112,6 +1114,79 @@ document.addEventListener('DOMContentLoaded', () => {
     pdfToExcelFileInfo.classList.add('hidden');
     pdfToExcelResults.classList.add('hidden');
     pdfToExcelBtn.disabled = true;
+  });
+
+  // ==========================================
+  // UNLOCK PDF TOOL HANDLERS
+  // ==========================================
+  const unlockDropZone = document.getElementById('unlockDropZone');
+  const unlockFileInput = document.getElementById('unlockFileInput');
+  const unlockFileInfo = document.getElementById('unlockFileInfo');
+  const unlockFileName = document.getElementById('unlockFileName');
+  const unlockFileSize = document.getElementById('unlockFileSize');
+  const unlockRemoveBtn = document.getElementById('unlockRemoveBtn');
+  const unlockBtn = document.getElementById('unlockBtn');
+  const unlockResults = document.getElementById('unlockResults');
+  const unlockDownloadBtn = document.getElementById('unlockDownloadBtn');
+  const unlockResetBtn = document.getElementById('unlockResetBtn');
+  let unlockFile = null;
+
+  function handleUnlockFileSelect(file) {
+    if (!file || !file.name.toLowerCase().endsWith('.pdf')) {
+      alert('Please select a valid PDF file.');
+      return;
+    }
+    unlockFile = file;
+    unlockFileName.textContent = file.name;
+    unlockFileSize.textContent = formatBytes(file.size);
+    unlockFileInfo.classList.remove('hidden');
+    unlockBtn.disabled = false;
+  }
+
+  unlockDropZone.addEventListener('dragover', (e) => { e.preventDefault(); unlockDropZone.classList.add('drag-over'); });
+  unlockDropZone.addEventListener('dragleave', () => unlockDropZone.classList.remove('drag-over'));
+  unlockDropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    unlockDropZone.classList.remove('drag-over');
+    if (e.dataTransfer.files.length > 0) handleUnlockFileSelect(e.dataTransfer.files[0]);
+  });
+  unlockFileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) handleUnlockFileSelect(e.target.files[0]);
+  });
+  unlockRemoveBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    unlockFile = null;
+    unlockFileInput.value = '';
+    unlockFileInfo.classList.add('hidden');
+    unlockBtn.disabled = true;
+  });
+
+  unlockBtn.addEventListener('click', async () => {
+    if (!unlockFile) return;
+    unlockBtn.disabled = true;
+    const formData = new FormData();
+    formData.append('pdf', unlockFile);
+
+    try {
+      const res = await fetch('/api/unlock', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to unlock PDF');
+
+      unlockDownloadBtn.href = data.downloadUrl;
+      unlockResults.classList.remove('hidden');
+    } catch (err) {
+      alert(`Unlock PDF Error:\n${err.message}`);
+    } finally {
+      unlockBtn.disabled = false;
+    }
+  });
+
+  unlockResetBtn.addEventListener('click', () => {
+    unlockFile = null;
+    unlockFileInput.value = '';
+    unlockFileInfo.classList.add('hidden');
+    unlockResults.classList.add('hidden');
+    unlockBtn.disabled = true;
   });
 
   // Watch for dynamic updates to Ghostscript diagnostic status

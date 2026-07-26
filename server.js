@@ -27,7 +27,8 @@ app.use('/api', require('./routes/unlockPdf'));
 app.use('/api', require('./routes/download'));
 
 // Periodic Sweeper Cleanup Job (10 mins)
-setInterval(() => {
+// ⚡ Bolt Optimization: Use async fs.promises to avoid blocking the event loop
+setInterval(async () => {
   const now = Date.now();
   const maxAge = 15 * 60 * 1000;
 
@@ -37,22 +38,29 @@ setInterval(() => {
     }
   });
 
-  [UPLOADS_DIR, COMPRESSED_DIR].forEach((dir) => {
-    if (fs.existsSync(dir)) {
-      fs.readdirSync(dir).forEach((file) => {
+  for (const dir of [UPLOADS_DIR, COMPRESSED_DIR]) {
+    try {
+      await fs.promises.access(dir);
+      const files = await fs.promises.readdir(dir);
+      for (const file of files) {
         const filePath = path.join(dir, file);
         try {
-          const stats = fs.statSync(filePath);
+          const stats = await fs.promises.stat(filePath);
           if (now - stats.mtimeMs > maxAge) {
-            fs.unlinkSync(filePath);
+            await fs.promises.unlink(filePath);
             console.log(`[Sweeper] Auto-cleaned expired file: ${file}`);
           }
         } catch (e) {
           console.error(`[Sweeper] Error cleaning file ${file}:`, e.message);
         }
-      });
+      }
+    } catch (err) {
+      // Ignore if directory doesn't exist
+      if (err.code !== 'ENOENT') {
+        console.error(`[Sweeper] Error accessing directory ${dir}:`, err.message);
+      }
     }
-  });
+  }
 }, 10 * 60 * 1000);
 
 // Global Error Handler

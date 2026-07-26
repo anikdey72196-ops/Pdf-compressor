@@ -13,8 +13,12 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
   try {
     const pdfDoc = await PDFDocument.create();
 
+    // ⚡ Bolt Optimization: Use a sequential for...of loop and await fs.promises
+    // to process batch files asynchronously. We avoid Promise.all() here
+    // deliberately to prevent massive memory spikes and OOM errors when users
+    // upload many large images.
     for (const file of req.files) {
-      const imageBytes = fs.readFileSync(file.path);
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       let image;
 
@@ -32,7 +36,14 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
         height: image.height
       });
 
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+      // Async cleanup
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (cleanupErr) {
+        if (cleanupErr.code !== 'ENOENT') {
+          console.error(`Error cleaning up file ${file.path}:`, cleanupErr);
+        }
+      }
     }
 
     const pdfBytes = await pdfDoc.save();
@@ -41,7 +52,10 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     const outputPath = path.join(COMPRESSED_DIR, compiledFilename);
 
     await fs.promises.writeFile(outputPath, pdfBytes);
-    const pdfSize = fs.statSync(outputPath).size;
+
+    // ⚡ Bolt Optimization: Use async fs.promises to get file size instead of blocking statSync
+    const pdfStats = await fs.promises.stat(outputPath);
+    const pdfSize = pdfStats.size;
 
     res.json({
       success: true,
@@ -51,9 +65,16 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     });
   } catch (err) {
     console.error('Image to PDF error:', err);
-    req.files.forEach(file => {
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-    });
+    // Cleanup any remaining files asynchronously on error
+    for (const file of req.files) {
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (cleanupErr) {
+        if (cleanupErr.code !== 'ENOENT') {
+          console.error(`Error cleaning up file ${file.path}:`, cleanupErr);
+        }
+      }
+    }
     res.status(500).json({ error: 'Failed to compile images into PDF.' });
   }
 });

@@ -7,3 +7,7 @@
 ## 2024-11-20 - Avoid Blocking the Event Loop in Periodic Tasks
 **Learning:** Using synchronous file operations (`fs.readdirSync`, `fs.statSync`, etc.) in a periodic `setInterval` task blocks the main Node.js event loop. This leads to latency spikes for all users every time the sweeper runs, which becomes worse as the number of files scales up.
 **Action:** When implementing background cleanup or maintenance tasks in Node.js, always use asynchronous alternatives (`fs.promises`) to keep the main thread unblocked for handling API requests.
+
+## 2024-07-28 - Avoid Blocking the Event Loop in API Routes (while preventing OOM)
+**Learning:** Using synchronous file I/O (like `fs.readFileSync` or `fs.unlinkSync`) inside API routes blocks the Node.js event loop, degrading performance for all concurrent users. However, when refactoring to async operations for batch processing multiple large files (like images in `/api/img-to-pdf`), using `Promise.all()` to process them concurrently can lead to severe memory spikes and Out of Memory (OOM) errors.
+**Action:** Always replace synchronous I/O with asynchronous alternatives (`fs.promises`) in API handlers to ensure non-blocking execution. When handling multiple large files, process them sequentially using a `for...of` loop with `await fs.promises.readFile()` instead of `Promise.all()` to maintain stable memory usage.

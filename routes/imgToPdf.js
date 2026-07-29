@@ -13,8 +13,9 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
   try {
     const pdfDoc = await PDFDocument.create();
 
+    // ⚡ Bolt Optimization: Load files sequentially using async readFile to prevent blocking the event loop and avoid OOM memory spikes.
     for (const file of req.files) {
-      const imageBytes = fs.readFileSync(file.path);
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       let image;
 
@@ -32,7 +33,12 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
         height: image.height
       });
 
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+      // ⚡ Bolt Optimization: Use async unlink to avoid blocking the event loop and handle race conditions gracefully.
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (e) {
+        if (e.code !== 'ENOENT') console.error(`Failed to delete ${file.path}:`, e.message);
+      }
     }
 
     const pdfBytes = await pdfDoc.save();
@@ -41,7 +47,10 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     const outputPath = path.join(COMPRESSED_DIR, compiledFilename);
 
     await fs.promises.writeFile(outputPath, pdfBytes);
-    const pdfSize = fs.statSync(outputPath).size;
+
+    // ⚡ Bolt Optimization: Use async stat to avoid blocking the event loop.
+    const stat = await fs.promises.stat(outputPath);
+    const pdfSize = stat.size;
 
     res.json({
       success: true,
@@ -51,9 +60,14 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     });
   } catch (err) {
     console.error('Image to PDF error:', err);
-    req.files.forEach(file => {
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-    });
+    // ⚡ Bolt Optimization: Clean up files asynchronously without blocking.
+    await Promise.all(req.files.map(async file => {
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (e) {
+        // Ignore ENOENT (already deleted)
+      }
+    }));
     res.status(500).json({ error: 'Failed to compile images into PDF.' });
   }
 });

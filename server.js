@@ -16,6 +16,11 @@ app.get('/ads.txt', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'ads.txt'));
 });
 
+// Google Search Console Verification route
+app.get('/googleebdc615d2cb696df.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'googleebdc615d2cb696df.html'));
+});
+
 // Body Parser & Static Files
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

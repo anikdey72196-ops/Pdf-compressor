@@ -9,6 +9,13 @@ const { UPLOADS_DIR, COMPRESSED_DIR, jobs } = require('./routes/config');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Explicit Ads.txt route for AdSense crawler optimization
+app.get('/ads.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.join(__dirname, 'public', 'ads.txt'));
+});
+
 // Body Parser & Static Files
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

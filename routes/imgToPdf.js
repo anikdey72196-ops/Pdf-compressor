@@ -13,8 +13,10 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
   try {
     const pdfDoc = await PDFDocument.create();
 
+    // PERFORMANCE OPTIMIZATION: Using sequential async readFile instead of readFileSync
+    // to prevent blocking the Node.js event loop while processing up to 20 images.
     for (const file of req.files) {
-      const imageBytes = fs.readFileSync(file.path);
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       let image;
 
@@ -32,7 +34,13 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
         height: image.height
       });
 
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+      // PERFORMANCE OPTIMIZATION: Using async unlink instead of unlinkSync
+      // to avoid blocking the event loop.
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (e) {
+        if (e.code !== 'ENOENT') throw e;
+      }
     }
 
     const pdfBytes = await pdfDoc.save();
@@ -41,7 +49,9 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     const outputPath = path.join(COMPRESSED_DIR, compiledFilename);
 
     await fs.promises.writeFile(outputPath, pdfBytes);
-    const pdfSize = fs.statSync(outputPath).size;
+
+    // PERFORMANCE OPTIMIZATION: Using async stat instead of statSync
+    const pdfSize = (await fs.promises.stat(outputPath)).size;
 
     res.json({
       success: true,
@@ -51,9 +61,15 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     });
   } catch (err) {
     console.error('Image to PDF error:', err);
-    req.files.forEach(file => {
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-    });
+
+    // PERFORMANCE OPTIMIZATION: Async parallel cleanup on error
+    await Promise.all(req.files.map(async file => {
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (e) {
+        if (e.code !== 'ENOENT') console.error('Failed to unlink file:', e);
+      }
+    }));
     res.status(500).json({ error: 'Failed to compile images into PDF.' });
   }
 });

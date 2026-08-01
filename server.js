@@ -9,15 +9,15 @@ const { UPLOADS_DIR, COMPRESSED_DIR, jobs } = require('./routes/config');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Explicit Ads.txt route for AdSense crawler optimization
-app.get('/ads.txt', (req, res) => {
+// Explicit Ads.txt route for AdSense crawler optimization (handles trailing markdown syntax)
+app.get('/ads.txt*', (req, res) => {
   res.setHeader('Content-Type', 'text/plain; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=86400');
   res.sendFile(path.join(__dirname, 'public', 'ads.txt'));
 });
 
 // Google Search Console Verification route
-app.get('/googleebdc615d2cb696df.html', (req, res) => {
+app.get('/googleebdc615d2cb696df.html*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'googleebdc615d2cb696df.html'));
 });
 

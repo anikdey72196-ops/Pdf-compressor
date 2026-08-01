@@ -14,7 +14,8 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     const pdfDoc = await PDFDocument.create();
 
     for (const file of req.files) {
-      const imageBytes = fs.readFileSync(file.path);
+      // ⚡ Bolt Optimization: Use async read to avoid blocking event loop
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       let image;
 
@@ -32,7 +33,12 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
         height: image.height
       });
 
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+      // ⚡ Bolt Optimization: Safely use async unlink to avoid blocking
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (e) {
+        if (e.code !== 'ENOENT') console.error('Error deleting temp file:', e);
+      }
     }
 
     const pdfBytes = await pdfDoc.save();
@@ -41,7 +47,8 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     const outputPath = path.join(COMPRESSED_DIR, compiledFilename);
 
     await fs.promises.writeFile(outputPath, pdfBytes);
-    const pdfSize = fs.statSync(outputPath).size;
+    // ⚡ Bolt Optimization: Use async stat
+    const pdfSize = (await fs.promises.stat(outputPath)).size;
 
     res.json({
       success: true,
@@ -51,9 +58,14 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     });
   } catch (err) {
     console.error('Image to PDF error:', err);
-    req.files.forEach(file => {
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-    });
+    // ⚡ Bolt Optimization: Sequential async cleanup to avoid event loop blockage and OOM
+    for (const file of req.files) {
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (e) {
+        if (e.code !== 'ENOENT') console.error('Error cleaning up temp file on error:', e);
+      }
+    }
     res.status(500).json({ error: 'Failed to compile images into PDF.' });
   }
 });

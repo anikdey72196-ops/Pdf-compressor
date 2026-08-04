@@ -7,3 +7,6 @@
 ## 2024-11-20 - Avoid Blocking the Event Loop in Periodic Tasks
 **Learning:** Using synchronous file operations (`fs.readdirSync`, `fs.statSync`, etc.) in a periodic `setInterval` task blocks the main Node.js event loop. This leads to latency spikes for all users every time the sweeper runs, which becomes worse as the number of files scales up.
 **Action:** When implementing background cleanup or maintenance tasks in Node.js, always use asynchronous alternatives (`fs.promises`) to keep the main thread unblocked for handling API requests.
+## 2023-10-27 - [Sequential processing avoids OOM errors]
+**Learning:** While Promise.all() is usually better for parallel processing, it can cause severe Out of Memory (OOM) spikes when reading multiple large files concurrently.
+**Action:** When batch processing multiple large files (like images), use sequential `await fs.promises.readFile()` rather than `Promise.all()` to keep memory usage flat.

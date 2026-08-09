@@ -18,7 +18,8 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
   const outputPath = path.join(COMPRESSED_DIR, excelFilename);
 
   try {
-    const dataBuffer = fs.readFileSync(inputPath);
+    // ⚡ Bolt: Use async readFile to avoid blocking the event loop during large file reads
+    const dataBuffer = await fs.promises.readFile(inputPath);
     const parsedData = await pdfParse(dataBuffer);
 
     const textLines = (parsedData.text || '').split('\n').filter(line => line.trim().length > 0);
@@ -36,7 +37,8 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
 
     XLSX.writeFile(workbook, outputPath);
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // ⚡ Bolt: Replace synchronous unlink with asynchronous, non-blocking unlink
+    try { await fs.promises.unlink(inputPath); } catch (e) {}
 
     res.json({
       success: true,
@@ -45,7 +47,8 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
     });
   } catch (err) {
     console.error('PDF to Excel error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // ⚡ Bolt: Replace synchronous unlink with asynchronous, non-blocking unlink
+    try { await fs.promises.unlink(inputPath); } catch (e) {}
     res.status(500).json({ error: 'Failed to extract PDF data to Excel spreadsheet.' });
   }
 });

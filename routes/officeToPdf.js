@@ -20,7 +20,8 @@ router.post('/office-to-pdf', uploadOffice.single('office'), async (req, res) =>
   const outputPath = path.join(COMPRESSED_DIR, pdfFilename);
 
   try {
-    const fileBuffer = fs.readFileSync(inputPath);
+    // ⚡ Bolt: Use asynchronous readFile to avoid blocking the event loop during file I/O
+    const fileBuffer = await fs.promises.readFile(inputPath);
     try {
       const pdfBuf = await libreConvert(fileBuffer, '.pdf', undefined);
       await fs.promises.writeFile(outputPath, pdfBuf);
@@ -46,7 +47,12 @@ router.post('/office-to-pdf', uploadOffice.single('office'), async (req, res) =>
       await fs.promises.writeFile(outputPath, pdfBytes);
     }
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // ⚡ Bolt: Use asynchronous unlink to avoid blocking the event loop and prevent race conditions
+    try {
+      await fs.promises.unlink(inputPath);
+    } catch (unlinkErr) {
+      if (unlinkErr.code !== 'ENOENT') console.error('Failed to unlink input path:', unlinkErr);
+    }
 
     res.json({
       success: true,
@@ -55,7 +61,12 @@ router.post('/office-to-pdf', uploadOffice.single('office'), async (req, res) =>
     });
   } catch (err) {
     console.error('Office to PDF error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // ⚡ Bolt: Use asynchronous unlink to avoid blocking the event loop
+    try {
+      await fs.promises.unlink(inputPath);
+    } catch (unlinkErr) {
+      if (unlinkErr.code !== 'ENOENT') console.error('Failed to unlink input path:', unlinkErr);
+    }
     res.status(500).json({ error: 'Failed to convert document to PDF.' });
   }
 });

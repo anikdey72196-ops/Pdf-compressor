@@ -4,11 +4,13 @@ const path = require('path');
 const fs = require('fs');
 const { COMPRESSED_DIR } = require('./config');
 
-router.get('/download/:filename', (req, res) => {
+router.get('/download/:filename', async (req, res) => {
   const filename = path.basename(req.params.filename);
   const filePath = path.join(COMPRESSED_DIR, filename);
 
-  if (fs.existsSync(filePath)) {
+  try {
+    await fs.promises.access(filePath, fs.constants.F_OK);
+
     let clientFilename = filename;
     if (filename.startsWith('compressed-')) {
       clientFilename = filename.replace(/^compressed-\d+-\d+-/, 'compressed_');
@@ -43,8 +45,13 @@ router.get('/download/:filename', (req, res) => {
         console.error(`Error downloading file ${filename}:`, err);
       }
     });
-  } else {
-    res.status(404).json({ error: 'File not found or link expired.' });
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      res.status(404).json({ error: 'File not found or link expired.' });
+    } else {
+      console.error(`Error accessing file ${filename}:`, err);
+      res.status(500).json({ error: 'Internal server error while accessing file.' });
+    }
   }
 });
 

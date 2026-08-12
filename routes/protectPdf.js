@@ -4,14 +4,25 @@ const path = require('path');
 const fs = require('fs');
 const { jobs, upload, COMPRESSED_DIR, execGhostscript } = require('./config');
 
-router.post('/protect', upload.single('pdf'), (req, res) => {
+// Helper for async file deletion
+const safelyDeleteFile = async (filePath) => {
+  try {
+    await fs.promises.unlink(filePath);
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      console.error(`Failed to delete file ${filePath}:`, err);
+    }
+  }
+};
+
+router.post('/protect', upload.single('pdf'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No PDF file was uploaded.' });
   }
 
   const password = req.body.password;
   if (!password) {
-    if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+    await safelyDeleteFile(req.file.path);
     return res.status(400).json({ error: 'Password is required to protect the PDF.' });
   }
 
@@ -45,8 +56,8 @@ router.post('/protect', upload.single('pdf'), (req, res) => {
     inputPath
   ];
 
-  execGhostscript(gsArgs, (err) => {
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+  execGhostscript(gsArgs, async (err) => {
+    await safelyDeleteFile(inputPath);
 
     if (err) {
       console.error(`[ERROR] Protect PDF failed for job ${jobId}:`, err);
@@ -58,24 +69,31 @@ router.post('/protect', upload.single('pdf'), (req, res) => {
       return;
     }
 
-    if (!fs.existsSync(outputPath)) {
+    try {
+      const stats = await fs.promises.stat(outputPath);
       jobs[jobId] = {
-        status: 'error',
-        error: 'Protected file was not generated.',
+        status: 'completed',
+        originalName: originalName,
+        protectedSize: stats.size,
+        downloadUrl: `/api/download/${protectedFilename}`,
         timestamp: Date.now()
       };
-      return;
+    } catch (statErr) {
+      if (statErr.code === 'ENOENT') {
+        jobs[jobId] = {
+          status: 'error',
+          error: 'Protected file was not generated.',
+          timestamp: Date.now()
+        };
+      } else {
+        console.error(`[ERROR] Stat failed for protected file ${outputPath}:`, statErr);
+        jobs[jobId] = {
+          status: 'error',
+          error: 'Failed to read generated protected file.',
+          timestamp: Date.now()
+        };
+      }
     }
-
-    const protectedSize = fs.statSync(outputPath).size;
-
-    jobs[jobId] = {
-      status: 'completed',
-      originalName: originalName,
-      protectedSize: protectedSize,
-      downloadUrl: `/api/download/${protectedFilename}`,
-      timestamp: Date.now()
-    };
   });
 });
 

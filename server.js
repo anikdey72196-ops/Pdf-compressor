@@ -16,6 +16,13 @@ app.get('/ads.txt*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'ads.txt'));
 });
 
+// Explicit Robots.txt route
+app.get('/robots.txt*', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.join(__dirname, 'public', 'robots.txt'));
+});
+
 // Google Search Console Verification route
 app.get('/googleebdc615d2cb696df.html*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'googleebdc615d2cb696df.html'));

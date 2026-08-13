@@ -31,8 +31,10 @@ router.post('/compress-image', uploadImages.single('image'), async (req, res) =>
 
   if (!sharp) {
     try {
-      fs.copyFileSync(inputPath, outputPath);
-      if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+      // PERFORMANCE: Replace synchronous copyFileSync with async version to avoid blocking event loop
+      await fs.promises.copyFile(inputPath, outputPath);
+      // PERFORMANCE: Replace synchronous existsSync/unlinkSync with async unlink catching ENOENT to avoid blocking event loop
+      try { await fs.promises.unlink(inputPath); } catch (err) { if (err.code !== 'ENOENT') throw err; }
       return res.json({
         success: true,
         originalName: originalName,
@@ -42,7 +44,7 @@ router.post('/compress-image', uploadImages.single('image'), async (req, res) =>
         downloadUrl: `/api/download/${outputFilename}`
       });
     } catch (e) {
-      if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+      try { await fs.promises.unlink(inputPath); } catch (err) { if (err.code !== 'ENOENT') console.error(err); }
       return res.status(500).json({ error: 'Failed to process image.' });
     }
   }
@@ -57,9 +59,10 @@ router.post('/compress-image', uploadImages.single('image'), async (req, res) =>
       await pipeline.jpeg({ quality: targetQuality, mozjpeg: true }).toFile(outputPath);
     }
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    try { await fs.promises.unlink(inputPath); } catch (err) { if (err.code !== 'ENOENT') throw err; }
 
-    const compressedSize = fs.statSync(outputPath).size;
+    // PERFORMANCE: Replace synchronous statSync with async stat to avoid blocking event loop
+    const compressedSize = (await fs.promises.stat(outputPath)).size;
     const reductionPercent = Math.max(0, ((originalSize - compressedSize) / originalSize * 100)).toFixed(1);
 
     res.json({
@@ -72,7 +75,7 @@ router.post('/compress-image', uploadImages.single('image'), async (req, res) =>
     });
   } catch (err) {
     console.error('Image compression error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    try { await fs.promises.unlink(inputPath); } catch (e) { if (e.code !== 'ENOENT') console.error(e); }
     res.status(500).json({ error: 'Failed to compress image file.' });
   }
 });

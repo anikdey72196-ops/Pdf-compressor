@@ -5,7 +5,7 @@ const fs = require('fs');
 const AdmZip = require('adm-zip');
 const { jobs, upload, COMPRESSED_DIR, execGhostscript } = require('./config');
 
-router.post('/pdf-to-img', upload.single('pdf'), (req, res) => {
+router.post('/pdf-to-img', upload.single('pdf'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No PDF file was uploaded.' });
   }
@@ -28,7 +28,11 @@ router.post('/pdf-to-img', upload.single('pdf'), (req, res) => {
   });
 
   const jobTempDir = path.join(COMPRESSED_DIR, `temp-${jobId}`);
-  if (!fs.existsSync(jobTempDir)) fs.mkdirSync(jobTempDir, { recursive: true });
+  try {
+    await fs.promises.mkdir(jobTempDir, { recursive: true });
+  } catch (err) {
+    if (err.code !== 'EEXIST') console.error(err);
+  }
 
   const device = format === 'jpg' ? 'jpeg' : 'pngalpha';
   const ext = format === 'jpg' ? 'jpg' : 'png';
@@ -44,12 +48,12 @@ router.post('/pdf-to-img', upload.single('pdf'), (req, res) => {
     inputPath
   ];
 
-  execGhostscript(gsArgs, (err) => {
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+  execGhostscript(gsArgs, async (err) => {
+    try { await fs.promises.unlink(inputPath); } catch (e) { if (e.code !== 'ENOENT') console.error(e); }
 
     if (err) {
       console.error(`[ERROR] PDF to Image failed for job ${jobId}:`, err);
-      if (fs.existsSync(jobTempDir)) fs.rmSync(jobTempDir, { recursive: true, force: true });
+      try { await fs.promises.rm(jobTempDir, { recursive: true, force: true }); } catch (e) { if (e.code !== 'ENOENT') console.error(e); }
       jobs[jobId] = {
         status: 'error',
         error: err.message || 'PDF to Image conversion failed.',
@@ -59,9 +63,10 @@ router.post('/pdf-to-img', upload.single('pdf'), (req, res) => {
     }
 
     try {
-      const pageFiles = fs.readdirSync(jobTempDir).filter(f => f.endsWith(`.${ext}`));
+      const files = await fs.promises.readdir(jobTempDir);
+      const pageFiles = files.filter(f => f.endsWith(`.${ext}`));
       if (pageFiles.length === 0) {
-        if (fs.existsSync(jobTempDir)) fs.rmSync(jobTempDir, { recursive: true, force: true });
+        try { await fs.promises.rm(jobTempDir, { recursive: true, force: true }); } catch (e) { if (e.code !== 'ENOENT') console.error(e); }
         jobs[jobId] = {
           status: 'error',
           error: 'No image pages were rendered from the PDF.',
@@ -79,9 +84,21 @@ router.post('/pdf-to-img', upload.single('pdf'), (req, res) => {
       });
 
       zip.writeZip(zipPath);
-      if (fs.existsSync(jobTempDir)) fs.rmSync(jobTempDir, { recursive: true, force: true });
+      try { await fs.promises.rm(jobTempDir, { recursive: true, force: true }); } catch (e) { if (e.code !== 'ENOENT') console.error(e); }
 
-      const zipSize = fs.statSync(zipPath).size;
+      let zipSize = 0;
+      try {
+        const stats = await fs.promises.stat(zipPath);
+        zipSize = stats.size;
+      } catch (statErr) {
+        console.error(`[ERROR] Failed to stat zip file for job ${jobId}:`, statErr);
+        jobs[jobId] = {
+          status: 'error',
+          error: 'Failed to read generated zip archive.',
+          timestamp: Date.now()
+        };
+        return;
+      }
 
       jobs[jobId] = {
         status: 'completed',
@@ -93,7 +110,7 @@ router.post('/pdf-to-img', upload.single('pdf'), (req, res) => {
       };
     } catch (zipErr) {
       console.error('ZIP packaging error:', zipErr);
-      if (fs.existsSync(jobTempDir)) fs.rmSync(jobTempDir, { recursive: true, force: true });
+      try { await fs.promises.rm(jobTempDir, { recursive: true, force: true }); } catch (e) { if (e.code !== 'ENOENT') console.error(e); }
       jobs[jobId] = {
         status: 'error',
         error: 'Failed to package rendered images into a ZIP archive.',

@@ -4,14 +4,14 @@ const path = require('path');
 const fs = require('fs');
 const { jobs, upload, COMPRESSED_DIR, execGhostscript } = require('./config');
 
-router.post('/protect', upload.single('pdf'), (req, res) => {
+router.post('/protect', upload.single('pdf'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No PDF file was uploaded.' });
   }
 
   const password = req.body.password;
   if (!password) {
-    if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+    try { await fs.promises.unlink(req.file.path); } catch (e) { if (e.code !== 'ENOENT') console.error(e); }
     return res.status(400).json({ error: 'Password is required to protect the PDF.' });
   }
 
@@ -45,8 +45,8 @@ router.post('/protect', upload.single('pdf'), (req, res) => {
     inputPath
   ];
 
-  execGhostscript(gsArgs, (err) => {
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+  execGhostscript(gsArgs, async (err) => {
+    try { await fs.promises.unlink(inputPath); } catch (e) { if (e.code !== 'ENOENT') console.error(e); }
 
     if (err) {
       console.error(`[ERROR] Protect PDF failed for job ${jobId}:`, err);
@@ -58,7 +58,9 @@ router.post('/protect', upload.single('pdf'), (req, res) => {
       return;
     }
 
-    if (!fs.existsSync(outputPath)) {
+    try {
+      await fs.promises.access(outputPath);
+    } catch (accessErr) {
       jobs[jobId] = {
         status: 'error',
         error: 'Protected file was not generated.',
@@ -67,7 +69,19 @@ router.post('/protect', upload.single('pdf'), (req, res) => {
       return;
     }
 
-    const protectedSize = fs.statSync(outputPath).size;
+    let protectedSize = 0;
+    try {
+      const stats = await fs.promises.stat(outputPath);
+      protectedSize = stats.size;
+    } catch (statErr) {
+      console.error(`[ERROR] Failed to stat protected file for job ${jobId}:`, statErr);
+      jobs[jobId] = {
+        status: 'error',
+        error: 'Failed to read generated protected file.',
+        timestamp: Date.now()
+      };
+      return;
+    }
 
     jobs[jobId] = {
       status: 'completed',

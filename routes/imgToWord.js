@@ -19,8 +19,10 @@ router.post('/image-to-word', uploadImages.array('images', 20), async (req, res)
   try {
     const children = [];
 
+    // ⚡ Bolt Optimization: Replace synchronous fs operations with async fs.promises
+    // Process sequentially to avoid event loop blocking and OOM memory spikes
     for (const file of req.files) {
-      const imageBytes = fs.readFileSync(file.path);
+      const imageBytes = await fs.promises.readFile(file.path);
       let imgWidth = 500;
       let imgHeight = 600;
 
@@ -50,7 +52,11 @@ router.post('/image-to-word', uploadImages.array('images', 20), async (req, res)
         spacing: { after: 300 }
       }));
 
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (e) {
+        if (e.code !== 'ENOENT') console.error('Error deleting file:', e.message);
+      }
     }
 
     const doc = new docx.Document({
@@ -73,9 +79,13 @@ router.post('/image-to-word', uploadImages.array('images', 20), async (req, res)
     });
   } catch (err) {
     console.error('Image to Word error:', err);
-    req.files.forEach(file => {
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-    });
+    for (const file of req.files) {
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (e) {
+        if (e.code !== 'ENOENT') console.error('Error deleting file on failure:', e.message);
+      }
+    }
     res.status(500).json({ error: 'Failed to convert images to Word document.' });
   }
 });

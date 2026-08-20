@@ -5,6 +5,15 @@ const fs = require('fs');
 const { PDFDocument } = require('pdf-lib');
 const { uploadImages, COMPRESSED_DIR } = require('./config');
 
+// Helper to safely delete files without checking existence, avoiding race conditions
+const safeUnlink = async (filePath) => {
+  try {
+    await fs.promises.unlink(filePath);
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err;
+  }
+};
+
 router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) => {
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ error: 'No image files were uploaded.' });
@@ -13,8 +22,11 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
   try {
     const pdfDoc = await PDFDocument.create();
 
+    // Performance optimization: We process files sequentially with await fs.promises.readFile()
+    // rather than using Promise.all(), which avoids severe memory spikes and OOM errors,
+    // while replacing fs.readFileSync to prevent blocking the Node.js event loop.
     for (const file of req.files) {
-      const imageBytes = fs.readFileSync(file.path);
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       let image;
 
@@ -32,7 +44,7 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
         height: image.height
       });
 
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+      await safeUnlink(file.path);
     }
 
     const pdfBytes = await pdfDoc.save();
@@ -41,7 +53,15 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     const outputPath = path.join(COMPRESSED_DIR, compiledFilename);
 
     await fs.promises.writeFile(outputPath, pdfBytes);
-    const pdfSize = fs.statSync(outputPath).size;
+
+    // Performance optimization: Avoid blocking event loop when getting file size
+    let pdfSize = 0;
+    try {
+      const stat = await fs.promises.stat(outputPath);
+      pdfSize = stat.size;
+    } catch (err) {
+      console.error('Stat error:', err);
+    }
 
     res.json({
       success: true,
@@ -51,9 +71,8 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     });
   } catch (err) {
     console.error('Image to PDF error:', err);
-    req.files.forEach(file => {
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-    });
+    // Safe async cleanup on error
+    await Promise.allSettled(req.files.map(file => safeUnlink(file.path)));
     res.status(500).json({ error: 'Failed to compile images into PDF.' });
   }
 });

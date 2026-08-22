@@ -13,8 +13,10 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
   try {
     const pdfDoc = await PDFDocument.create();
 
+    // ⚡ Bolt Optimization: Process files sequentially using async operations
+    // to avoid blocking event loop while preventing memory spikes/OOM errors
     for (const file of req.files) {
-      const imageBytes = fs.readFileSync(file.path);
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       let image;
 
@@ -32,7 +34,12 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
         height: image.height
       });
 
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+      // ⚡ Bolt Optimization: Non-blocking async file removal
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (e) {
+        if (e.code !== 'ENOENT') console.error('Error removing file:', e);
+      }
     }
 
     const pdfBytes = await pdfDoc.save();
@@ -41,7 +48,8 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     const outputPath = path.join(COMPRESSED_DIR, compiledFilename);
 
     await fs.promises.writeFile(outputPath, pdfBytes);
-    const pdfSize = fs.statSync(outputPath).size;
+    const stats = await fs.promises.stat(outputPath);
+    const pdfSize = stats.size;
 
     res.json({
       success: true,
@@ -51,9 +59,12 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     });
   } catch (err) {
     console.error('Image to PDF error:', err);
-    req.files.forEach(file => {
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-    });
+    // Cleanup asynchronously
+    await Promise.all(req.files.map(file =>
+      fs.promises.unlink(file.path).catch(e => {
+        if (e.code !== 'ENOENT') console.error('Error cleaning up file:', e);
+      })
+    ));
     res.status(500).json({ error: 'Failed to compile images into PDF.' });
   }
 });

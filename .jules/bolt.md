@@ -7,3 +7,7 @@
 ## 2024-11-20 - Avoid Blocking the Event Loop in Periodic Tasks
 **Learning:** Using synchronous file operations (`fs.readdirSync`, `fs.statSync`, etc.) in a periodic `setInterval` task blocks the main Node.js event loop. This leads to latency spikes for all users every time the sweeper runs, which becomes worse as the number of files scales up.
 **Action:** When implementing background cleanup or maintenance tasks in Node.js, always use asynchronous alternatives (`fs.promises`) to keep the main thread unblocked for handling API requests.
+
+## 2026-08-23 - Batch Uploads and the Event Loop
+**Learning:** Using synchronous operations (`fs.readFileSync`, `fs.unlinkSync`) within iterative processing loops (like `for (const file of req.files)`) in file upload route handlers directly blocks the Node.js event loop during batch operations. This degrades responsiveness for other concurrent requests.
+**Action:** Always refactor iterative file read and deletion tasks in route handlers to sequential asynchronous operations (e.g., `for (const file of req.files) { await fs.promises.readFile(file.path) }`). This pattern ensures memory stays low while allowing the main thread to yield and serve other HTTP requests.

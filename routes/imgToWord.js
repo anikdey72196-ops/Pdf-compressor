@@ -20,7 +20,8 @@ router.post('/image-to-word', uploadImages.array('images', 20), async (req, res)
     const children = [];
 
     for (const file of req.files) {
-      const imageBytes = fs.readFileSync(file.path);
+      // Use asynchronous file reading to prevent blocking the event loop
+      const imageBytes = await fs.promises.readFile(file.path);
       let imgWidth = 500;
       let imgHeight = 600;
 
@@ -50,7 +51,12 @@ router.post('/image-to-word', uploadImages.array('images', 20), async (req, res)
         spacing: { after: 300 }
       }));
 
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+      // Use asynchronous file deletion to prevent blocking the event loop
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (err) {
+        if (err.code !== 'ENOENT') throw err;
+      }
     }
 
     const doc = new docx.Document({
@@ -73,9 +79,13 @@ router.post('/image-to-word', uploadImages.array('images', 20), async (req, res)
     });
   } catch (err) {
     console.error('Image to Word error:', err);
-    req.files.forEach(file => {
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-    });
+    for (const file of req.files) {
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (e) {
+        if (e.code !== 'ENOENT') console.error('Error unlinking file on error:', e);
+      }
+    }
     res.status(500).json({ error: 'Failed to convert images to Word document.' });
   }
 });

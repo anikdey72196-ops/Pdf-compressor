@@ -14,7 +14,8 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     const pdfDoc = await PDFDocument.create();
 
     for (const file of req.files) {
-      const imageBytes = fs.readFileSync(file.path);
+      // ⚡ Bolt: Replaced synchronous readFileSync with asynchronous fs.promises.readFile to prevent blocking the event loop
+      const imageBytes = await fs.promises.readFile(file.path);
       const ext = path.extname(file.originalname).toLowerCase();
       let image;
 
@@ -32,7 +33,12 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
         height: image.height
       });
 
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+      // ⚡ Bolt: Replaced synchronous unlinkSync with asynchronous unlink to prevent blocking the event loop
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (e) {
+        if (e.code !== 'ENOENT') throw e;
+      }
     }
 
     const pdfBytes = await pdfDoc.save();
@@ -41,7 +47,14 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     const outputPath = path.join(COMPRESSED_DIR, compiledFilename);
 
     await fs.promises.writeFile(outputPath, pdfBytes);
-    const pdfSize = fs.statSync(outputPath).size;
+    // ⚡ Bolt: Replaced synchronous statSync with asynchronous stat to prevent blocking the event loop
+    let pdfSize = 0;
+    try {
+      const stat = await fs.promises.stat(outputPath);
+      pdfSize = stat.size;
+    } catch (e) {
+      if (e.code !== 'ENOENT') throw e;
+    }
 
     res.json({
       success: true,
@@ -51,9 +64,14 @@ router.post('/img-to-pdf', uploadImages.array('images', 20), async (req, res) =>
     });
   } catch (err) {
     console.error('Image to PDF error:', err);
-    req.files.forEach(file => {
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-    });
+    // ⚡ Bolt: Iterating asynchronously over uploaded files for cleanup instead of using forEach with sync unlinks
+    for (const file of req.files) {
+      try {
+        await fs.promises.unlink(file.path);
+      } catch (e) {
+        if (e.code !== 'ENOENT') console.error(e);
+      }
+    }
     res.status(500).json({ error: 'Failed to compile images into PDF.' });
   }
 });

@@ -11,3 +11,7 @@
 ## 2024-11-21 - Async Sequential IO for Image Batching
 **Learning:** While replacing synchronous operations (`fs.readFileSync`, `fs.unlinkSync`) with async alternatives (`fs.promises.*`) is crucial to avoid blocking the event loop in API endpoints, doing so naively using `Promise.all` for batch image processing causes massive memory spikes resulting in OOM errors. It's critical to process large files sequentially using a standard `for...of` loop with `await` to maintain stable memory usage while retaining a non-blocking event loop.
 **Action:** When batch processing multiple large files (like images) on the backend, ensure reading and embedding operations are handled sequentially rather than concurrently, and wrap cleanup tasks in `try/catch` explicitly ignoring `ENOENT` to prevent crash-inducing race conditions.
+
+## 2026-08-29 - Non-blocking File Operations in Image to Word Route
+**Learning:** Using synchronous file operations (`fs.readFileSync`, `fs.unlinkSync`) in route handlers (such as Image-to-Word conversions) blocks the single-threaded Node.js event loop during file reads and cleanups, introducing latency for concurrent incoming requests.
+**Action:** Replace `fs.readFileSync` and `fs.unlinkSync` with `fs.promises.readFile` and `fs.promises.unlink` processed sequentially within async loops, wrapping unlinks in try/catch blocks ignoring `ENOENT`.

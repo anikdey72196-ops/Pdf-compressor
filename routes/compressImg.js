@@ -29,10 +29,11 @@ router.post('/compress-image', uploadImages.single('image'), async (req, res) =>
   const outputFilename = `compressed-img-${uniqueSuffix}${ext || '.jpg'}`;
   const outputPath = path.join(COMPRESSED_DIR, outputFilename);
 
+  // ⚡ Bolt Optimization: Replace synchronous fs operations with async fs.promises to avoid blocking the event loop
   if (!sharp) {
     try {
-      fs.copyFileSync(inputPath, outputPath);
-      if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+      await fs.promises.copyFile(inputPath, outputPath);
+      try { await fs.promises.unlink(inputPath); } catch (e) { if (e.code !== 'ENOENT') console.error('Failed to delete file', e); }
       return res.json({
         success: true,
         originalName: originalName,
@@ -42,7 +43,7 @@ router.post('/compress-image', uploadImages.single('image'), async (req, res) =>
         downloadUrl: `/api/download/${outputFilename}`
       });
     } catch (e) {
-      if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+      try { await fs.promises.unlink(inputPath); } catch (err) { if (err.code !== 'ENOENT') console.error('Failed to delete file', err); }
       return res.status(500).json({ error: 'Failed to process image.' });
     }
   }
@@ -57,9 +58,9 @@ router.post('/compress-image', uploadImages.single('image'), async (req, res) =>
       await pipeline.jpeg({ quality: targetQuality, mozjpeg: true }).toFile(outputPath);
     }
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    try { await fs.promises.unlink(inputPath); } catch (e) { if (e.code !== 'ENOENT') console.error('Failed to delete file', e); }
 
-    const compressedSize = fs.statSync(outputPath).size;
+    const compressedSize = (await fs.promises.stat(outputPath)).size;
     const reductionPercent = Math.max(0, ((originalSize - compressedSize) / originalSize * 100)).toFixed(1);
 
     res.json({
@@ -72,7 +73,7 @@ router.post('/compress-image', uploadImages.single('image'), async (req, res) =>
     });
   } catch (err) {
     console.error('Image compression error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    try { await fs.promises.unlink(inputPath); } catch (e) { if (e.code !== 'ENOENT') console.error('Failed to delete file', e); }
     res.status(500).json({ error: 'Failed to compress image file.' });
   }
 });

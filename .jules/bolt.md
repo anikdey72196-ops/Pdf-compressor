@@ -15,3 +15,6 @@
 ## 2026-08-29 - Non-blocking File Operations in Image to Word Route
 **Learning:** Using synchronous file operations (`fs.readFileSync`, `fs.unlinkSync`) in route handlers (such as Image-to-Word conversions) blocks the single-threaded Node.js event loop during file reads and cleanups, introducing latency for concurrent incoming requests.
 **Action:** Replace `fs.readFileSync` and `fs.unlinkSync` with `fs.promises.readFile` and `fs.promises.unlink` processed sequentially within async loops, wrapping unlinks in try/catch blocks ignoring `ENOENT`.
+## 2026-09-02 - Non-blocking File Operations in Image Compression Route
+**Learning:** Using synchronous file operations (`fs.copyFileSync`, `fs.statSync`, `fs.unlinkSync`) in route handlers (such as Image Compression) blocks the single-threaded Node.js event loop during file copies, stats, and cleanups, introducing latency for concurrent incoming requests.
+**Action:** Replace `fs.copyFileSync`, `fs.statSync` and `fs.unlinkSync` with `fs.promises.copyFile`, `fs.promises.stat` and `fs.promises.unlink` processed sequentially, wrapping unlinks in try/catch blocks ignoring `ENOENT` to avoid race conditions.

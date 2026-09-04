@@ -18,7 +18,8 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
   const outputPath = path.join(COMPRESSED_DIR, unlockedFilename);
 
   try {
-    const pdfBytes = fs.readFileSync(inputPath);
+    // ⚡ Bolt Optimization: Replacing sync fs.readFileSync with async to prevent event loop blocking
+    const pdfBytes = await fs.promises.readFile(inputPath);
     let unlocked = false;
 
     // 1. Try pdf-lib to strip encryption & restriction flags
@@ -31,8 +32,11 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
       console.warn('pdf-lib unlock fallback to Ghostscript:', pdfLibErr.message);
     }
 
+    // ⚡ Bolt Optimization: Replace fs.existsSync with async fs.promises.access
+    const outputExists = await fs.promises.access(outputPath).then(() => true).catch(() => false);
+
     // 2. Fallback to Ghostscript if pdf-lib didn't write output
-    if (!unlocked || !fs.existsSync(outputPath)) {
+    if (!unlocked || !outputExists) {
       const gsArgs = [
         '-sDEVICE=pdfwrite',
         '-dCompatibilityLevel=1.4',
@@ -50,9 +54,16 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
       });
     }
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // ⚡ Bolt Optimization: Using async unlink in try/catch to unblock event loop and avoid race conditions
+    try {
+      await fs.promises.unlink(inputPath);
+    } catch (e) {
+      if (e.code !== 'ENOENT') console.error(`Error deleting file ${inputPath}:`, e);
+    }
 
-    const unlockedSize = fs.statSync(outputPath).size;
+    // ⚡ Bolt Optimization: Using async stat to prevent event loop blocking
+    const stats = await fs.promises.stat(outputPath);
+    const unlockedSize = stats.size;
 
     res.json({
       success: true,
@@ -63,7 +74,12 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
     });
   } catch (err) {
     console.error('Unlock PDF error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // ⚡ Bolt Optimization: Non-blocking error cleanup
+    try {
+      await fs.promises.unlink(inputPath);
+    } catch (e) {
+      if (e.code !== 'ENOENT') console.error(`Error deleting file on error ${inputPath}:`, e);
+    }
     res.status(500).json({ error: 'Failed to unlock PDF. The file may have strong user-open encryption.' });
   }
 });

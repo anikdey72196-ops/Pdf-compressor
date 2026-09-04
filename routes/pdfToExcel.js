@@ -18,7 +18,8 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
   const outputPath = path.join(COMPRESSED_DIR, excelFilename);
 
   try {
-    const dataBuffer = fs.readFileSync(inputPath);
+    // ⚡ Bolt Optimization: Replacing sync fs.readFileSync with async to prevent event loop blocking
+    const dataBuffer = await fs.promises.readFile(inputPath);
     const parsedData = await pdfParse(dataBuffer);
 
     const textLines = (parsedData.text || '').split('\n').filter(line => line.trim().length > 0);
@@ -36,7 +37,12 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
 
     XLSX.writeFile(workbook, outputPath);
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // ⚡ Bolt Optimization: Using async unlink in try/catch to unblock event loop and avoid race conditions
+    try {
+      await fs.promises.unlink(inputPath);
+    } catch (e) {
+      if (e.code !== 'ENOENT') console.error(`Error deleting file ${inputPath}:`, e);
+    }
 
     res.json({
       success: true,
@@ -45,7 +51,12 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
     });
   } catch (err) {
     console.error('PDF to Excel error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // ⚡ Bolt Optimization: Non-blocking error cleanup
+    try {
+      await fs.promises.unlink(inputPath);
+    } catch (e) {
+      if (e.code !== 'ENOENT') console.error(`Error deleting file on error ${inputPath}:`, e);
+    }
     res.status(500).json({ error: 'Failed to extract PDF data to Excel spreadsheet.' });
   }
 });

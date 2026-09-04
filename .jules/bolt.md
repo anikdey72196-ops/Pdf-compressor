@@ -15,3 +15,7 @@
 ## 2026-08-29 - Non-blocking File Operations in Image to Word Route
 **Learning:** Using synchronous file operations (`fs.readFileSync`, `fs.unlinkSync`) in route handlers (such as Image-to-Word conversions) blocks the single-threaded Node.js event loop during file reads and cleanups, introducing latency for concurrent incoming requests.
 **Action:** Replace `fs.readFileSync` and `fs.unlinkSync` with `fs.promises.readFile` and `fs.promises.unlink` processed sequentially within async loops, wrapping unlinks in try/catch blocks ignoring `ENOENT`.
+
+## 2026-09-04 - Unhandled Promise Rejections from Async Stat
+**Learning:** When transitioning from synchronous to asynchronous file system operations, unhandled Promise rejections (like an ENOENT error from `fs.promises.stat` or `fs.promises.unlink`) will cause unhandled rejection exceptions in newer Node.js versions, potentially crashing the server or swallowing errors. However, blindly wrapping every async call in a `try...catch` that swallows errors can introduce regressions (e.g., returning 200 OK for a missing file instead of bubbling up to a 500 error handler).
+**Action:** When migrating `fs.statSync` to `fs.promises.stat`, carefully consider if the error should bubble up (to trigger an API failure response) or be handled locally (like ignoring ENOENT on cleanup). Don't just silence all errors.

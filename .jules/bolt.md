@@ -15,3 +15,7 @@
 ## 2026-08-29 - Non-blocking File Operations in Image to Word Route
 **Learning:** Using synchronous file operations (`fs.readFileSync`, `fs.unlinkSync`) in route handlers (such as Image-to-Word conversions) blocks the single-threaded Node.js event loop during file reads and cleanups, introducing latency for concurrent incoming requests.
 **Action:** Replace `fs.readFileSync` and `fs.unlinkSync` with `fs.promises.readFile` and `fs.promises.unlink` processed sequentially within async loops, wrapping unlinks in try/catch blocks ignoring `ENOENT`.
+
+## 2026-09-05 - Avoid Package Lock Modifications During Reviews
+**Learning:** Running `npm install` inside the sandbox to resolve missing dependencies during functional endpoint testing can unintentionally modify `package-lock.json` and `node_modules/.package-lock.json`. These dirty changes block pull request acceptance as they pollute the Git history without direct user instruction to modify package constraints.
+**Action:** Always verify the Git status (`git status`) after running `npm install` or testing endpoints. Immediately revert any unstaged or unintended modifications to lockfiles using `git checkout` or `git restore --staged` before finalizing the commit and requesting a code review.

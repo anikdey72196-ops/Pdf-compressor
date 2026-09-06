@@ -18,7 +18,7 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
   const outputPath = path.join(COMPRESSED_DIR, unlockedFilename);
 
   try {
-    const pdfBytes = fs.readFileSync(inputPath);
+    const pdfBytes = await fs.promises.readFile(inputPath);
     let unlocked = false;
 
     // 1. Try pdf-lib to strip encryption & restriction flags
@@ -31,8 +31,16 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
       console.warn('pdf-lib unlock fallback to Ghostscript:', pdfLibErr.message);
     }
 
+    let outputExists = false;
+    try {
+      await fs.promises.access(outputPath);
+      outputExists = true;
+    } catch (e) {
+      outputExists = false;
+    }
+
     // 2. Fallback to Ghostscript if pdf-lib didn't write output
-    if (!unlocked || !fs.existsSync(outputPath)) {
+    if (!unlocked || !outputExists) {
       const gsArgs = [
         '-sDEVICE=pdfwrite',
         '-dCompatibilityLevel=1.4',
@@ -50,9 +58,10 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
       });
     }
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    try { await fs.promises.unlink(inputPath); } catch (e) { if (e.code !== 'ENOENT') throw e; }
 
-    const unlockedSize = fs.statSync(outputPath).size;
+    const stat = await fs.promises.stat(outputPath);
+    const unlockedSize = stat.size;
 
     res.json({
       success: true,
@@ -63,7 +72,7 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
     });
   } catch (err) {
     console.error('Unlock PDF error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    try { await fs.promises.unlink(inputPath); } catch (e) { if (e.code !== 'ENOENT') console.error('Failed to unlink input path:', e); }
     res.status(500).json({ error: 'Failed to unlock PDF. The file may have strong user-open encryption.' });
   }
 });

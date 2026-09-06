@@ -15,3 +15,7 @@
 ## 2026-08-29 - Non-blocking File Operations in Image to Word Route
 **Learning:** Using synchronous file operations (`fs.readFileSync`, `fs.unlinkSync`) in route handlers (such as Image-to-Word conversions) blocks the single-threaded Node.js event loop during file reads and cleanups, introducing latency for concurrent incoming requests.
 **Action:** Replace `fs.readFileSync` and `fs.unlinkSync` with `fs.promises.readFile` and `fs.promises.unlink` processed sequentially within async loops, wrapping unlinks in try/catch blocks ignoring `ENOENT`.
+
+## 2023-10-27 - Non-Blocking Excel Export
+**Learning:** The popular `xlsx` module's `XLSX.writeFile()` function executes synchronously and heavily blocks the single-threaded Node.js event loop, degrading API response times for all concurrent users when exporting large datasets.
+**Action:** Always generate Excel output natively into a buffer (`XLSX.write(workbook, { type: 'buffer' })`) and subsequently write it using the asynchronous `fs.promises.writeFile()` to preserve system concurrency.

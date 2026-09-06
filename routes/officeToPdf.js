@@ -20,7 +20,7 @@ router.post('/office-to-pdf', uploadOffice.single('office'), async (req, res) =>
   const outputPath = path.join(COMPRESSED_DIR, pdfFilename);
 
   try {
-    const fileBuffer = fs.readFileSync(inputPath);
+    const fileBuffer = await fs.promises.readFile(inputPath);
     try {
       const pdfBuf = await libreConvert(fileBuffer, '.pdf', undefined);
       await fs.promises.writeFile(outputPath, pdfBuf);
@@ -46,7 +46,7 @@ router.post('/office-to-pdf', uploadOffice.single('office'), async (req, res) =>
       await fs.promises.writeFile(outputPath, pdfBytes);
     }
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    try { await fs.promises.unlink(inputPath); } catch (e) { if (e.code !== 'ENOENT') throw e; }
 
     res.json({
       success: true,
@@ -55,7 +55,7 @@ router.post('/office-to-pdf', uploadOffice.single('office'), async (req, res) =>
     });
   } catch (err) {
     console.error('Office to PDF error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    try { await fs.promises.unlink(inputPath); } catch (e) { if (e.code !== 'ENOENT') console.error('Failed to unlink input path:', e); }
     res.status(500).json({ error: 'Failed to convert document to PDF.' });
   }
 });

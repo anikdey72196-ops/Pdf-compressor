@@ -18,7 +18,8 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
   const outputPath = path.join(COMPRESSED_DIR, excelFilename);
 
   try {
-    const dataBuffer = fs.readFileSync(inputPath);
+    // ⚡ Bolt Optimization: Use async file read to prevent blocking the event loop
+    const dataBuffer = await fs.promises.readFile(inputPath);
     const parsedData = await pdfParse(dataBuffer);
 
     const textLines = (parsedData.text || '').split('\n').filter(line => line.trim().length > 0);
@@ -34,9 +35,16 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
     const worksheet = XLSX.utils.aoa_to_sheet(tableRows.length > 0 ? tableRows : [['No text content found in PDF']]);
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Extracted Data');
 
-    XLSX.writeFile(workbook, outputPath);
+    // ⚡ Bolt Optimization: Use async buffer generation and write to avoid blocking the event loop
+    const excelBuffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    await fs.promises.writeFile(outputPath, excelBuffer);
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // ⚡ Bolt Optimization: Replace sync unlink with async to unblock event loop
+    try {
+      await fs.promises.unlink(inputPath);
+    } catch (err) {
+      if (err.code !== 'ENOENT') console.error(`Error deleting file ${inputPath}:`, err);
+    }
 
     res.json({
       success: true,
@@ -45,7 +53,12 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
     });
   } catch (err) {
     console.error('PDF to Excel error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // ⚡ Bolt Optimization: Ensure concurrent cleanup uses async IO in the catch block
+    try {
+      await fs.promises.unlink(inputPath);
+    } catch (e) {
+      if (e.code !== 'ENOENT') console.error(`Error cleaning up file ${inputPath}:`, e);
+    }
     res.status(500).json({ error: 'Failed to extract PDF data to Excel spreadsheet.' });
   }
 });

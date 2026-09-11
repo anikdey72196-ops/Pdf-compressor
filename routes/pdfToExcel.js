@@ -18,7 +18,8 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
   const outputPath = path.join(COMPRESSED_DIR, excelFilename);
 
   try {
-    const dataBuffer = fs.readFileSync(inputPath);
+    // ⚡ Bolt: Read file asynchronously to prevent event loop blocking
+    const dataBuffer = await fs.promises.readFile(inputPath);
     const parsedData = await pdfParse(dataBuffer);
 
     const textLines = (parsedData.text || '').split('\n').filter(line => line.trim().length > 0);
@@ -34,9 +35,16 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
     const worksheet = XLSX.utils.aoa_to_sheet(tableRows.length > 0 ? tableRows : [['No text content found in PDF']]);
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Extracted Data');
 
-    XLSX.writeFile(workbook, outputPath);
+    // ⚡ Bolt: Use asynchronous buffer generation and writing to prevent event loop blocking
+    const excelBuffer = XLSX.write(workbook, { type: 'buffer' });
+    await fs.promises.writeFile(outputPath, excelBuffer);
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // ⚡ Bolt: Async cleanup ignoring ENOENT to avoid race conditions
+    try {
+      await fs.promises.unlink(inputPath);
+    } catch (cleanupErr) {
+      if (cleanupErr.code !== 'ENOENT') throw cleanupErr;
+    }
 
     res.json({
       success: true,
@@ -45,7 +53,12 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
     });
   } catch (err) {
     console.error('PDF to Excel error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // ⚡ Bolt: Async cleanup ignoring ENOENT to avoid race conditions
+    try {
+      await fs.promises.unlink(inputPath);
+    } catch (cleanupErr) {
+      if (cleanupErr.code !== 'ENOENT') console.error('Cleanup error:', cleanupErr);
+    }
     res.status(500).json({ error: 'Failed to extract PDF data to Excel spreadsheet.' });
   }
 });

@@ -3,24 +3,36 @@ const router = express.Router();
 const path = require('path');
 const fs = require('fs');
 const AdmZip = require('adm-zip');
-const { upload, UPLOADS_DIR, COMPRESSED_DIR, execGhostscript } = require('./config');
+const { upload, UPLOADS_DIR, COMPRESSED_DIR, execGhostscript, isValidPdfHeader } = require('./config');
 
 // Support both /pdf-to-image and /pdf-to-img
-router.post(['/pdf-to-image', '/pdf-to-img'], upload.single('pdf'), (req, res) => {
+router.post(['/pdf-to-image', '/pdf-to-img'], upload.single('pdf'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No PDF file was uploaded.' });
+  }
+
+  const inputPath = req.file.path;
+
+  // Validate PDF magic header
+  const isValidPdf = await isValidPdfHeader(inputPath);
+  if (!isValidPdf) {
+    if (fs.existsSync(inputPath)) {
+      try { await fs.promises.unlink(inputPath); } catch (e) {}
+    }
+    return res.status(400).json({ error: 'The uploaded file is not a valid PDF document.' });
   }
 
   const dpi = parseInt(req.body.dpi || '150', 10);
   const format = req.body.format || 'png'; // 'png' or 'jpeg'
   const originalName = req.file.originalname;
-  const inputPath = req.file.path;
 
   const allowedDpis = [72, 150, 300];
   const allowedFormats = ['png', 'jpeg', 'jpg'];
 
-  if (!allowedDpis.includes(dpi) || !allowedFormats.includes(format)) {
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+  if (!allowedDpis.includes(dpi) || (!allowedFormats.includes(format) && format !== 'jpg')) {
+    if (fs.existsSync(inputPath)) {
+      try { await fs.promises.unlink(inputPath); } catch (e) {}
+    }
     return res.status(400).json({ error: 'Invalid conversion parameters.' });
   }
 
@@ -33,6 +45,7 @@ router.post(['/pdf-to-image', '/pdf-to-img'], upload.single('pdf'), (req, res) =
   const gsArgs = [
     `-sDEVICE=${device}`,
     `-r${dpi}`,
+    '-dSAFER',
     '-dNOPAUSE',
     '-dQUIET',
     '-dBATCH',
@@ -81,8 +94,6 @@ router.post(['/pdf-to-image', '/pdf-to-img'], upload.single('pdf'), (req, res) =
       const zipFilename = `converted-${uniqueSuffix}.zip`;
       const zipPath = path.join(COMPRESSED_DIR, zipFilename);
       zip.writeZip(zipPath);
-
-      console.log(`[SUCCESS] Converted "${originalName}" to ${imageFiles.length} images. Packed into ZIP: ${zipFilename}`);
 
       res.json({
         success: true,

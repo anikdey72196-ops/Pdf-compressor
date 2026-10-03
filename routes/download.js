@@ -4,13 +4,27 @@ const path = require('path');
 const fs = require('fs');
 const { COMPRESSED_DIR, UPLOADS_DIR } = require('./config');
 
+const SAFE_FILENAME_REGEX = /^[a-zA-Z0-9_\-]+\.[a-zA-Z0-9]+$/;
+const ALLOWED_EXTENSIONS = new Set(['.pdf', '.zip', '.docx', '.xlsx', '.png', '.jpg', '.jpeg', '.webp']);
+
+function isPathSafe(baseDir, filename) {
+  if (!filename || !SAFE_FILENAME_REGEX.test(filename)) return false;
+  const ext = path.extname(filename).toLowerCase();
+  if (!ALLOWED_EXTENSIONS.has(ext)) return false;
+
+  const resolvedBase = path.resolve(baseDir) + path.sep;
+  const resolvedTarget = path.resolve(baseDir, filename);
+  return resolvedTarget.startsWith(resolvedBase);
+}
+
 router.get('/download/:filename', (req, res) => {
   const filename = path.basename(req.params.filename);
-  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
-    return res.status(400).json({ error: 'Invalid filename' });
+
+  if (!isPathSafe(COMPRESSED_DIR, filename)) {
+    return res.status(400).json({ error: 'Invalid or unauthorized filename.' });
   }
 
-  const filePath = path.join(COMPRESSED_DIR, filename);
+  const filePath = path.resolve(COMPRESSED_DIR, filename);
 
   if (fs.existsSync(filePath)) {
     let clientFilename = filename;
@@ -42,9 +56,10 @@ router.get('/download/:filename', (req, res) => {
       if (!clientFilename.endsWith('.pdf')) clientFilename += '.pdf';
     }
 
+    res.setHeader('X-Content-Type-Options', 'nosniff');
     res.download(filePath, clientFilename, (err) => {
       if (err) {
-        console.error(`Error downloading file ${filename}:`, err);
+        console.error(`Error downloading file ${filename}:`, err.message);
       }
     });
   } else {
@@ -54,18 +69,28 @@ router.get('/download/:filename', (req, res) => {
 
 router.get('/preview/:filename', (req, res) => {
   const filename = path.basename(req.params.filename);
-  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
-    return res.status(400).json({ error: 'Invalid filename' });
+
+  const safeInUploads = isPathSafe(UPLOADS_DIR, filename);
+  const safeInCompressed = isPathSafe(COMPRESSED_DIR, filename);
+
+  if (!safeInUploads && !safeInCompressed) {
+    return res.status(400).json({ error: 'Invalid or unauthorized filename.' });
   }
 
-  const uploadPath = path.join(UPLOADS_DIR, filename);
-  if (fs.existsSync(uploadPath)) {
-    return res.sendFile(uploadPath);
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+
+  if (safeInUploads) {
+    const uploadPath = path.resolve(UPLOADS_DIR, filename);
+    if (fs.existsSync(uploadPath)) {
+      return res.sendFile(uploadPath);
+    }
   }
 
-  const compressedPath = path.join(COMPRESSED_DIR, filename);
-  if (fs.existsSync(compressedPath)) {
-    return res.sendFile(compressedPath);
+  if (safeInCompressed) {
+    const compressedPath = path.resolve(COMPRESSED_DIR, filename);
+    if (fs.existsSync(compressedPath)) {
+      return res.sendFile(compressedPath);
+    }
   }
 
   res.status(404).json({ error: 'Preview file not found or expired.' });

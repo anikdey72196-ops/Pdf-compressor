@@ -3,7 +3,7 @@ const router = express.Router();
 const path = require('path');
 const fs = require('fs');
 const { PDFDocument } = require('pdf-lib');
-const { upload, COMPRESSED_DIR, execGhostscript } = require('./config');
+const { upload, COMPRESSED_DIR, execGhostscript, isValidPdfHeader } = require('./config');
 
 router.post('/unlock', upload.single('pdf'), async (req, res) => {
   if (!req.file) {
@@ -11,6 +11,16 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
   }
 
   const inputPath = req.file.path;
+
+  // Validate PDF magic header
+  const isValidPdf = await isValidPdfHeader(inputPath);
+  if (!isValidPdf) {
+    if (fs.existsSync(inputPath)) {
+      try { await fs.promises.unlink(inputPath); } catch (e) {}
+    }
+    return res.status(400).json({ error: 'The uploaded file is not a valid PDF document.' });
+  }
+
   const originalName = req.file.originalname;
   const originalSize = req.file.size;
   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
@@ -18,7 +28,7 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
   const outputPath = path.join(COMPRESSED_DIR, unlockedFilename);
 
   try {
-    const pdfBytes = fs.readFileSync(inputPath);
+    const pdfBytes = await fs.promises.readFile(inputPath);
     let unlocked = false;
 
     // 1. Try pdf-lib to strip encryption & restriction flags
@@ -36,6 +46,7 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
       const gsArgs = [
         '-sDEVICE=pdfwrite',
         '-dCompatibilityLevel=1.4',
+        '-dSAFER',
         '-dNOPAUSE',
         '-dQUIET',
         '-dBATCH',
@@ -50,9 +61,15 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
       });
     }
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    if (fs.existsSync(inputPath)) {
+      try { await fs.promises.unlink(inputPath); } catch (e) {}
+    }
 
-    const unlockedSize = fs.statSync(outputPath).size;
+    let unlockedSize = 0;
+    try {
+      const stats = await fs.promises.stat(outputPath);
+      unlockedSize = stats.size;
+    } catch (e) {}
 
     res.json({
       success: true,
@@ -63,7 +80,9 @@ router.post('/unlock', upload.single('pdf'), async (req, res) => {
     });
   } catch (err) {
     console.error('Unlock PDF error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    if (fs.existsSync(inputPath)) {
+      try { await fs.promises.unlink(inputPath); } catch (e) {}
+    }
     res.status(500).json({ error: 'Failed to unlock PDF. The file may have strong user-open encryption.' });
   }
 });

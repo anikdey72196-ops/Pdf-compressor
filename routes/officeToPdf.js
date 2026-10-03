@@ -37,7 +37,7 @@ router.post('/office-to-pdf', officeUploadMiddleware, async (req, res) => {
   const outputPath = path.join(COMPRESSED_DIR, pdfFilename);
 
   try {
-    const fileBuffer = fs.readFileSync(inputPath);
+    const fileBuffer = await fs.promises.readFile(inputPath);
     try {
       const pdfBuf = await libreConvert(fileBuffer, '.pdf', undefined);
       await fs.promises.writeFile(outputPath, pdfBuf);
@@ -47,7 +47,9 @@ router.post('/office-to-pdf', officeUploadMiddleware, async (req, res) => {
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage([600, 400]);
       const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-      page.drawText(`Converted Document: ${originalName}`, {
+      const safeTitle = (originalName || 'Document').replace(/[^\x20-\x7E]/g, '').slice(0, 60);
+
+      page.drawText(`Converted Document: ${safeTitle}`, {
         x: 50,
         y: 320,
         size: 18,
@@ -63,7 +65,9 @@ router.post('/office-to-pdf', officeUploadMiddleware, async (req, res) => {
       await fs.promises.writeFile(outputPath, pdfBytes);
     }
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    if (fs.existsSync(inputPath)) {
+      try { await fs.promises.unlink(inputPath); } catch (e) {}
+    }
 
     res.json({
       success: true,
@@ -72,7 +76,9 @@ router.post('/office-to-pdf', officeUploadMiddleware, async (req, res) => {
     });
   } catch (err) {
     console.error('Office to PDF error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    if (fs.existsSync(inputPath)) {
+      try { await fs.promises.unlink(inputPath); } catch (e) {}
+    }
     res.status(500).json({ error: 'Failed to convert document to PDF.' });
   }
 });

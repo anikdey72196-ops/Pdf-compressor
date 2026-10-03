@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
-const { jobs, upload, COMPRESSED_DIR, execGhostscript, getGsDiagnosticInfo } = require('./config');
+const { jobs, upload, COMPRESSED_DIR, execGhostscript, getGsDiagnosticInfo, isValidPdfHeader } = require('./config');
 
 // Diagnostics Endpoint
 router.get('/diagnostics', (req, res) => {
@@ -10,15 +10,30 @@ router.get('/diagnostics', (req, res) => {
 });
 
 // Compress PDF Endpoint
-router.post('/compress', upload.single('pdf'), (req, res) => {
+router.post('/compress', upload.single('pdf'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No PDF file was uploaded.' });
   }
 
-  const preset = req.body.preset || 'ebook';
+  const inputPath = req.file.path;
+
+  // Validate PDF magic header to prevent processing non-PDF / malicious files
+  const isValidPdf = await isValidPdfHeader(inputPath);
+  if (!isValidPdf) {
+    if (fs.existsSync(inputPath)) {
+      try {
+        await fs.promises.unlink(inputPath);
+      } catch (e) {}
+    }
+    return res.status(400).json({ error: 'The uploaded file is not a valid PDF document.' });
+  }
+
+  // Validate preset against strict whitelist to prevent parameter injection
+  const VALID_PRESETS = ['screen', 'ebook', 'printer', 'prepress', 'default'];
+  const preset = VALID_PRESETS.includes(req.body.preset) ? req.body.preset : 'ebook';
+
   const originalName = req.file.originalname;
   const originalSize = req.file.size;
-  const inputPath = req.file.path;
   const jobId = req.file.filename;
 
   jobs[jobId] = {
@@ -38,6 +53,7 @@ router.post('/compress', upload.single('pdf'), (req, res) => {
   const gsArgs = [
     '-sDEVICE=pdfwrite',
     '-dCompatibilityLevel=1.4',
+    '-dSAFER',
     `-dPDFSETTINGS=/${preset}`,
     '-dNOPAUSE',
     '-dQUIET',
@@ -47,7 +63,11 @@ router.post('/compress', upload.single('pdf'), (req, res) => {
   ];
 
   const handleResult = (err) => {
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    if (fs.existsSync(inputPath)) {
+      try {
+        fs.unlinkSync(inputPath);
+      } catch (e) {}
+    }
 
     if (err) {
       console.error(`[ERROR] Ghostscript failed for job ${jobId}:`, err);
@@ -68,18 +88,28 @@ router.post('/compress', upload.single('pdf'), (req, res) => {
       return;
     }
 
-    const compressedSize = fs.statSync(outputPath).size;
-    const reductionPercent = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
+    try {
+      const stats = fs.statSync(outputPath);
+      const compressedSize = stats.size;
+      const reductionPercent = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
 
-    jobs[jobId] = {
-      status: 'completed',
-      originalName: originalName,
-      originalSize: originalSize,
-      compressedSize: compressedSize,
-      savedPercent: Math.max(0, reductionPercent),
-      downloadUrl: `/api/download/${compressedFilename}`,
-      timestamp: Date.now()
-    };
+      jobs[jobId] = {
+        status: 'completed',
+        originalName: originalName,
+        originalSize: originalSize,
+        compressedSize: compressedSize,
+        savedPercent: Math.max(0, reductionPercent),
+        downloadUrl: `/api/download/${compressedFilename}`,
+        timestamp: Date.now()
+      };
+    } catch (statErr) {
+      console.error(`[ERROR] Failed to stat output for job ${jobId}:`, statErr);
+      jobs[jobId] = {
+        status: 'error',
+        error: 'Failed to access compressed output file.',
+        timestamp: Date.now()
+      };
+    }
   };
 
   execGhostscript(gsArgs, handleResult);
@@ -87,7 +117,12 @@ router.post('/compress', upload.single('pdf'), (req, res) => {
 
 // Progress & Status Check Endpoint
 router.get(['/progress/:jobId', '/status/:jobId'], (req, res) => {
-  const job = jobs[req.params.jobId];
+  const jobId = req.params.jobId;
+  if (!jobId || !/^[a-zA-Z0-9_\-\.]+$/.test(jobId)) {
+    return res.status(400).json({ error: 'Invalid jobId parameter.' });
+  }
+
+  const job = jobs[jobId];
   if (!job) {
     return res.status(404).json({ error: 'Job not found or expired.' });
   }

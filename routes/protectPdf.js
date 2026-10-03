@@ -2,21 +2,34 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
-const { jobs, upload, COMPRESSED_DIR, execGhostscript } = require('./config');
+const { jobs, upload, COMPRESSED_DIR, execGhostscript, isValidPdfHeader } = require('./config');
 
-router.post('/protect', upload.single('pdf'), (req, res) => {
+router.post('/protect', upload.single('pdf'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No PDF file was uploaded.' });
   }
 
-  const password = req.body.password;
-  if (!password) {
-    if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-    return res.status(400).json({ error: 'Password is required to protect the PDF.' });
+  const inputPath = req.file.path;
+
+  // Validate PDF magic header
+  const isValidPdf = await isValidPdfHeader(inputPath);
+  if (!isValidPdf) {
+    if (fs.existsSync(inputPath)) {
+      try { await fs.promises.unlink(inputPath); } catch (e) {}
+    }
+    return res.status(400).json({ error: 'The uploaded file is not a valid PDF document.' });
+  }
+
+  // Validate password: must be string, length 1-128, no newlines/null bytes to prevent argument injection
+  const password = typeof req.body.password === 'string' ? req.body.password : '';
+  if (!password || password.length === 0 || password.length > 128 || /[\r\n\0]/.test(password)) {
+    if (fs.existsSync(inputPath)) {
+      try { await fs.promises.unlink(inputPath); } catch (e) {}
+    }
+    return res.status(400).json({ error: 'A valid password (1-128 characters, without control characters) is required.' });
   }
 
   const originalName = req.file.originalname;
-  const inputPath = req.file.path;
   const jobId = req.file.filename;
 
   jobs[jobId] = {
@@ -36,6 +49,7 @@ router.post('/protect', upload.single('pdf'), (req, res) => {
   const gsArgs = [
     '-sDEVICE=pdfwrite',
     '-dCompatibilityLevel=1.4',
+    '-dSAFER',
     '-dNOPAUSE',
     '-dQUIET',
     '-dBATCH',
@@ -46,7 +60,9 @@ router.post('/protect', upload.single('pdf'), (req, res) => {
   ];
 
   execGhostscript(gsArgs, (err) => {
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    if (fs.existsSync(inputPath)) {
+      try { fs.unlinkSync(inputPath); } catch (e) {}
+    }
 
     if (err) {
       console.error(`[ERROR] Protect PDF failed for job ${jobId}:`, err);
@@ -67,15 +83,23 @@ router.post('/protect', upload.single('pdf'), (req, res) => {
       return;
     }
 
-    const protectedSize = fs.statSync(outputPath).size;
-
-    jobs[jobId] = {
-      status: 'completed',
-      originalName: originalName,
-      protectedSize: protectedSize,
-      downloadUrl: `/api/download/${protectedFilename}`,
-      timestamp: Date.now()
-    };
+    try {
+      const protectedSize = fs.statSync(outputPath).size;
+      jobs[jobId] = {
+        status: 'completed',
+        originalName: originalName,
+        protectedSize: protectedSize,
+        downloadUrl: `/api/download/${protectedFilename}`,
+        timestamp: Date.now()
+      };
+    } catch (statErr) {
+      console.error(`[ERROR] Failed to stat protected file for job ${jobId}:`, statErr);
+      jobs[jobId] = {
+        status: 'error',
+        error: 'Failed to access protected output file.',
+        timestamp: Date.now()
+      };
+    }
   });
 });
 

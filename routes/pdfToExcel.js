@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
-const XLSX = require('xlsx');
+const ExcelJS = require('exceljs');
 const pdfParse = require('pdf-parse');
 const { upload, COMPRESSED_DIR } = require('./config');
 
@@ -18,11 +18,11 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
   const outputPath = path.join(COMPRESSED_DIR, excelFilename);
 
   try {
-    const dataBuffer = fs.readFileSync(inputPath);
+    const dataBuffer = await fs.promises.readFile(inputPath);
     const parsedData = await pdfParse(dataBuffer);
 
     const textLines = (parsedData.text || '').split('\n').filter(line => line.trim().length > 0);
-    const tableRows = textLines.map((line, idx) => {
+    const tableRows = textLines.map((line) => {
       const parts = line.split(/\s{2,}|\t/).map(p => p.trim()).filter(Boolean);
       if (parts.length > 1) {
         return parts;
@@ -30,13 +30,17 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
       return [line.trim()];
     });
 
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.aoa_to_sheet(tableRows.length > 0 ? tableRows : [['No text content found in PDF']]);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Extracted Data');
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Extracted Data');
+    if (tableRows.length > 0) {
+      tableRows.forEach(row => worksheet.addRow(row));
+    } else {
+      worksheet.addRow(['No text content found in PDF']);
+    }
 
-    XLSX.writeFile(workbook, outputPath);
+    await workbook.xlsx.writeFile(outputPath);
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    if (fs.existsSync(inputPath)) await fs.promises.unlink(inputPath);
 
     res.json({
       success: true,
@@ -45,7 +49,11 @@ router.post('/pdf-to-excel', upload.single('pdf'), async (req, res) => {
     });
   } catch (err) {
     console.error('PDF to Excel error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    if (fs.existsSync(inputPath)) {
+      try {
+        await fs.promises.unlink(inputPath);
+      } catch (e) {}
+    }
     res.status(500).json({ error: 'Failed to extract PDF data to Excel spreadsheet.' });
   }
 });

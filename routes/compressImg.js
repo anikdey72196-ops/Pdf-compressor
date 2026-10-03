@@ -22,17 +22,20 @@ router.post('/compress-image', uploadImages.single('image'), async (req, res) =>
   
   let targetQuality = 60;
   if (qualityPreset === 'low') targetQuality = 30;
-  if (qualityPreset === 'high') targetQuality = 85;
+  else if (qualityPreset === 'high') targetQuality = 85;
 
-  const ext = path.extname(originalName).toLowerCase();
+  const rawExt = path.extname(originalName).toLowerCase();
+  const ext = ['.jpg', '.jpeg', '.png', '.webp'].includes(rawExt) ? rawExt : '.jpg';
   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-  const outputFilename = `compressed-img-${uniqueSuffix}${ext || '.jpg'}`;
+  const outputFilename = `compressed-img-${uniqueSuffix}${ext}`;
   const outputPath = path.join(COMPRESSED_DIR, outputFilename);
 
   if (!sharp) {
     try {
-      fs.copyFileSync(inputPath, outputPath);
-      if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+      await fs.promises.copyFile(inputPath, outputPath);
+      if (fs.existsSync(inputPath)) {
+        try { await fs.promises.unlink(inputPath); } catch (e) {}
+      }
       return res.json({
         success: true,
         originalName: originalName,
@@ -42,7 +45,9 @@ router.post('/compress-image', uploadImages.single('image'), async (req, res) =>
         downloadUrl: `/api/download/${outputFilename}`
       });
     } catch (e) {
-      if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+      if (fs.existsSync(inputPath)) {
+        try { await fs.promises.unlink(inputPath); } catch (err) {}
+      }
       return res.status(500).json({ error: 'Failed to process image.' });
     }
   }
@@ -57,9 +62,16 @@ router.post('/compress-image', uploadImages.single('image'), async (req, res) =>
       await pipeline.jpeg({ quality: targetQuality, mozjpeg: true }).toFile(outputPath);
     }
 
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    if (fs.existsSync(inputPath)) {
+      try { await fs.promises.unlink(inputPath); } catch (e) {}
+    }
 
-    const compressedSize = fs.statSync(outputPath).size;
+    let compressedSize = originalSize;
+    try {
+      const stats = await fs.promises.stat(outputPath);
+      compressedSize = stats.size;
+    } catch (e) {}
+
     const reductionPercent = Math.max(0, ((originalSize - compressedSize) / originalSize * 100)).toFixed(1);
 
     res.json({
@@ -72,7 +84,9 @@ router.post('/compress-image', uploadImages.single('image'), async (req, res) =>
     });
   } catch (err) {
     console.error('Image compression error:', err);
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    if (fs.existsSync(inputPath)) {
+      try { await fs.promises.unlink(inputPath); } catch (e) {}
+    }
     res.status(500).json({ error: 'Failed to compress image file.' });
   }
 });

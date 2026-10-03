@@ -18,8 +18,8 @@ router.post(['/image-to-pdf', '/img-to-pdf'], uploadImages.array('images', 50), 
   }
 
   try {
-    const layout = req.body.layout || 'original'; // 'original' or 'a4'
-    const margin = parseInt(req.body.margin || '0', 10);
+    const layout = req.body.layout === 'a4' ? 'a4' : 'original';
+    const margin = Math.max(0, Math.min(100, parseInt(req.body.margin || '0', 10) || 0));
 
     let sortedFiles = [...req.files];
 
@@ -119,8 +119,6 @@ router.post(['/image-to-pdf', '/img-to-pdf'], uploadImages.array('images', 50), 
         if (e.code !== 'ENOENT') console.error(`Error deleting temp file ${file.path}:`, e);
       })
     ));
-
-    console.log(`[SUCCESS] Compiled PDF "${compiledFilename}" from ${sortedFiles.length} images.`);
 
     res.json({
       success: true,

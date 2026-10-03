@@ -2,12 +2,33 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const { UPLOADS_DIR, COMPRESSED_DIR, jobs } = require('./routes/config');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Security: Disable X-Powered-By header to prevent fingerprinting
+app.disable('x-powered-by');
+
+// Security: Helmet for HTTP security headers
+app.use(helmet({
+  contentSecurityPolicy: false, // Maintain compatibility with inline scripts, AdSense, and Google fonts
+  crossOriginEmbedderPolicy: false
+}));
+
+// Security: Rate limiter to protect API against DoS / resource exhaustion
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 120, // Max 120 API requests per 15 mins per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests from this IP, please try again after 15 minutes.' }
+});
+app.use('/api', apiLimiter);
 
 // Explicit Ads.txt route for AdSense crawler optimization (handles trailing markdown syntax)
 app.get('/ads.txt*', (req, res) => {
@@ -28,9 +49,9 @@ app.get('/googleebdc615d2cb696df.html*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'googleebdc615d2cb696df.html'));
 });
 
-// Body Parser & Static Files
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Body Parser with bounded payload limits & Static Files
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Mount Modular Tool Routers
@@ -52,7 +73,7 @@ app.use('/api', (req, res) => {
 
 // Periodic Sweeper Cleanup Job (10 mins)
 // ⚡ Bolt Optimization: Use async fs.promises to avoid blocking the event loop
-setInterval(async () => {
+const sweeperInterval = setInterval(async () => {
   const now = Date.now();
   const maxAge = 15 * 60 * 1000;
 
@@ -72,7 +93,6 @@ setInterval(async () => {
           const stats = await fs.promises.stat(filePath);
           if (now - stats.mtimeMs > maxAge) {
             await fs.promises.unlink(filePath);
-            console.log(`[Sweeper] Auto-cleaned expired file: ${file}`);
           }
         } catch (e) {
           console.error(`[Sweeper] Error cleaning file ${file}:`, e.message);
@@ -86,6 +106,7 @@ setInterval(async () => {
     }
   }
 }, 10 * 60 * 1000);
+sweeperInterval.unref();
 
 // Global Error Handler
 app.use((err, req, res, next) => {

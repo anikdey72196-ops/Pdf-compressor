@@ -4,15 +4,28 @@
   "graph": {},
   "nodes": [
     {
+      "id": "routes_config_detectghostscript",
+      "label": "detectGhostscript()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "config.js",
+      "file_type": "code",
+      "norm_label": "detectghostscript()",
+      "source_file": "routes/config.js",
+      "source_location": "L93"
+    },
+    {
       "id": "routes_config_execghostscript",
       "label": "execGhostscript()",
       "_callable": true,
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "execghostscript()",
       "source_file": "routes/config.js",
-      "source_location": "L118"
+      "source_location": "L146"
     },
     {
       "id": "routes_config_getgsdiagnosticinfo",
@@ -20,21 +33,35 @@
       "_callable": true,
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "getgsdiagnosticinfo()",
       "source_file": "routes/config.js",
-      "source_location": "L110"
+      "source_location": "L132"
     },
     {
-      "id": "routes_config_detectghostscript",
-      "label": "detectGhostscript()",
+      "id": "routes_config_isvalidpdfheader",
+      "label": "isValidPdfHeader()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "config.js",
+      "file_type": "code",
+      "norm_label": "isvalidpdfheader()",
+      "source_file": "routes/config.js",
+      "source_location": "L71"
+    },
+    {
+      "id": "routes_download_ispathsafe",
+      "label": "isPathSafe()",
       "_callable": true,
       "_origin": "ast",
       "community": 1,
+      "community_name": "pdfToImg.js",
       "file_type": "code",
-      "norm_label": "detectghostscript()",
-      "source_file": "routes/config.js",
-      "source_location": "L71"
+      "norm_label": "ispathsafe()",
+      "source_file": "routes/download.js",
+      "source_location": "L10"
     },
     {
       "id": "public_app_formatbytes",
@@ -42,10 +69,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "formatbytes()",
       "source_file": "public/app.js",
-      "source_location": "L188"
+      "source_location": "L204"
     },
     {
       "id": "public_app_handleunlockfileselect",
@@ -53,10 +81,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "handleunlockfileselect()",
       "source_file": "public/app.js",
-      "source_location": "L1134"
+      "source_location": "L1139"
     },
     {
       "id": "public_app_opentoolpanel",
@@ -64,10 +93,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "opentoolpanel()",
       "source_file": "public/app.js",
       "source_location": "L107"
+    },
+    {
+      "id": "public_app_parseresponsejson",
+      "label": "parseResponseJson()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "app.js",
+      "file_type": "code",
+      "norm_label": "parseresponsejson()",
+      "source_file": "public/app.js",
+      "source_location": "L165"
     },
     {
       "id": "public_app_pollprotectjobstatus",
@@ -75,10 +117,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "pollprotectjobstatus()",
       "source_file": "public/app.js",
-      "source_location": "L774"
+      "source_location": "L785"
     },
     {
       "id": "public_app_removeitem",
@@ -86,10 +129,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "removeitem()",
       "source_file": "public/app.js",
-      "source_location": "L660"
+      "source_location": "L672"
     },
     {
       "id": "public_app_renderimgqueue",
@@ -97,10 +141,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "renderimgqueue()",
       "source_file": "public/app.js",
-      "source_location": "L608"
+      "source_location": "L620"
     },
     {
       "id": "public_app_resetprotectui",
@@ -108,10 +153,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "resetprotectui()",
       "source_file": "public/app.js",
-      "source_location": "L803"
+      "source_location": "L813"
     },
     {
       "id": "public_app_rundiagnostics",
@@ -119,10 +165,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "rundiagnostics()",
       "source_file": "public/app.js",
-      "source_location": "L167"
+      "source_location": "L185"
     },
     {
       "id": "public_app_setupdraganddrop",
@@ -130,10 +177,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "setupdraganddrop()",
       "source_file": "public/app.js",
-      "source_location": "L200"
+      "source_location": "L216"
     },
     {
       "id": "public_app_swapitems",
@@ -141,10 +189,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "swapitems()",
       "source_file": "public/app.js",
-      "source_location": "L653"
+      "source_location": "L665"
     },
     {
       "id": "public_app_updatecompressbuttonstate",
@@ -152,10 +201,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "updatecompressbuttonstate()",
       "source_file": "public/app.js",
-      "source_location": "L279"
+      "source_location": "L295"
     },
     {
       "id": "public_app_updateimgtopdfbtnstate",
@@ -163,10 +213,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "updateimgtopdfbtnstate()",
       "source_file": "public/app.js",
-      "source_location": "L667"
+      "source_location": "L679"
     },
     {
       "id": "public_app_updatepdftoimgbuttonstate",
@@ -174,10 +225,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "updatepdftoimgbuttonstate()",
       "source_file": "public/app.js",
-      "source_location": "L461"
+      "source_location": "L474"
     },
     {
       "id": "public_app_updateprotectbuttonstate",
@@ -185,10 +237,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "updateprotectbuttonstate()",
       "source_file": "public/app.js",
-      "source_location": "L734"
+      "source_location": "L745"
+    },
+    {
+      "id": "routes_officetopdf_officeuploadmiddleware",
+      "label": "officeUploadMiddleware()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 4,
+      "community_name": "officeToPdf.js",
+      "file_type": "code",
+      "norm_label": "officeuploadmiddleware()",
+      "source_file": "routes/officeToPdf.js",
+      "source_location": "L11"
     },
     {
       "id": "compress_compress_pdf",
@@ -196,6 +261,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
+      "community_name": "compress.py",
       "file_type": "code",
       "norm_label": "compress_pdf()",
       "source_file": "compress.py",
@@ -207,6 +273,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
+      "community_name": "compress.py",
       "file_type": "code",
       "norm_label": "find_ghostscript()",
       "source_file": "compress.py",
@@ -217,6 +284,7 @@
       "label": "compressPdf.js",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "compresspdf.js",
       "source_file": "routes/compressPdf.js",
@@ -227,6 +295,7 @@
       "label": "express",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "express",
       "source_file": "routes/compressPdf.js",
@@ -237,18 +306,20 @@
       "label": "fs",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "fs",
       "source_file": "routes/compressPdf.js",
       "source_location": "L4"
     },
     {
-      "id": "routes_compresspdf_jobs_upload_compressed_dir_execghostscript_getgsdiagnosticinfo",
-      "label": "{ jobs, upload, COMPRESSED_DIR, execGhostscript, getGsDiagnosticInfo }",
+      "id": "routes_compresspdf_jobs_upload_compressed_dir_execghostscript_getgsdiagnosticinfo_isvalidpdfheader",
+      "label": "{ jobs, upload, COMPRESSED_DIR, execGhostscript, getGsDiagnosticInfo, isValidPdfHeader }",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
-      "norm_label": "{ jobs, upload, compressed_dir, execghostscript, getgsdiagnosticinfo }",
+      "norm_label": "{ jobs, upload, compressed_dir, execghostscript, getgsdiagnosticinfo, isvalidpdfheader }",
       "source_file": "routes/compressPdf.js",
       "source_location": "L5"
     },
@@ -257,6 +328,7 @@
       "label": "path",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "path",
       "source_file": "routes/compressPdf.js",
@@ -267,106 +339,117 @@
       "label": "router",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "router",
       "source_file": "routes/compressPdf.js",
       "source_location": "L2"
     },
     {
+      "id": "routes_config",
+      "label": "config.js",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "config.js",
+      "file_type": "code",
+      "norm_label": "config.js",
+      "source_file": "routes/config.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "routes_config_fs",
+      "label": "fs",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "config.js",
+      "file_type": "code",
+      "norm_label": "fs",
+      "source_file": "routes/config.js",
+      "source_location": "L2"
+    },
+    {
+      "id": "routes_config_isgsinstalled",
+      "label": "isGsInstalled",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "config.js",
+      "file_type": "code",
+      "norm_label": "isgsinstalled",
+      "source_file": "routes/config.js",
+      "source_location": "L130"
+    },
+    {
       "id": "routes_config_jobs",
       "label": "jobs",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "jobs",
       "source_file": "routes/config.js",
       "source_location": "L13"
     },
     {
+      "id": "routes_config_multer",
+      "label": "multer",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "config.js",
+      "file_type": "code",
+      "norm_label": "multer",
+      "source_file": "routes/config.js",
+      "source_location": "L3"
+    },
+    {
+      "id": "routes_config_path",
+      "label": "path",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "config.js",
+      "file_type": "code",
+      "norm_label": "path",
+      "source_file": "routes/config.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "routes_config_spawn",
+      "label": "{ spawn }",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "config.js",
+      "file_type": "code",
+      "norm_label": "{ spawn }",
+      "source_file": "routes/config.js",
+      "source_location": "L4"
+    },
+    {
+      "id": "routes_config_storage",
+      "label": "storage",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "config.js",
+      "file_type": "code",
+      "norm_label": "storage",
+      "source_file": "routes/config.js",
+      "source_location": "L16"
+    },
+    {
       "id": "routes_config_upload",
       "label": "upload",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "upload",
       "source_file": "routes/config.js",
-      "source_location": "L25"
-    },
-    {
-      "id": "routes_pdftoimg",
-      "label": "pdfToImg.js",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "pdftoimg.js",
-      "source_file": "routes/pdfToImg.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "routes_pdftoimg_admzip",
-      "label": "AdmZip",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "admzip",
-      "source_file": "routes/pdfToImg.js",
-      "source_location": "L5"
-    },
-    {
-      "id": "routes_pdftoimg_express",
-      "label": "express",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "express",
-      "source_file": "routes/pdfToImg.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "routes_pdftoimg_fs",
-      "label": "fs",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "fs",
-      "source_file": "routes/pdfToImg.js",
-      "source_location": "L4"
-    },
-    {
-      "id": "routes_pdftoimg_jobs_upload_compressed_dir_execghostscript",
-      "label": "{ jobs, upload, COMPRESSED_DIR, execGhostscript }",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "{ jobs, upload, compressed_dir, execghostscript }",
-      "source_file": "routes/pdfToImg.js",
-      "source_location": "L6"
-    },
-    {
-      "id": "routes_pdftoimg_path",
-      "label": "path",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "path",
-      "source_file": "routes/pdfToImg.js",
-      "source_location": "L3"
-    },
-    {
-      "id": "routes_pdftoimg_router",
-      "label": "router",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "router",
-      "source_file": "routes/pdfToImg.js",
-      "source_location": "L2"
+      "source_location": "L27"
     },
     {
       "id": "routes_protectpdf",
       "label": "protectPdf.js",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "protectpdf.js",
       "source_file": "routes/protectPdf.js",
@@ -377,6 +460,7 @@
       "label": "express",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "express",
       "source_file": "routes/protectPdf.js",
@@ -387,18 +471,20 @@
       "label": "fs",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "fs",
       "source_file": "routes/protectPdf.js",
       "source_location": "L4"
     },
     {
-      "id": "routes_protectpdf_jobs_upload_compressed_dir_execghostscript",
-      "label": "{ jobs, upload, COMPRESSED_DIR, execGhostscript }",
+      "id": "routes_protectpdf_jobs_upload_compressed_dir_execghostscript_isvalidpdfheader",
+      "label": "{ jobs, upload, COMPRESSED_DIR, execGhostscript, isValidPdfHeader }",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
-      "norm_label": "{ jobs, upload, compressed_dir, execghostscript }",
+      "norm_label": "{ jobs, upload, compressed_dir, execghostscript, isvalidpdfheader }",
       "source_file": "routes/protectPdf.js",
       "source_location": "L5"
     },
@@ -407,6 +493,7 @@
       "label": "path",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "path",
       "source_file": "routes/protectPdf.js",
@@ -417,186 +504,18 @@
       "label": "router",
       "_origin": "ast",
       "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "router",
       "source_file": "routes/protectPdf.js",
       "source_location": "L2"
     },
     {
-      "id": "ref_adm_zip",
-      "label": "adm-zip",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "concept",
-      "norm_label": "adm-zip",
-      "source_file": "package.json",
-      "source_location": "L20"
-    },
-    {
-      "id": "routes_config",
-      "label": "config.js",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "config.js",
-      "source_file": "routes/config.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "routes_config_fs",
-      "label": "fs",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "fs",
-      "source_file": "routes/config.js",
-      "source_location": "L2"
-    },
-    {
-      "id": "routes_config_isgsinstalled",
-      "label": "isGsInstalled",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "isgsinstalled",
-      "source_file": "routes/config.js",
-      "source_location": "L108"
-    },
-    {
-      "id": "routes_config_multer",
-      "label": "multer",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "multer",
-      "source_file": "routes/config.js",
-      "source_location": "L3"
-    },
-    {
-      "id": "routes_config_path",
-      "label": "path",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "path",
-      "source_file": "routes/config.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "routes_config_spawn",
-      "label": "{ spawn }",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "{ spawn }",
-      "source_file": "routes/config.js",
-      "source_location": "L4"
-    },
-    {
-      "id": "routes_config_storage",
-      "label": "storage",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "storage",
-      "source_file": "routes/config.js",
-      "source_location": "L16"
-    },
-    {
-      "id": "routes_config_uploads_dir",
-      "label": "UPLOADS_DIR",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "uploads_dir",
-      "source_file": "routes/config.js",
-      "source_location": "L7"
-    },
-    {
-      "id": "server",
-      "label": "server.js",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "server.js",
-      "source_file": "server.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "server_app",
-      "label": "app",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "app",
-      "source_file": "server.js",
-      "source_location": "L9"
-    },
-    {
-      "id": "server_express",
-      "label": "express",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "express",
-      "source_file": "server.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "server_fs",
-      "label": "fs",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "fs",
-      "source_file": "server.js",
-      "source_location": "L3"
-    },
-    {
-      "id": "server_multer",
-      "label": "multer",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "multer",
-      "source_file": "server.js",
-      "source_location": "L4"
-    },
-    {
-      "id": "server_path",
-      "label": "path",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "path",
-      "source_file": "server.js",
-      "source_location": "L2"
-    },
-    {
-      "id": "server_uploads_dir_compressed_dir_jobs",
-      "label": "{ UPLOADS_DIR, COMPRESSED_DIR, jobs }",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "{ uploads_dir, compressed_dir, jobs }",
-      "source_file": "server.js",
-      "source_location": "L7"
-    },
-    {
-      "id": "ref_multer",
-      "label": "multer",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "concept",
-      "norm_label": "multer",
-      "source_file": "package.json",
-      "source_location": "L25"
-    },
-    {
       "id": "routes_unlockpdf",
       "label": "unlockPdf.js",
       "_origin": "ast",
-      "community": 10,
+      "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "unlockpdf.js",
       "source_file": "routes/unlockPdf.js",
@@ -606,7 +525,8 @@
       "id": "routes_unlockpdf_express",
       "label": "express",
       "_origin": "ast",
-      "community": 10,
+      "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "express",
       "source_file": "routes/unlockPdf.js",
@@ -616,7 +536,8 @@
       "id": "routes_unlockpdf_fs",
       "label": "fs",
       "_origin": "ast",
-      "community": 10,
+      "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "fs",
       "source_file": "routes/unlockPdf.js",
@@ -626,7 +547,8 @@
       "id": "routes_unlockpdf_path",
       "label": "path",
       "_origin": "ast",
-      "community": 10,
+      "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "path",
       "source_file": "routes/unlockPdf.js",
@@ -636,7 +558,8 @@
       "id": "routes_unlockpdf_pdfdocument",
       "label": "{ PDFDocument }",
       "_origin": "ast",
-      "community": 10,
+      "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "{ pdfdocument }",
       "source_file": "routes/unlockPdf.js",
@@ -646,19 +569,21 @@
       "id": "routes_unlockpdf_router",
       "label": "router",
       "_origin": "ast",
-      "community": 10,
+      "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
       "norm_label": "router",
       "source_file": "routes/unlockPdf.js",
       "source_location": "L2"
     },
     {
-      "id": "routes_unlockpdf_upload_compressed_dir_execghostscript",
-      "label": "{ upload, COMPRESSED_DIR, execGhostscript }",
+      "id": "routes_unlockpdf_upload_compressed_dir_execghostscript_isvalidpdfheader",
+      "label": "{ upload, COMPRESSED_DIR, execGhostscript, isValidPdfHeader }",
       "_origin": "ast",
-      "community": 10,
+      "community": 0,
+      "community_name": "config.js",
       "file_type": "code",
-      "norm_label": "{ upload, compressed_dir, execghostscript }",
+      "norm_label": "{ upload, compressed_dir, execghostscript, isvalidpdfheader }",
       "source_file": "routes/unlockPdf.js",
       "source_location": "L6"
     },
@@ -666,167 +591,262 @@
       "id": "ref_pdf_lib",
       "label": "pdf-lib",
       "_origin": "ast",
-      "community": 10,
+      "community": 0,
+      "community_name": "config.js",
       "file_type": "concept",
       "norm_label": "pdf-lib",
       "source_file": "package.json",
-      "source_location": "L26"
+      "source_location": "L28"
     },
     {
-      "id": "routes_config_uploadimages",
-      "label": "uploadImages",
+      "id": "routes_config_uploads_dir",
+      "label": "UPLOADS_DIR",
       "_origin": "ast",
-      "community": 11,
+      "community": 1,
+      "community_name": "pdfToImg.js",
       "file_type": "code",
-      "norm_label": "uploadimages",
+      "norm_label": "uploads_dir",
       "source_file": "routes/config.js",
-      "source_location": "L38"
+      "source_location": "L7"
     },
     {
-      "id": "routes_imgtopdf",
-      "label": "imgToPdf.js",
+      "id": "routes_download",
+      "label": "download.js",
       "_origin": "ast",
-      "community": 11,
+      "community": 1,
+      "community_name": "pdfToImg.js",
       "file_type": "code",
-      "norm_label": "imgtopdf.js",
-      "source_file": "routes/imgToPdf.js",
+      "norm_label": "download.js",
+      "source_file": "routes/download.js",
       "source_location": "L1"
     },
     {
-      "id": "routes_imgtopdf_express",
-      "label": "express",
+      "id": "routes_download_allowed_extensions",
+      "label": "ALLOWED_EXTENSIONS",
       "_origin": "ast",
-      "community": 11,
+      "community": 1,
+      "community_name": "pdfToImg.js",
       "file_type": "code",
-      "norm_label": "express",
-      "source_file": "routes/imgToPdf.js",
-      "source_location": "L1"
+      "norm_label": "allowed_extensions",
+      "source_file": "routes/download.js",
+      "source_location": "L8"
     },
     {
-      "id": "routes_imgtopdf_fs",
-      "label": "fs",
+      "id": "routes_download_compressed_dir_uploads_dir",
+      "label": "{ COMPRESSED_DIR, UPLOADS_DIR }",
       "_origin": "ast",
-      "community": 11,
+      "community": 1,
+      "community_name": "pdfToImg.js",
       "file_type": "code",
-      "norm_label": "fs",
-      "source_file": "routes/imgToPdf.js",
-      "source_location": "L4"
-    },
-    {
-      "id": "routes_imgtopdf_path",
-      "label": "path",
-      "_origin": "ast",
-      "community": 11,
-      "file_type": "code",
-      "norm_label": "path",
-      "source_file": "routes/imgToPdf.js",
-      "source_location": "L3"
-    },
-    {
-      "id": "routes_imgtopdf_pdfdocument",
-      "label": "{ PDFDocument }",
-      "_origin": "ast",
-      "community": 11,
-      "file_type": "code",
-      "norm_label": "{ pdfdocument }",
-      "source_file": "routes/imgToPdf.js",
+      "norm_label": "{ compressed_dir, uploads_dir }",
+      "source_file": "routes/download.js",
       "source_location": "L5"
     },
     {
-      "id": "routes_imgtopdf_router",
-      "label": "router",
-      "_origin": "ast",
-      "community": 11,
-      "file_type": "code",
-      "norm_label": "router",
-      "source_file": "routes/imgToPdf.js",
-      "source_location": "L2"
-    },
-    {
-      "id": "routes_imgtopdf_uploadimages_compressed_dir",
-      "label": "{ uploadImages, COMPRESSED_DIR }",
-      "_origin": "ast",
-      "community": 11,
-      "file_type": "code",
-      "norm_label": "{ uploadimages, compressed_dir }",
-      "source_file": "routes/imgToPdf.js",
-      "source_location": "L6"
-    },
-    {
-      "id": "routes_compressimg",
-      "label": "compressImg.js",
-      "_origin": "ast",
-      "community": 12,
-      "file_type": "code",
-      "norm_label": "compressimg.js",
-      "source_file": "routes/compressImg.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "routes_compressimg_express",
+      "id": "routes_download_express",
       "label": "express",
       "_origin": "ast",
-      "community": 12,
+      "community": 1,
+      "community_name": "pdfToImg.js",
       "file_type": "code",
       "norm_label": "express",
-      "source_file": "routes/compressImg.js",
+      "source_file": "routes/download.js",
       "source_location": "L1"
     },
     {
-      "id": "routes_compressimg_fs",
+      "id": "routes_download_fs",
       "label": "fs",
       "_origin": "ast",
-      "community": 12,
+      "community": 1,
+      "community_name": "pdfToImg.js",
       "file_type": "code",
       "norm_label": "fs",
-      "source_file": "routes/compressImg.js",
+      "source_file": "routes/download.js",
       "source_location": "L4"
     },
     {
-      "id": "routes_compressimg_path",
+      "id": "routes_download_path",
       "label": "path",
       "_origin": "ast",
-      "community": 12,
+      "community": 1,
+      "community_name": "pdfToImg.js",
       "file_type": "code",
       "norm_label": "path",
-      "source_file": "routes/compressImg.js",
+      "source_file": "routes/download.js",
       "source_location": "L3"
     },
     {
-      "id": "routes_compressimg_router",
+      "id": "routes_download_router",
       "label": "router",
       "_origin": "ast",
-      "community": 12,
+      "community": 1,
+      "community_name": "pdfToImg.js",
       "file_type": "code",
       "norm_label": "router",
-      "source_file": "routes/compressImg.js",
+      "source_file": "routes/download.js",
       "source_location": "L2"
     },
     {
-      "id": "routes_compressimg_uploadimages_compressed_dir",
-      "label": "{ uploadImages, COMPRESSED_DIR }",
+      "id": "routes_pdftoimg",
+      "label": "pdfToImg.js",
       "_origin": "ast",
-      "community": 12,
+      "community": 1,
+      "community_name": "pdfToImg.js",
       "file_type": "code",
-      "norm_label": "{ uploadimages, compressed_dir }",
-      "source_file": "routes/compressImg.js",
-      "source_location": "L11"
+      "norm_label": "pdftoimg.js",
+      "source_file": "routes/pdfToImg.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "routes_pdftoimg_admzip",
+      "label": "AdmZip",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "pdfToImg.js",
+      "file_type": "code",
+      "norm_label": "admzip",
+      "source_file": "routes/pdfToImg.js",
+      "source_location": "L5"
+    },
+    {
+      "id": "routes_pdftoimg_express",
+      "label": "express",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "pdfToImg.js",
+      "file_type": "code",
+      "norm_label": "express",
+      "source_file": "routes/pdfToImg.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "routes_pdftoimg_fs",
+      "label": "fs",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "pdfToImg.js",
+      "file_type": "code",
+      "norm_label": "fs",
+      "source_file": "routes/pdfToImg.js",
+      "source_location": "L4"
+    },
+    {
+      "id": "routes_pdftoimg_path",
+      "label": "path",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "pdfToImg.js",
+      "file_type": "code",
+      "norm_label": "path",
+      "source_file": "routes/pdfToImg.js",
+      "source_location": "L3"
+    },
+    {
+      "id": "routes_pdftoimg_router",
+      "label": "router",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "pdfToImg.js",
+      "file_type": "code",
+      "norm_label": "router",
+      "source_file": "routes/pdfToImg.js",
+      "source_location": "L2"
+    },
+    {
+      "id": "routes_pdftoimg_upload_uploads_dir_compressed_dir_execghostscript_isvalidpdfheader",
+      "label": "{ upload, UPLOADS_DIR, COMPRESSED_DIR, execGhostscript, isValidPdfHeader }",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "pdfToImg.js",
+      "file_type": "code",
+      "norm_label": "{ upload, uploads_dir, compressed_dir, execghostscript, isvalidpdfheader }",
+      "source_file": "routes/pdfToImg.js",
+      "source_location": "L6"
+    },
+    {
+      "id": "ref_adm_zip",
+      "label": "adm-zip",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "pdfToImg.js",
+      "file_type": "concept",
+      "norm_label": "adm-zip",
+      "source_file": "package.json",
+      "source_location": "L19"
     },
     {
       "id": "ref_express",
       "label": "express",
       "_origin": "ast",
-      "community": 12,
+      "community": 1,
+      "community_name": "pdfToImg.js",
       "file_type": "concept",
       "norm_label": "express",
       "source_file": "package.json",
       "source_location": "L23"
     },
     {
+      "id": "agents_rules_graphify",
+      "label": "rules/graphify.md",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "rules/graphify.md",
+      "file_type": "document",
+      "frontmatter": {
+        "trigger": "always_on",
+        "description": "Consult the graphify knowledge graph at graphify-out/ for codebase and architecture questions."
+      },
+      "node_kind": "page",
+      "norm_label": "rules/graphify.md",
+      "source_file": ".agents/rules/graphify.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "agents_rules_graphify_graphify",
+      "label": "graphify",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "rules/graphify.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "graphify",
+      "source_file": ".agents/rules/graphify.md",
+      "source_location": "L6"
+    },
+    {
+      "id": "agents_workflows_graphify",
+      "label": "workflows/graphify.md",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "workflows/graphify.md",
+      "file_type": "document",
+      "frontmatter": {
+        "name": "graphify",
+        "description": "Turn any folder of files into a navigable knowledge graph"
+      },
+      "node_kind": "page",
+      "norm_label": "workflows/graphify.md",
+      "source_file": ".agents/workflows/graphify.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "agents_workflows_graphify_workflow_graphify",
+      "label": "Workflow: graphify",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "workflows/graphify.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "workflow: graphify",
+      "source_file": ".agents/workflows/graphify.md",
+      "source_location": "L6"
+    },
+    {
       "id": "package",
       "label": "package.json",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "code",
       "norm_label": "package.json",
       "source_file": "package.json",
@@ -837,6 +857,7 @@
       "label": "author",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "code",
       "norm_label": "author",
       "source_file": "package.json",
@@ -847,6 +868,7 @@
       "label": "description",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "code",
       "norm_label": "description",
       "source_file": "package.json",
@@ -857,6 +879,7 @@
       "label": "keywords",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "code",
       "norm_label": "keywords",
       "source_file": "package.json",
@@ -867,6 +890,7 @@
       "label": "license",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "code",
       "norm_label": "license",
       "source_file": "package.json",
@@ -877,6 +901,7 @@
       "label": "main",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "code",
       "norm_label": "main",
       "source_file": "package.json",
@@ -887,16 +912,62 @@
       "label": "name",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "code",
       "norm_label": "name",
       "source_file": "package.json",
       "source_location": "L2"
     },
     {
+      "id": "package_optionaldependencies",
+      "label": "optionalDependencies",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "optionaldependencies",
+      "source_file": "package.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "package_optionaldependencies_img_sharp_linux_x64",
+      "label": "@img/sharp-linux-x64",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "@img/sharp-linux-x64",
+      "source_file": "package.json",
+      "source_location": "L33"
+    },
+    {
+      "id": "package_overrides",
+      "label": "overrides",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "overrides",
+      "source_file": "package.json",
+      "source_location": "L35"
+    },
+    {
+      "id": "package_overrides_uuid",
+      "label": "uuid",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "uuid",
+      "source_file": "package.json",
+      "source_location": "L36"
+    },
+    {
       "id": "package_scripts",
       "label": "scripts",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "code",
       "norm_label": "scripts",
       "source_file": "package.json",
@@ -907,6 +978,7 @@
       "label": "dev",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "code",
       "norm_label": "dev",
       "source_file": "package.json",
@@ -917,6 +989,7 @@
       "label": "start",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "code",
       "norm_label": "start",
       "source_file": "package.json",
@@ -927,56 +1000,205 @@
       "label": "version",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "code",
       "norm_label": "version",
       "source_file": "package.json",
       "source_location": "L3"
     },
     {
-      "id": "ref_docx",
-      "label": "docx",
+      "id": "server",
+      "label": "server.js",
       "_origin": "ast",
       "community": 2,
-      "file_type": "concept",
-      "norm_label": "docx",
-      "source_file": "package.json",
-      "source_location": "L21"
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "server.js",
+      "source_file": "server.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "server_apilimiter",
+      "label": "apiLimiter",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "apilimiter",
+      "source_file": "server.js",
+      "source_location": "L24"
+    },
+    {
+      "id": "server_app",
+      "label": "app",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "app",
+      "source_file": "server.js",
+      "source_location": "L11"
+    },
+    {
+      "id": "server_express",
+      "label": "express",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "express",
+      "source_file": "server.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "server_fs",
+      "label": "fs",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "fs",
+      "source_file": "server.js",
+      "source_location": "L3"
+    },
+    {
+      "id": "server_helmet",
+      "label": "helmet",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "helmet",
+      "source_file": "server.js",
+      "source_location": "L5"
+    },
+    {
+      "id": "server_multer",
+      "label": "multer",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "multer",
+      "source_file": "server.js",
+      "source_location": "L4"
+    },
+    {
+      "id": "server_path",
+      "label": "path",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "path",
+      "source_file": "server.js",
+      "source_location": "L2"
+    },
+    {
+      "id": "server_ratelimit",
+      "label": "rateLimit",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "ratelimit",
+      "source_file": "server.js",
+      "source_location": "L6"
+    },
+    {
+      "id": "server_sweeperinterval",
+      "label": "sweeperInterval",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "sweeperinterval",
+      "source_file": "server.js",
+      "source_location": "L76"
+    },
+    {
+      "id": "server_uploads_dir_compressed_dir_jobs",
+      "label": "{ UPLOADS_DIR, COMPRESSED_DIR, jobs }",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "{ uploads_dir, compressed_dir, jobs }",
+      "source_file": "server.js",
+      "source_location": "L9"
     },
     {
       "id": "ref_dotenv",
       "label": "dotenv",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "concept",
       "norm_label": "dotenv",
       "source_file": "package.json",
-      "source_location": "L22"
+      "source_location": "L21"
+    },
+    {
+      "id": "ref_express_rate_limit",
+      "label": "express-rate-limit",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "concept",
+      "norm_label": "express-rate-limit",
+      "source_file": "package.json",
+      "source_location": "L24"
+    },
+    {
+      "id": "ref_helmet",
+      "label": "helmet",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "concept",
+      "norm_label": "helmet",
+      "source_file": "package.json",
+      "source_location": "L25"
     },
     {
       "id": "ref_img_sharp_linux_x64",
       "label": "@img/sharp-linux-x64",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "concept",
       "norm_label": "@img/sharp-linux-x64",
       "source_file": "package.json",
-      "source_location": "L19"
+      "source_location": "L33"
+    },
+    {
+      "id": "ref_multer",
+      "label": "multer",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "concept",
+      "norm_label": "multer",
+      "source_file": "package.json",
+      "source_location": "L27"
     },
     {
       "id": "ref_sharp",
       "label": "sharp",
       "_origin": "ast",
       "community": 2,
+      "community_name": "package.json",
       "file_type": "concept",
       "norm_label": "sharp",
       "source_file": "package.json",
-      "source_location": "L28"
+      "source_location": "L30"
     },
     {
       "id": "public_app",
       "label": "app.js",
       "_origin": "ast",
       "community": 3,
+      "community_name": "app.js",
       "file_type": "code",
       "norm_label": "app.js",
       "source_file": "public/app.js",
@@ -987,16 +1209,18 @@
       "label": "uploadOffice",
       "_origin": "ast",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "file_type": "code",
       "norm_label": "uploadoffice",
       "source_file": "routes/config.js",
-      "source_location": "L53"
+      "source_location": "L56"
     },
     {
       "id": "routes_officetopdf",
       "label": "officeToPdf.js",
       "_origin": "ast",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "file_type": "code",
       "norm_label": "officetopdf.js",
       "source_file": "routes/officeToPdf.js",
@@ -1007,6 +1231,7 @@
       "label": "express",
       "_origin": "ast",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "file_type": "code",
       "norm_label": "express",
       "source_file": "routes/officeToPdf.js",
@@ -1017,6 +1242,7 @@
       "label": "fs",
       "_origin": "ast",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "file_type": "code",
       "norm_label": "fs",
       "source_file": "routes/officeToPdf.js",
@@ -1027,6 +1253,7 @@
       "label": "libre",
       "_origin": "ast",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "file_type": "code",
       "norm_label": "libre",
       "source_file": "routes/officeToPdf.js",
@@ -1037,6 +1264,7 @@
       "label": "libreConvert",
       "_origin": "ast",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "file_type": "code",
       "norm_label": "libreconvert",
       "source_file": "routes/officeToPdf.js",
@@ -1047,6 +1275,7 @@
       "label": "path",
       "_origin": "ast",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "file_type": "code",
       "norm_label": "path",
       "source_file": "routes/officeToPdf.js",
@@ -1057,6 +1286,7 @@
       "label": "{ PDFDocument, StandardFonts, rgb }",
       "_origin": "ast",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "file_type": "code",
       "norm_label": "{ pdfdocument, standardfonts, rgb }",
       "source_file": "routes/officeToPdf.js",
@@ -1067,6 +1297,7 @@
       "label": "router",
       "_origin": "ast",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "file_type": "code",
       "norm_label": "router",
       "source_file": "routes/officeToPdf.js",
@@ -1077,6 +1308,7 @@
       "label": "{ uploadOffice, COMPRESSED_DIR }",
       "_origin": "ast",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "file_type": "code",
       "norm_label": "{ uploadoffice, compressed_dir }",
       "source_file": "routes/officeToPdf.js",
@@ -1087,6 +1319,7 @@
       "label": "util",
       "_origin": "ast",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "file_type": "code",
       "norm_label": "util",
       "source_file": "routes/officeToPdf.js",
@@ -1097,16 +1330,18 @@
       "label": "libreoffice-convert",
       "_origin": "ast",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "file_type": "concept",
       "norm_label": "libreoffice-convert",
       "source_file": "package.json",
-      "source_location": "L24"
+      "source_location": "L26"
     },
     {
       "id": "package_dependencies",
       "label": "dependencies",
       "_origin": "ast",
       "community": 5,
+      "community_name": "dependencies",
       "file_type": "code",
       "norm_label": "dependencies",
       "source_file": "package.json",
@@ -1117,28 +1352,42 @@
       "label": "adm-zip",
       "_origin": "ast",
       "community": 5,
+      "community_name": "dependencies",
       "file_type": "code",
       "norm_label": "adm-zip",
       "source_file": "package.json",
-      "source_location": "L20"
+      "source_location": "L19"
     },
     {
       "id": "package_dependencies_docx",
       "label": "docx",
       "_origin": "ast",
       "community": 5,
+      "community_name": "dependencies",
       "file_type": "code",
       "norm_label": "docx",
       "source_file": "package.json",
-      "source_location": "L21"
+      "source_location": "L20"
     },
     {
       "id": "package_dependencies_dotenv",
       "label": "dotenv",
       "_origin": "ast",
       "community": 5,
+      "community_name": "dependencies",
       "file_type": "code",
       "norm_label": "dotenv",
+      "source_file": "package.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "package_dependencies_exceljs",
+      "label": "exceljs",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "exceljs",
       "source_file": "package.json",
       "source_location": "L22"
     },
@@ -1147,96 +1396,117 @@
       "label": "express",
       "_origin": "ast",
       "community": 5,
+      "community_name": "dependencies",
       "file_type": "code",
       "norm_label": "express",
       "source_file": "package.json",
       "source_location": "L23"
     },
     {
-      "id": "package_dependencies_img_sharp_linux_x64",
-      "label": "@img/sharp-linux-x64",
+      "id": "package_dependencies_express_rate_limit",
+      "label": "express-rate-limit",
       "_origin": "ast",
       "community": 5,
+      "community_name": "dependencies",
       "file_type": "code",
-      "norm_label": "@img/sharp-linux-x64",
+      "norm_label": "express-rate-limit",
       "source_file": "package.json",
-      "source_location": "L19"
+      "source_location": "L24"
+    },
+    {
+      "id": "package_dependencies_helmet",
+      "label": "helmet",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "helmet",
+      "source_file": "package.json",
+      "source_location": "L25"
     },
     {
       "id": "package_dependencies_libreoffice_convert",
       "label": "libreoffice-convert",
       "_origin": "ast",
       "community": 5,
+      "community_name": "dependencies",
       "file_type": "code",
       "norm_label": "libreoffice-convert",
       "source_file": "package.json",
-      "source_location": "L24"
+      "source_location": "L26"
     },
     {
       "id": "package_dependencies_multer",
       "label": "multer",
       "_origin": "ast",
       "community": 5,
+      "community_name": "dependencies",
       "file_type": "code",
       "norm_label": "multer",
       "source_file": "package.json",
-      "source_location": "L25"
+      "source_location": "L27"
     },
     {
       "id": "package_dependencies_pdf_lib",
       "label": "pdf-lib",
       "_origin": "ast",
       "community": 5,
+      "community_name": "dependencies",
       "file_type": "code",
       "norm_label": "pdf-lib",
       "source_file": "package.json",
-      "source_location": "L26"
+      "source_location": "L28"
     },
     {
       "id": "package_dependencies_pdf_parse",
       "label": "pdf-parse",
       "_origin": "ast",
       "community": 5,
+      "community_name": "dependencies",
       "file_type": "code",
       "norm_label": "pdf-parse",
       "source_file": "package.json",
-      "source_location": "L27"
+      "source_location": "L29"
     },
     {
       "id": "package_dependencies_sharp",
       "label": "sharp",
       "_origin": "ast",
       "community": 5,
+      "community_name": "dependencies",
       "file_type": "code",
       "norm_label": "sharp",
       "source_file": "package.json",
-      "source_location": "L28"
-    },
-    {
-      "id": "package_dependencies_xlsx",
-      "label": "xlsx",
-      "_origin": "ast",
-      "community": 5,
-      "file_type": "code",
-      "norm_label": "xlsx",
-      "source_file": "package.json",
-      "source_location": "L29"
+      "source_location": "L30"
     },
     {
       "id": "routes_pdftoexcel",
       "label": "pdfToExcel.js",
       "_origin": "ast",
       "community": 6,
+      "community_name": "pdfToExcel.js",
       "file_type": "code",
       "norm_label": "pdftoexcel.js",
       "source_file": "routes/pdfToExcel.js",
       "source_location": "L1"
     },
     {
+      "id": "routes_pdftoexcel_exceljs",
+      "label": "ExcelJS",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "pdfToExcel.js",
+      "file_type": "code",
+      "norm_label": "exceljs",
+      "source_file": "routes/pdfToExcel.js",
+      "source_location": "L5"
+    },
+    {
       "id": "routes_pdftoexcel_express",
       "label": "express",
       "_origin": "ast",
       "community": 6,
+      "community_name": "pdfToExcel.js",
       "file_type": "code",
       "norm_label": "express",
       "source_file": "routes/pdfToExcel.js",
@@ -1247,6 +1517,7 @@
       "label": "fs",
       "_origin": "ast",
       "community": 6,
+      "community_name": "pdfToExcel.js",
       "file_type": "code",
       "norm_label": "fs",
       "source_file": "routes/pdfToExcel.js",
@@ -1257,6 +1528,7 @@
       "label": "path",
       "_origin": "ast",
       "community": 6,
+      "community_name": "pdfToExcel.js",
       "file_type": "code",
       "norm_label": "path",
       "source_file": "routes/pdfToExcel.js",
@@ -1267,6 +1539,7 @@
       "label": "pdfParse",
       "_origin": "ast",
       "community": 6,
+      "community_name": "pdfToExcel.js",
       "file_type": "code",
       "norm_label": "pdfparse",
       "source_file": "routes/pdfToExcel.js",
@@ -1277,6 +1550,7 @@
       "label": "router",
       "_origin": "ast",
       "community": 6,
+      "community_name": "pdfToExcel.js",
       "file_type": "code",
       "norm_label": "router",
       "source_file": "routes/pdfToExcel.js",
@@ -1287,38 +1561,31 @@
       "label": "{ upload, COMPRESSED_DIR }",
       "_origin": "ast",
       "community": 6,
+      "community_name": "pdfToExcel.js",
       "file_type": "code",
       "norm_label": "{ upload, compressed_dir }",
       "source_file": "routes/pdfToExcel.js",
       "source_location": "L7"
     },
     {
-      "id": "routes_pdftoexcel_xlsx",
-      "label": "XLSX",
+      "id": "ref_exceljs",
+      "label": "exceljs",
       "_origin": "ast",
       "community": 6,
-      "file_type": "code",
-      "norm_label": "xlsx",
-      "source_file": "routes/pdfToExcel.js",
-      "source_location": "L5"
+      "community_name": "pdfToExcel.js",
+      "file_type": "concept",
+      "norm_label": "exceljs",
+      "source_file": "package.json",
+      "source_location": "L22"
     },
     {
       "id": "ref_pdf_parse",
       "label": "pdf-parse",
       "_origin": "ast",
       "community": 6,
+      "community_name": "pdfToExcel.js",
       "file_type": "concept",
       "norm_label": "pdf-parse",
-      "source_file": "package.json",
-      "source_location": "L27"
-    },
-    {
-      "id": "ref_xlsx",
-      "label": "xlsx",
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "concept",
-      "norm_label": "xlsx",
       "source_file": "package.json",
       "source_location": "L29"
     },
@@ -1327,6 +1594,7 @@
       "label": "compress.py",
       "_origin": "ast",
       "community": 7,
+      "community_name": "compress.py",
       "file_type": "code",
       "norm_label": "compress.py",
       "source_file": "compress.py",
@@ -1337,6 +1605,7 @@
       "label": "Compresses a PDF using Ghostscript. quality: 'screen' (72 dpi), 'ebook' (150\u2026",
       "_origin": "ast",
       "community": 7,
+      "community_name": "compress.py",
       "file_type": "rationale",
       "norm_label": "compresses a pdf using ghostscript. quality: 'screen' (72 dpi), 'ebook' (150...",
       "source_file": "compress.py",
@@ -1347,16 +1616,183 @@
       "label": "Finds the Ghostscript executable on the system. Scans system PATH and common\u2026",
       "_origin": "ast",
       "community": 7,
+      "community_name": "compress.py",
       "file_type": "rationale",
       "norm_label": "finds the ghostscript executable on the system. scans system path and common...",
       "source_file": "compress.py",
       "source_location": "L7"
     },
     {
+      "id": "routes_compressimg",
+      "label": "compressImg.js",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "compressimg.js",
+      "source_file": "routes/compressImg.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "routes_compressimg_express",
+      "label": "express",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "express",
+      "source_file": "routes/compressImg.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "routes_compressimg_fs",
+      "label": "fs",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "fs",
+      "source_file": "routes/compressImg.js",
+      "source_location": "L4"
+    },
+    {
+      "id": "routes_compressimg_path",
+      "label": "path",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "path",
+      "source_file": "routes/compressImg.js",
+      "source_location": "L3"
+    },
+    {
+      "id": "routes_compressimg_router",
+      "label": "router",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "router",
+      "source_file": "routes/compressImg.js",
+      "source_location": "L2"
+    },
+    {
+      "id": "routes_compressimg_uploadimages_compressed_dir",
+      "label": "{ uploadImages, COMPRESSED_DIR }",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "{ uploadimages, compressed_dir }",
+      "source_file": "routes/compressImg.js",
+      "source_location": "L11"
+    },
+    {
+      "id": "routes_config_compressed_dir",
+      "label": "COMPRESSED_DIR",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "compressed_dir",
+      "source_file": "routes/config.js",
+      "source_location": "L8"
+    },
+    {
+      "id": "routes_config_uploadimages",
+      "label": "uploadImages",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "uploadimages",
+      "source_file": "routes/config.js",
+      "source_location": "L41"
+    },
+    {
+      "id": "routes_imgtopdf",
+      "label": "imgToPdf.js",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "imgtopdf.js",
+      "source_file": "routes/imgToPdf.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "routes_imgtopdf_express",
+      "label": "express",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "express",
+      "source_file": "routes/imgToPdf.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "routes_imgtopdf_fs",
+      "label": "fs",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "fs",
+      "source_file": "routes/imgToPdf.js",
+      "source_location": "L4"
+    },
+    {
+      "id": "routes_imgtopdf_path",
+      "label": "path",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "path",
+      "source_file": "routes/imgToPdf.js",
+      "source_location": "L3"
+    },
+    {
+      "id": "routes_imgtopdf_pdfdocument",
+      "label": "{ PDFDocument }",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "{ pdfdocument }",
+      "source_file": "routes/imgToPdf.js",
+      "source_location": "L5"
+    },
+    {
+      "id": "routes_imgtopdf_router",
+      "label": "router",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "router",
+      "source_file": "routes/imgToPdf.js",
+      "source_location": "L2"
+    },
+    {
+      "id": "routes_imgtopdf_uploadimages_compressed_dir",
+      "label": "{ uploadImages, COMPRESSED_DIR }",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "code",
+      "norm_label": "{ uploadimages, compressed_dir }",
+      "source_file": "routes/imgToPdf.js",
+      "source_location": "L12"
+    },
+    {
       "id": "routes_imgtoword",
       "label": "imgToWord.js",
       "_origin": "ast",
       "community": 8,
+      "community_name": "imgToPdf.js",
       "file_type": "code",
       "norm_label": "imgtoword.js",
       "source_file": "routes/imgToWord.js",
@@ -1367,6 +1803,7 @@
       "label": "docx",
       "_origin": "ast",
       "community": 8,
+      "community_name": "imgToPdf.js",
       "file_type": "code",
       "norm_label": "docx",
       "source_file": "routes/imgToWord.js",
@@ -1377,6 +1814,7 @@
       "label": "express",
       "_origin": "ast",
       "community": 8,
+      "community_name": "imgToPdf.js",
       "file_type": "code",
       "norm_label": "express",
       "source_file": "routes/imgToWord.js",
@@ -1387,6 +1825,7 @@
       "label": "fs",
       "_origin": "ast",
       "community": 8,
+      "community_name": "imgToPdf.js",
       "file_type": "code",
       "norm_label": "fs",
       "source_file": "routes/imgToWord.js",
@@ -1397,6 +1836,7 @@
       "label": "path",
       "_origin": "ast",
       "community": 8,
+      "community_name": "imgToPdf.js",
       "file_type": "code",
       "norm_label": "path",
       "source_file": "routes/imgToWord.js",
@@ -1407,6 +1847,7 @@
       "label": "router",
       "_origin": "ast",
       "community": 8,
+      "community_name": "imgToPdf.js",
       "file_type": "code",
       "norm_label": "router",
       "source_file": "routes/imgToWord.js",
@@ -1417,85 +1858,89 @@
       "label": "{ uploadImages, COMPRESSED_DIR }",
       "_origin": "ast",
       "community": 8,
+      "community_name": "imgToPdf.js",
       "file_type": "code",
       "norm_label": "{ uploadimages, compressed_dir }",
       "source_file": "routes/imgToWord.js",
       "source_location": "L12"
     },
     {
-      "id": "routes_config_compressed_dir",
-      "label": "COMPRESSED_DIR",
+      "id": "ref_docx",
+      "label": "docx",
       "_origin": "ast",
-      "community": 9,
-      "file_type": "code",
-      "norm_label": "compressed_dir",
-      "source_file": "routes/config.js",
-      "source_location": "L8"
+      "community": 8,
+      "community_name": "imgToPdf.js",
+      "file_type": "concept",
+      "norm_label": "docx",
+      "source_file": "package.json",
+      "source_location": "L20"
     },
     {
-      "id": "routes_download",
-      "label": "download.js",
+      "id": "jules_bolt",
+      "label": "bolt.md",
       "_origin": "ast",
       "community": 9,
-      "file_type": "code",
-      "norm_label": "download.js",
-      "source_file": "routes/download.js",
+      "community_name": "bolt.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "bolt.md",
+      "source_file": ".jules/bolt.md",
       "source_location": "L1"
     },
     {
-      "id": "routes_download_compressed_dir",
-      "label": "{ COMPRESSED_DIR }",
+      "id": "jules_bolt_2024_11_20_avoid_blocking_the_event_loop_in_periodic_tasks",
+      "label": "2024-11-20 - Avoid Blocking the Event Loop in Periodic Tasks",
       "_origin": "ast",
       "community": 9,
-      "file_type": "code",
-      "norm_label": "{ compressed_dir }",
-      "source_file": "routes/download.js",
-      "source_location": "L5"
+      "community_name": "bolt.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "2024-11-20 - avoid blocking the event loop in periodic tasks",
+      "source_file": ".jules/bolt.md",
+      "source_location": "L7"
     },
     {
-      "id": "routes_download_express",
-      "label": "express",
+      "id": "jules_bolt_2024_11_21_async_sequential_io_for_image_batching",
+      "label": "2024-11-21 - Async Sequential IO for Image Batching",
       "_origin": "ast",
       "community": 9,
-      "file_type": "code",
-      "norm_label": "express",
-      "source_file": "routes/download.js",
+      "community_name": "bolt.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "2024-11-21 - async sequential io for image batching",
+      "source_file": ".jules/bolt.md",
+      "source_location": "L11"
+    },
+    {
+      "id": "jules_bolt_2026_07_20_fix_duplicate_logic_causing_syntax_error",
+      "label": "2026-07-20 - Fix Duplicate Logic Causing Syntax Error",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "bolt.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "2026-07-20 - fix duplicate logic causing syntax error",
+      "source_file": ".jules/bolt.md",
       "source_location": "L1"
     },
     {
-      "id": "routes_download_fs",
-      "label": "fs",
+      "id": "jules_bolt_2026_08_29_non_blocking_file_operations_in_image_to_word_route",
+      "label": "2026-08-29 - Non-blocking File Operations in Image to Word Route",
       "_origin": "ast",
       "community": 9,
-      "file_type": "code",
-      "norm_label": "fs",
-      "source_file": "routes/download.js",
-      "source_location": "L4"
-    },
-    {
-      "id": "routes_download_path",
-      "label": "path",
-      "_origin": "ast",
-      "community": 9,
-      "file_type": "code",
-      "norm_label": "path",
-      "source_file": "routes/download.js",
-      "source_location": "L3"
-    },
-    {
-      "id": "routes_download_router",
-      "label": "router",
-      "_origin": "ast",
-      "community": 9,
-      "file_type": "code",
-      "norm_label": "router",
-      "source_file": "routes/download.js",
-      "source_location": "L2"
+      "community_name": "bolt.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "2026-08-29 - non-blocking file operations in image to word route",
+      "source_file": ".jules/bolt.md",
+      "source_location": "L15"
     },
     {
       "id": "ref_child_process",
       "label": "ref_child_process",
-      "community": 1,
+      "_origin": "semantic",
+      "community": 0,
+      "community_name": "config.js",
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_child_process",
@@ -1505,7 +1950,9 @@
     {
       "id": "ref_util",
       "label": "ref_util",
+      "_origin": "semantic",
       "community": 4,
+      "community_name": "officeToPdf.js",
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_util",
@@ -1515,7 +1962,9 @@
     {
       "id": "os",
       "label": "os",
+      "_origin": "semantic",
       "community": 7,
+      "community_name": "compress.py",
       "external": true,
       "file_type": "concept",
       "norm_label": "os",
@@ -1525,7 +1974,9 @@
     {
       "id": "shutil",
       "label": "shutil",
+      "_origin": "semantic",
       "community": 7,
+      "community_name": "compress.py",
       "external": true,
       "file_type": "concept",
       "norm_label": "shutil",
@@ -1535,7 +1986,9 @@
     {
       "id": "subprocess",
       "label": "subprocess",
+      "_origin": "semantic",
       "community": 7,
+      "community_name": "compress.py",
       "external": true,
       "file_type": "concept",
       "norm_label": "subprocess",
@@ -1545,7 +1998,9 @@
     {
       "id": "sys",
       "label": "sys",
+      "_origin": "semantic",
       "community": 7,
+      "community_name": "compress.py",
       "external": true,
       "file_type": "concept",
       "norm_label": "sys",
@@ -1555,7 +2010,9 @@
     {
       "id": "ref_fs",
       "label": "ref_fs",
+      "_origin": "semantic",
       "community": 8,
+      "community_name": "imgToPdf.js",
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_fs",
@@ -1565,7 +2022,9 @@
     {
       "id": "ref_path",
       "label": "ref_path",
-      "community": 9,
+      "_origin": "semantic",
+      "community": 8,
+      "community_name": "imgToPdf.js",
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_path",
@@ -1595,7 +2054,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L1141",
+      "source_location": "L1146",
+      "weight": 1.0
+    },
+    {
+      "source": "public_app_pollprotectjobstatus",
+      "target": "public_app_parseresponsejson",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "public/app.js",
+      "source_location": "L788",
       "weight": 1.0
     },
     {
@@ -1607,7 +2078,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L792",
+      "source_location": "L802",
       "weight": 1.0
     },
     {
@@ -1619,7 +2090,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L794",
+      "source_location": "L804",
       "weight": 1.0
     },
     {
@@ -1631,7 +2102,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L663",
+      "source_location": "L675",
       "weight": 1.0
     },
     {
@@ -1643,7 +2114,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L664",
+      "source_location": "L676",
       "weight": 1.0
     },
     {
@@ -1655,7 +2126,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L626",
+      "source_location": "L638",
       "weight": 1.0
     },
     {
@@ -1667,7 +2138,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L638",
+      "source_location": "L650",
+      "weight": 1.0
+    },
+    {
+      "source": "public_app_rundiagnostics",
+      "target": "public_app_parseresponsejson",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "public/app.js",
+      "source_location": "L188",
       "weight": 1.0
     },
     {
@@ -1679,7 +2162,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L179",
+      "source_location": "L195",
       "weight": 1.0
     },
     {
@@ -1691,7 +2174,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L180",
+      "source_location": "L196",
       "weight": 1.0
     },
     {
@@ -1715,7 +2198,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L1134",
+      "source_location": "L1139",
+      "weight": 1.0
+    },
+    {
+      "source": "public_app",
+      "target": "public_app_parseresponsejson",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "public/app.js",
+      "source_location": "L165",
       "weight": 1.0
     },
     {
@@ -1727,7 +2222,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L167",
+      "source_location": "L185",
       "weight": 1.0
     },
     {
@@ -1739,7 +2234,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L188",
+      "source_location": "L204",
       "weight": 1.0
     },
     {
@@ -1751,7 +2246,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L200",
+      "source_location": "L216",
       "weight": 1.0
     },
     {
@@ -1763,7 +2258,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L279",
+      "source_location": "L295",
       "weight": 1.0
     },
     {
@@ -1775,7 +2270,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L461",
+      "source_location": "L474",
       "weight": 1.0
     },
     {
@@ -1787,7 +2282,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L608",
+      "source_location": "L620",
       "weight": 1.0
     },
     {
@@ -1799,7 +2294,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L667",
+      "source_location": "L679",
       "weight": 1.0
     },
     {
@@ -1811,7 +2306,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L774",
+      "source_location": "L785",
       "weight": 1.0
     },
     {
@@ -1823,7 +2318,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "public/app.js",
-      "source_location": "L803",
+      "source_location": "L813",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_download",
+      "target": "routes_download_ispathsafe",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "routes/download.js",
+      "source_location": "L10",
       "weight": 1.0
     },
     {
@@ -1912,7 +2419,7 @@
     },
     {
       "source": "package",
-      "target": "ref_img_sharp_linux_x64",
+      "target": "ref_adm_zip",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -1924,7 +2431,7 @@
     },
     {
       "source": "package",
-      "target": "ref_adm_zip",
+      "target": "ref_docx",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -1936,7 +2443,7 @@
     },
     {
       "source": "package",
-      "target": "ref_docx",
+      "target": "ref_dotenv",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -1948,7 +2455,7 @@
     },
     {
       "source": "package",
-      "target": "ref_dotenv",
+      "target": "ref_exceljs",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -1972,7 +2479,7 @@
     },
     {
       "source": "package",
-      "target": "ref_libreoffice_convert",
+      "target": "ref_express_rate_limit",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -1984,7 +2491,7 @@
     },
     {
       "source": "package",
-      "target": "ref_multer",
+      "target": "ref_helmet",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -1996,7 +2503,7 @@
     },
     {
       "source": "package",
-      "target": "ref_pdf_lib",
+      "target": "ref_libreoffice_convert",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -2008,7 +2515,7 @@
     },
     {
       "source": "package",
-      "target": "ref_pdf_parse",
+      "target": "ref_multer",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -2020,7 +2527,7 @@
     },
     {
       "source": "package",
-      "target": "ref_sharp",
+      "target": "ref_pdf_lib",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -2032,7 +2539,7 @@
     },
     {
       "source": "package",
-      "target": "ref_xlsx",
+      "target": "ref_pdf_parse",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -2040,6 +2547,30 @@
       "context": "import",
       "source_file": "package.json",
       "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
+      "target": "ref_sharp",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "package.json",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
+      "target": "ref_img_sharp_linux_x64",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "package.json",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -2104,6 +2635,18 @@
     },
     {
       "source": "routes_compresspdf",
+      "target": "routes_config_isvalidpdfheader",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "routes/compressPdf.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_compresspdf",
       "target": "routes_config_jobs",
       "relation": "imports",
       "_origin": "ast",
@@ -2139,6 +2682,18 @@
       "weight": 1.0
     },
     {
+      "source": "routes_download",
+      "target": "routes_config_uploads_dir",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "routes/download.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
       "source": "routes_imgtopdf",
       "target": "routes_config_compressed_dir",
       "relation": "imports",
@@ -2147,7 +2702,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "routes/imgToPdf.js",
-      "source_location": "L6",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -2159,7 +2714,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "routes/imgToPdf.js",
-      "source_location": "L6",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -2260,7 +2815,7 @@
     },
     {
       "source": "routes_pdftoimg",
-      "target": "routes_config_jobs",
+      "target": "routes_config_isvalidpdfheader",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -2283,6 +2838,18 @@
       "weight": 1.0
     },
     {
+      "source": "routes_pdftoimg",
+      "target": "routes_config_uploads_dir",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "routes/pdfToImg.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
       "source": "routes_protectpdf",
       "target": "routes_config_compressed_dir",
       "relation": "imports",
@@ -2297,6 +2864,18 @@
     {
       "source": "routes_protectpdf",
       "target": "routes_config_execghostscript",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "routes/protectPdf.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_protectpdf",
+      "target": "routes_config_isvalidpdfheader",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -2356,6 +2935,18 @@
     },
     {
       "source": "routes_unlockpdf",
+      "target": "routes_config_isvalidpdfheader",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "routes/unlockPdf.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_unlockpdf",
       "target": "routes_config_upload",
       "relation": "imports",
       "_origin": "ast",
@@ -2375,7 +2966,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "server.js",
-      "source_location": "L7",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -2387,7 +2978,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "server.js",
-      "source_location": "L7",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -2399,7 +2990,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "server.js",
-      "source_location": "L7",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -2608,6 +3199,18 @@
     },
     {
       "source": "routes_imgtopdf",
+      "target": "routes_config",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "routes/imgToPdf.js",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_imgtopdf",
       "target": "ref_path",
       "relation": "imports_from",
       "_origin": "ast",
@@ -2640,18 +3243,6 @@
       "context": "import",
       "source_file": "routes/imgToPdf.js",
       "source_location": "L5",
-      "weight": 1.0
-    },
-    {
-      "source": "routes_imgtopdf",
-      "target": "routes_config",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "routes/imgToPdf.js",
-      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -2836,7 +3427,7 @@
     },
     {
       "source": "routes_pdftoexcel",
-      "target": "ref_xlsx",
+      "target": "ref_exceljs",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3088,6 +3679,30 @@
     },
     {
       "source": "server",
+      "target": "ref_helmet",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "server.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "server",
+      "target": "ref_express_rate_limit",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "server.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "server",
       "target": "routes_config",
       "relation": "imports_from",
       "_origin": "ast",
@@ -3095,7 +3710,29 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "server.js",
-      "source_location": "L7",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_rules_graphify",
+      "target": "agents_rules_graphify_graphify",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/rules/graphify.md",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_workflows_graphify",
+      "target": "agents_workflows_graphify_workflow_graphify",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/workflows/graphify.md",
+      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -3118,6 +3755,50 @@
       "confidence_score": 1.0,
       "source_file": "compress.py",
       "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "jules_bolt",
+      "target": "jules_bolt_2026_07_20_fix_duplicate_logic_causing_syntax_error",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".jules/bolt.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "jules_bolt",
+      "target": "jules_bolt_2024_11_21_async_sequential_io_for_image_batching",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".jules/bolt.md",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "jules_bolt",
+      "target": "jules_bolt_2026_08_29_non_blocking_file_operations_in_image_to_word_route",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".jules/bolt.md",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "jules_bolt",
+      "target": "jules_bolt_2024_11_20_avoid_blocking_the_event_loop_in_periodic_tasks",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".jules/bolt.md",
+      "source_location": "L7",
       "weight": 1.0
     },
     {
@@ -3188,6 +3869,28 @@
     },
     {
       "source": "package",
+      "target": "package_optionaldependencies",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
+      "target": "package_overrides",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
       "target": "package_description",
       "relation": "contains",
       "_origin": "ast",
@@ -3221,7 +3924,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_img_sharp_linux_x64",
+      "target": "package_dependencies_adm_zip",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3232,7 +3935,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_adm_zip",
+      "target": "package_dependencies_docx",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3243,7 +3946,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_docx",
+      "target": "package_dependencies_dotenv",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3254,7 +3957,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_dotenv",
+      "target": "package_dependencies_exceljs",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3276,7 +3979,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_libreoffice_convert",
+      "target": "package_dependencies_express_rate_limit",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3287,7 +3990,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_multer",
+      "target": "package_dependencies_helmet",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3298,7 +4001,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_pdf_lib",
+      "target": "package_dependencies_libreoffice_convert",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3309,7 +4012,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_pdf_parse",
+      "target": "package_dependencies_multer",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3320,7 +4023,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_sharp",
+      "target": "package_dependencies_pdf_lib",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3331,13 +4034,46 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_xlsx",
+      "target": "package_dependencies_pdf_parse",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
       "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "package_dependencies",
+      "target": "package_dependencies_sharp",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "package_optionaldependencies",
+      "target": "package_optionaldependencies_img_sharp_linux_x64",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "package_overrides",
+      "target": "package_overrides_uuid",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -3370,7 +4106,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "public/app.js",
-      "source_location": "L653",
+      "source_location": "L665",
       "weight": 1.0
     },
     {
@@ -3381,7 +4117,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "public/app.js",
-      "source_location": "L660",
+      "source_location": "L672",
       "weight": 1.0
     },
     {
@@ -3485,7 +4221,7 @@
     },
     {
       "source": "routes_compresspdf",
-      "target": "routes_compresspdf_jobs_upload_compressed_dir_execghostscript_getgsdiagnosticinfo",
+      "target": "routes_compresspdf_jobs_upload_compressed_dir_execghostscript_getgsdiagnosticinfo_isvalidpdfheader",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3507,17 +4243,6 @@
     },
     {
       "source": "routes_config",
-      "target": "routes_config_isgsinstalled",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "routes/config.js",
-      "source_location": "L108",
-      "weight": 1.0
-    },
-    {
-      "source": "routes_config",
       "target": "routes_config_jobs",
       "relation": "contains",
       "_origin": "ast",
@@ -3525,6 +4250,17 @@
       "confidence_score": 1.0,
       "source_file": "routes/config.js",
       "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_config",
+      "target": "routes_config_isgsinstalled",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "routes/config.js",
+      "source_location": "L130",
       "weight": 1.0
     },
     {
@@ -3557,7 +4293,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "routes/config.js",
-      "source_location": "L25",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -3573,17 +4309,6 @@
     },
     {
       "source": "routes_config",
-      "target": "routes_config_uploadimages",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "routes/config.js",
-      "source_location": "L38",
-      "weight": 1.0
-    },
-    {
-      "source": "routes_config",
       "target": "routes_config_spawn",
       "relation": "contains",
       "_origin": "ast",
@@ -3595,13 +4320,24 @@
     },
     {
       "source": "routes_config",
+      "target": "routes_config_uploadimages",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "routes/config.js",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_config",
       "target": "routes_config_uploadoffice",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "routes/config.js",
-      "source_location": "L53",
+      "source_location": "L56",
       "weight": 1.0
     },
     {
@@ -3617,17 +4353,6 @@
     },
     {
       "source": "routes_config",
-      "target": "routes_config_detectghostscript",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "routes/config.js",
-      "source_location": "L71",
-      "weight": 1.0
-    },
-    {
-      "source": "routes_config",
       "target": "routes_config_compressed_dir",
       "relation": "contains",
       "_origin": "ast",
@@ -3635,6 +4360,17 @@
       "confidence_score": 1.0,
       "source_file": "routes/config.js",
       "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_config",
+      "target": "routes_config_detectghostscript",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "routes/config.js",
+      "source_location": "L93",
       "weight": 1.0
     },
     {
@@ -3683,13 +4419,24 @@
     },
     {
       "source": "routes_download",
-      "target": "routes_download_compressed_dir",
+      "target": "routes_download_compressed_dir_uploads_dir",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "routes/download.js",
       "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_download",
+      "target": "routes_download_allowed_extensions",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "routes/download.js",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -3701,6 +4448,17 @@
       "confidence_score": 1.0,
       "source_file": "routes/imgToPdf.js",
       "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_imgtopdf",
+      "target": "routes_imgtopdf_uploadimages_compressed_dir",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "routes/imgToPdf.js",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -3745,17 +4503,6 @@
       "confidence_score": 1.0,
       "source_file": "routes/imgToPdf.js",
       "source_location": "L5",
-      "weight": 1.0
-    },
-    {
-      "source": "routes_imgtopdf",
-      "target": "routes_imgtopdf_uploadimages_compressed_dir",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "routes/imgToPdf.js",
-      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -3958,7 +4705,7 @@
     },
     {
       "source": "routes_pdftoexcel",
-      "target": "routes_pdftoexcel_xlsx",
+      "target": "routes_pdftoexcel_exceljs",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4024,7 +4771,7 @@
     },
     {
       "source": "routes_pdftoimg",
-      "target": "routes_pdftoimg_jobs_upload_compressed_dir_execghostscript",
+      "target": "routes_pdftoimg_upload_uploads_dir_compressed_dir_execghostscript_isvalidpdfheader",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4079,7 +4826,7 @@
     },
     {
       "source": "routes_protectpdf",
-      "target": "routes_protectpdf_jobs_upload_compressed_dir_execghostscript",
+      "target": "routes_protectpdf_jobs_upload_compressed_dir_execghostscript_isvalidpdfheader",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4145,7 +4892,7 @@
     },
     {
       "source": "routes_unlockpdf",
-      "target": "routes_unlockpdf_upload_compressed_dir_execghostscript",
+      "target": "routes_unlockpdf_upload_compressed_dir_execghostscript_isvalidpdfheader",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4167,6 +4914,17 @@
     },
     {
       "source": "server",
+      "target": "server_app",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "server",
       "target": "server_path",
       "relation": "contains",
       "_origin": "ast",
@@ -4174,6 +4932,17 @@
       "confidence_score": 1.0,
       "source_file": "server.js",
       "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "server",
+      "target": "server_apilimiter",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.js",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -4200,18 +4969,40 @@
     },
     {
       "source": "server",
-      "target": "server_uploads_dir_compressed_dir_jobs",
+      "target": "server_helmet",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server.js",
-      "source_location": "L7",
+      "source_location": "L5",
       "weight": 1.0
     },
     {
       "source": "server",
-      "target": "server_app",
+      "target": "server_ratelimit",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "server",
+      "target": "server_sweeperinterval",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.js",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "server",
+      "target": "server_uploads_dir_compressed_dir_jobs",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4251,7 +5042,19 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "public/app.js",
-      "source_location": "L742",
+      "source_location": "L753",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_officetopdf",
+      "target": "routes_officetopdf_officeuploadmiddleware",
+      "relation": "indirect_call",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "argument",
+      "source_file": "routes/officeToPdf.js",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -4263,7 +5066,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "routes/config.js",
-      "source_location": "L147",
+      "source_location": "L203",
       "weight": 1.0
     },
     {
@@ -4275,10 +5078,22 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "routes/config.js",
-      "source_location": "L148",
+      "source_location": "L204",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_config",
+      "target": "routes_config_isvalidpdfheader",
+      "relation": "indirect_call",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "collection",
+      "source_file": "routes/config.js",
+      "source_location": "L205",
       "weight": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4b341ac8eec12deb76cd64414afab57de854793b"
+  "built_at_commit": "c84533945fe43ba286c859296dbbbd77c5af46bc"
 }

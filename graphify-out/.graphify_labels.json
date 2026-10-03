@@ -1,0 +1,14 @@
+{
+  "0": "config.js",
+  "1": "pdfToImg.js",
+  "2": "package.json",
+  "3": "app.js",
+  "4": "officeToPdf.js",
+  "5": "dependencies",
+  "6": "pdfToExcel.js",
+  "7": "compress.py",
+  "8": "imgToPdf.js",
+  "9": "bolt.md",
+  "10": "rules/graphify.md",
+  "11": "workflows/graphify.md"
+}

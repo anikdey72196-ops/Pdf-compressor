@@ -85,11 +85,11 @@ router.post('/compress', upload.single('pdf'), (req, res) => {
   execGhostscript(gsArgs, handleResult);
 });
 
-// Progress Check Endpoint
-router.get('/progress/:jobId', (req, res) => {
+// Progress & Status Check Endpoint
+router.get(['/progress/:jobId', '/status/:jobId'], (req, res) => {
   const job = jobs[req.params.jobId];
   if (!job) {
-    return res.status(404).json({ error: 'Job not found.' });
+    return res.status(404).json({ error: 'Job not found or expired.' });
   }
   res.json(job);
 });

@@ -1,0 +1,257 @@
+{
+  "communities": {
+    "0": [
+      "ref_adm_zip",
+      "routes_compresspdf",
+      "routes_compresspdf_express",
+      "routes_compresspdf_fs",
+      "routes_compresspdf_jobs_upload_compressed_dir_execghostscript_getgsdiagnosticinfo",
+      "routes_compresspdf_path",
+      "routes_compresspdf_router",
+      "routes_config_execghostscript",
+      "routes_config_getgsdiagnosticinfo",
+      "routes_config_jobs",
+      "routes_config_upload",
+      "routes_pdftoimg",
+      "routes_pdftoimg_admzip",
+      "routes_pdftoimg_express",
+      "routes_pdftoimg_fs",
+      "routes_pdftoimg_jobs_upload_compressed_dir_execghostscript",
+      "routes_pdftoimg_path",
+      "routes_pdftoimg_router",
+      "routes_protectpdf",
+      "routes_protectpdf_express",
+      "routes_protectpdf_fs",
+      "routes_protectpdf_jobs_upload_compressed_dir_execghostscript",
+      "routes_protectpdf_path",
+      "routes_protectpdf_router"
+    ],
+    "1": [
+      "ref_child_process",
+      "ref_multer",
+      "routes_config",
+      "routes_config_detectghostscript",
+      "routes_config_fs",
+      "routes_config_isgsinstalled",
+      "routes_config_multer",
+      "routes_config_path",
+      "routes_config_spawn",
+      "routes_config_storage",
+      "routes_config_uploads_dir",
+      "server",
+      "server_app",
+      "server_express",
+      "server_fs",
+      "server_multer",
+      "server_path",
+      "server_uploads_dir_compressed_dir_jobs"
+    ],
+    "2": [
+      "package",
+      "package_author",
+      "package_description",
+      "package_keywords",
+      "package_license",
+      "package_main",
+      "package_name",
+      "package_scripts",
+      "package_scripts_dev",
+      "package_scripts_start",
+      "package_version",
+      "ref_docx",
+      "ref_dotenv",
+      "ref_img_sharp_linux_x64",
+      "ref_sharp"
+    ],
+    "3": [
+      "public_app",
+      "public_app_formatbytes",
+      "public_app_handleunlockfileselect",
+      "public_app_opentoolpanel",
+      "public_app_pollprotectjobstatus",
+      "public_app_removeitem",
+      "public_app_renderimgqueue",
+      "public_app_resetprotectui",
+      "public_app_rundiagnostics",
+      "public_app_setupdraganddrop",
+      "public_app_swapitems",
+      "public_app_updatecompressbuttonstate",
+      "public_app_updateimgtopdfbtnstate",
+      "public_app_updatepdftoimgbuttonstate",
+      "public_app_updateprotectbuttonstate"
+    ],
+    "4": [
+      "ref_libreoffice_convert",
+      "ref_util",
+      "routes_config_uploadoffice",
+      "routes_officetopdf",
+      "routes_officetopdf_express",
+      "routes_officetopdf_fs",
+      "routes_officetopdf_libre",
+      "routes_officetopdf_libreconvert",
+      "routes_officetopdf_path",
+      "routes_officetopdf_pdfdocument_standardfonts_rgb",
+      "routes_officetopdf_router",
+      "routes_officetopdf_uploadoffice_compressed_dir",
+      "routes_officetopdf_util"
+    ],
+    "5": [
+      "package_dependencies",
+      "package_dependencies_adm_zip",
+      "package_dependencies_docx",
+      "package_dependencies_dotenv",
+      "package_dependencies_express",
+      "package_dependencies_img_sharp_linux_x64",
+      "package_dependencies_libreoffice_convert",
+      "package_dependencies_multer",
+      "package_dependencies_pdf_lib",
+      "package_dependencies_pdf_parse",
+      "package_dependencies_sharp",
+      "package_dependencies_xlsx"
+    ],
+    "6": [
+      "ref_pdf_parse",
+      "ref_xlsx",
+      "routes_pdftoexcel",
+      "routes_pdftoexcel_express",
+      "routes_pdftoexcel_fs",
+      "routes_pdftoexcel_path",
+      "routes_pdftoexcel_pdfparse",
+      "routes_pdftoexcel_router",
+      "routes_pdftoexcel_upload_compressed_dir",
+      "routes_pdftoexcel_xlsx"
+    ],
+    "7": [
+      "compress",
+      "compress_compress_pdf",
+      "compress_find_ghostscript",
+      "compress_rationale_43",
+      "compress_rationale_7",
+      "os",
+      "shutil",
+      "subprocess",
+      "sys"
+    ],
+    "8": [
+      "ref_fs",
+      "routes_imgtoword",
+      "routes_imgtoword_docx",
+      "routes_imgtoword_express",
+      "routes_imgtoword_fs",
+      "routes_imgtoword_path",
+      "routes_imgtoword_router",
+      "routes_imgtoword_uploadimages_compressed_dir"
+    ],
+    "9": [
+      "ref_path",
+      "routes_config_compressed_dir",
+      "routes_download",
+      "routes_download_compressed_dir",
+      "routes_download_express",
+      "routes_download_fs",
+      "routes_download_path",
+      "routes_download_router"
+    ],
+    "10": [
+      "ref_pdf_lib",
+      "routes_unlockpdf",
+      "routes_unlockpdf_express",
+      "routes_unlockpdf_fs",
+      "routes_unlockpdf_path",
+      "routes_unlockpdf_pdfdocument",
+      "routes_unlockpdf_router",
+      "routes_unlockpdf_upload_compressed_dir_execghostscript"
+    ],
+    "11": [
+      "routes_config_uploadimages",
+      "routes_imgtopdf",
+      "routes_imgtopdf_express",
+      "routes_imgtopdf_fs",
+      "routes_imgtopdf_path",
+      "routes_imgtopdf_pdfdocument",
+      "routes_imgtopdf_router",
+      "routes_imgtopdf_uploadimages_compressed_dir"
+    ],
+    "12": [
+      "ref_express",
+      "routes_compressimg",
+      "routes_compressimg_express",
+      "routes_compressimg_fs",
+      "routes_compressimg_path",
+      "routes_compressimg_router",
+      "routes_compressimg_uploadimages_compressed_dir"
+    ]
+  },
+  "cohesion": {
+    "0": 0.09782608695652174,
+    "1": 0.12418300653594772,
+    "2": 0.13333333333333333,
+    "3": 0.20952380952380953,
+    "4": 0.15384615384615385,
+    "5": 0.16666666666666666,
+    "6": 0.2,
+    "7": 0.25,
+    "8": 0.25,
+    "9": 0.25,
+    "10": 0.25,
+    "11": 0.25,
+    "12": 0.2857142857142857
+  },
+  "gods": [
+    {
+      "id": "ref_express",
+      "label": "express",
+      "degree": 12
+    },
+    {
+      "id": "routes_config_compressed_dir",
+      "label": "COMPRESSED_DIR",
+      "degree": 12
+    },
+    {
+      "id": "routes_config_upload",
+      "label": "upload",
+      "degree": 6
+    },
+    {
+      "id": "routes_config_jobs",
+      "label": "jobs",
+      "degree": 5
+    },
+    {
+      "id": "routes_config_execghostscript",
+      "label": "execGhostscript()",
+      "degree": 5
+    },
+    {
+      "id": "ref_pdf_lib",
+      "label": "pdf-lib",
+      "degree": 4
+    },
+    {
+      "id": "public_app_renderimgqueue",
+      "label": "renderImgQueue()",
+      "degree": 4
+    },
+    {
+      "id": "public_app_pollprotectjobstatus",
+      "label": "pollProtectJobStatus()",
+      "degree": 4
+    },
+    {
+      "id": "routes_config_uploadimages",
+      "label": "uploadImages",
+      "degree": 4
+    },
+    {
+      "id": "compress_find_ghostscript",
+      "label": "find_ghostscript()",
+      "degree": 3
+    }
+  ],
+  "surprises": [],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

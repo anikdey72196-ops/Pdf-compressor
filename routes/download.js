@@ -2,10 +2,14 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
-const { COMPRESSED_DIR } = require('./config');
+const { COMPRESSED_DIR, UPLOADS_DIR } = require('./config');
 
 router.get('/download/:filename', (req, res) => {
   const filename = path.basename(req.params.filename);
+  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+    return res.status(400).json({ error: 'Invalid filename' });
+  }
+
   const filePath = path.join(COMPRESSED_DIR, filename);
 
   if (fs.existsSync(filePath)) {
@@ -46,6 +50,25 @@ router.get('/download/:filename', (req, res) => {
   } else {
     res.status(404).json({ error: 'File not found or link expired.' });
   }
+});
+
+router.get('/preview/:filename', (req, res) => {
+  const filename = path.basename(req.params.filename);
+  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+    return res.status(400).json({ error: 'Invalid filename' });
+  }
+
+  const uploadPath = path.join(UPLOADS_DIR, filename);
+  if (fs.existsSync(uploadPath)) {
+    return res.sendFile(uploadPath);
+  }
+
+  const compressedPath = path.join(COMPRESSED_DIR, filename);
+  if (fs.existsSync(compressedPath)) {
+    return res.sendFile(compressedPath);
+  }
+
+  res.status(404).json({ error: 'Preview file not found or expired.' });
 });
 
 module.exports = router;

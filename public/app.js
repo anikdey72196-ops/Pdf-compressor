@@ -161,15 +161,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Safe JSON fetch parser to avoid "Unexpected token <" HTML parsing crashes
+  async function parseResponseJson(res, defaultErrorMsg = 'Server request failed') {
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || defaultErrorMsg);
+      return data;
+    }
+    const text = await res.text();
+    if (!res.ok) {
+      if (text.includes('<html') || text.includes('<!DOCTYPE') || text.includes('<pre>')) {
+        throw new Error(`Server returned error (${res.status}): ${res.statusText || 'Endpoint unavailable'}`);
+      }
+      throw new Error(`Server error (${res.status}): ${text.slice(0, 100)}`);
+    }
+    throw new Error(`Expected JSON but received ${contentType || 'non-JSON response'}`);
+  }
+
   // ==========================================
   // Diagnostics Check
   // ==========================================
   async function runDiagnostics() {
     try {
       const response = await fetch('/api/diagnostics');
-      if (!response.ok) throw new Error('Diagnostics API offline');
-      
-      const data = await response.json();
+      const data = await parseResponseJson(response, 'Diagnostics API offline');
       isGhostscriptWorking = data.working;
     } catch (error) {
       console.error('Failed to query diagnostics API:', error);
@@ -351,9 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pollJobStatus = async (jobId) => {
       try {
         const res = await fetch(`/api/status/${jobId}`);
-        const data = await res.json();
-        
-        if (!res.ok) throw new Error(data.error || 'Job not found');
+        const data = await parseResponseJson(res, 'Job not found');
         
         if (data.status === 'completed') {
           renderSuccess(data);
@@ -373,8 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: formData
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Compression error occurred');
+      const data = await parseResponseJson(response, 'Compression error occurred');
 
       if (data.status === 'processing') {
         pollJobStatus(data.jobId);
@@ -490,8 +503,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: formData
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Conversion error occurred');
+      const data = await parseResponseJson(response, 'Conversion error occurred');
 
       // Set downloads zip
       pdfToImgPagesBadge.textContent = `${data.pagesCount} Pages`;
@@ -694,8 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: formData
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Server compilation error');
+      const data = await parseResponseJson(response, 'Server compilation error');
 
       // Compile Results panel
       imgToPdfPagesResult.textContent = `${imgToPdfSelectedFiles.length} Pages`;
@@ -774,8 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function pollProtectJobStatus(jobId) {
     try {
       const res = await fetch(`/api/status/${jobId}`);
-      if (!res.ok) throw new Error('Status API Error');
-      const job = await res.json();
+      const job = await parseResponseJson(res, 'Status API Error');
 
       if (job.status === 'completed') {
         protectDownloadBtn.setAttribute('href', job.downloadUrl);
@@ -836,8 +846,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: formData
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Server error');
+      const data = await parseResponseJson(response, 'Server error');
       
       pollProtectJobStatus(data.jobId);
     } catch (err) {
@@ -915,8 +924,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const res = await fetch('/api/compress-image', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to compress image');
+      const data = await parseResponseJson(res, 'Failed to compress image');
 
       compressImgOriginalSize.textContent = formatBytes(data.originalSize);
       compressImgResultSize.textContent = formatBytes(data.compressedSize);
@@ -976,8 +984,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const res = await fetch('/api/image-to-word', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to convert to Word');
+      const data = await parseResponseJson(res, 'Failed to convert to Word');
 
       imgToWordDownloadBtn.href = data.downloadUrl;
       imgToWordResults.classList.remove('hidden');
@@ -1036,8 +1043,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const res = await fetch('/api/office-to-pdf', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to convert document to PDF');
+      const data = await parseResponseJson(res, 'Failed to convert document to PDF');
 
       officeToPdfDownloadBtn.href = data.downloadUrl;
       officeToPdfResults.classList.remove('hidden');
@@ -1096,8 +1102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const res = await fetch('/api/pdf-to-excel', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to extract PDF to Excel');
+      const data = await parseResponseJson(res, 'Failed to extract PDF to Excel');
 
       pdfToExcelDownloadBtn.href = data.downloadUrl;
       pdfToExcelResults.classList.remove('hidden');
@@ -1169,8 +1174,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const res = await fetch('/api/unlock', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to unlock PDF');
+      const data = await parseResponseJson(res, 'Failed to unlock PDF');
 
       unlockDownloadBtn.href = data.downloadUrl;
       unlockResults.classList.remove('hidden');

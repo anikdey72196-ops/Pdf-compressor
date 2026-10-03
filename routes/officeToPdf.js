@@ -8,7 +8,24 @@ const libreConvert = util.promisify(libre.convert);
 const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
 const { uploadOffice, COMPRESSED_DIR } = require('./config');
 
-router.post('/office-to-pdf', uploadOffice.single('office'), async (req, res) => {
+const officeUploadMiddleware = (req, res, next) => {
+  uploadOffice.fields([
+    { name: 'document', maxCount: 1 },
+    { name: 'office', maxCount: 1 }
+  ])(req, res, (err) => {
+    if (err) return next(err);
+    if (!req.file) {
+      if (req.files && req.files.document && req.files.document[0]) {
+        req.file = req.files.document[0];
+      } else if (req.files && req.files.office && req.files.office[0]) {
+        req.file = req.files.office[0];
+      }
+    }
+    next();
+  });
+};
+
+router.post('/office-to-pdf', officeUploadMiddleware, async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No Office document file was uploaded.' });
   }

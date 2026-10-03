@@ -45,6 +45,11 @@ app.use('/api', require('./routes/protectPdf'));
 app.use('/api', require('./routes/unlockPdf'));
 app.use('/api', require('./routes/download'));
 
+// Fallback 404 handler for API routes to always return JSON errors
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: `API endpoint not found: ${req.method} ${req.originalUrl}` });
+});
+
 // Periodic Sweeper Cleanup Job (10 mins)
 // ⚡ Bolt Optimization: Use async fs.promises to avoid blocking the event loop
 setInterval(async () => {
@@ -96,9 +101,13 @@ app.use((err, req, res, next) => {
 });
 
 // Start Express Server
-app.listen(PORT, () => {
-  console.log(`=================================================`);
-  console.log(`  PDF COMPRESSOR ENGINE RUNNING                  `);
-  console.log(`  Local server: http://localhost:${PORT}        `);
-  console.log(`=================================================`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`=================================================`);
+    console.log(`  PDF COMPRESSOR ENGINE RUNNING                  `);
+    console.log(`  Local server: http://localhost:${PORT}        `);
+    console.log(`=================================================`);
+  });
+}
+
+module.exports = app;

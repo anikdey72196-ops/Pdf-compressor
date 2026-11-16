@@ -288,6 +288,12 @@ body {
   border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
+.badge-info {
+  background: rgba(0, 242, 254, 0.12);
+  color: var(--color-primary);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+}
+
 /* Main Layout */
 .app-main {
   width: 100%;
@@ -569,10 +575,16 @@ body {
 }
 
 .btn-primary:disabled {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: none;
   cursor: not-allowed;
+}
+
+.trigger-area {
+  margin-top: auto;
+  padding-top: 16px;
 }
 
 .btn-secondary {

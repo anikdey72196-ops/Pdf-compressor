@@ -178,7 +178,7 @@
 
             <div class="trigger-area">
               <button class="btn btn-primary btn-block" id="compressBtn" disabled>
-                <span class="btn-text">Optimize Document</span>
+                <span class="btn-text">Compress PDF</span>
                 <span class="btn-loader hidden"></span>
               </button>
             </div>
@@ -190,7 +190,7 @@
           <div class="card glass-card results-card">
             <div class="card-header">
               <h3>Compression Result</h3>
-              <span class="badge badge-success">Saved Successfully</span>
+              <span class="badge badge-success" id="resultsBadge">Saved Successfully</span>
             </div>
 
             <div class="results-visual">
@@ -222,7 +222,7 @@
                 </div>
                 <div class="stat-row progress-stat">
                   <span class="stat-lbl">Status:</span>
-                  <span class="stat-val status-completed">Ready for Download</span>
+                  <span class="stat-val status-completed" id="resultsStatus">Ready for Download</span>
                 </div>
               </div>
             </div>
@@ -457,7 +457,7 @@
                 </div>
                 <div class="stat-row progress-stat">
                   <span class="stat-lbl">Status:</span>
-                  <span class="stat-val status-completed">Ready for Download</span>
+                  <span class="stat-val status-completed" id="imgToPdfStatus">Ready for Download</span>
                 </div>
               </div>
             </div>
@@ -554,7 +554,7 @@
                 </div>
                 <div class="stat-row progress-stat">
                   <span class="stat-lbl">Status:</span>
-                  <span class="stat-val status-completed">Ready for Download</span>
+                  <span class="stat-val status-completed" id="imgToPdfStatus">Ready for Download</span>
                 </div>
               </div>
             </div>
@@ -926,19 +926,19 @@
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 30px;">
         <div>
-          <h3 style="font-size: 1.2rem; color: var(--color-primary); margin-bottom: 8px;">📄 Powerful PDF Tools</h3>
+          <h3 style="font-size: 1.2rem; color: var(--color-primary); margin-bottom: 8px;">Powerful PDF Tools</h3>
           <p style="font-size: 0.95rem; color: var(--text-muted);">
             Compress large PDF files without losing text clarity. Convert PDFs into high-resolution JPG or PNG images, transform Office files (Word, PowerPoint, Excel) directly into PDF, extract tabular data into Excel spreadsheets, and strip permission locks.
           </p>
         </div>
         <div>
-          <h3 style="font-size: 1.2rem; color: var(--color-primary); margin-bottom: 8px;">🖼️ Smart Image Optimization</h3>
+          <h3 style="font-size: 1.2rem; color: var(--color-primary); margin-bottom: 8px;">Smart Image Optimization</h3>
           <p style="font-size: 0.95rem; color: var(--text-muted);">
             Compress JPG, PNG, and WEBP image files with fine-grained compression profiles. Combine multiple photos into single PDF files or compile images directly into editable Microsoft Word (.docx) documents.
           </p>
         </div>
         <div>
-          <h3 style="font-size: 1.2rem; color: var(--color-primary); margin-bottom: 8px;">🔒 100% Secure & Private</h3>
+          <h3 style="font-size: 1.2rem; color: var(--color-primary); margin-bottom: 8px;">100% Secure & Private</h3>
           <p style="font-size: 0.95rem; color: var(--text-muted);">
             Your data privacy is our top priority. All uploaded files are processed in isolated memory environments and automatically purged from our servers within 15 minutes. We never store or inspect your documents.
           </p>

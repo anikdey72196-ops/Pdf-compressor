@@ -182,13 +182,32 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // Diagnostics Check
   // ==========================================
+  const gsStatusBadge = document.getElementById('gsStatusBadge');
+  const gsStatusText = document.getElementById('gsStatusText');
+
   async function runDiagnostics() {
     try {
       const response = await fetch('/api/diagnostics');
       const data = await parseResponseJson(response, 'Diagnostics API offline');
-      isGhostscriptWorking = data.working;
+      isGhostscriptWorking = Boolean(data.working ?? data.installed);
+      if (gsStatusBadge && gsStatusText) {
+        if (isGhostscriptWorking) {
+          gsStatusBadge.classList.remove('offline');
+          gsStatusBadge.classList.add('online');
+          gsStatusText.textContent = 'Ghostscript Ready';
+        } else {
+          gsStatusBadge.classList.add('offline');
+          gsStatusBadge.classList.remove('online');
+          gsStatusText.textContent = 'Ghostscript Required';
+        }
+      }
     } catch (error) {
       console.error('Failed to query diagnostics API:', error);
+      if (gsStatusBadge && gsStatusText) {
+        gsStatusBadge.classList.add('offline');
+        gsStatusBadge.classList.remove('online');
+        gsStatusText.textContent = 'Engine Offline';
+      }
     }
     
     // Initial update of trigger button lockouts
@@ -295,13 +314,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateCompressButtonState() {
     if (compressSelectedFile && isGhostscriptWorking) {
       compressBtn.disabled = false;
-      btnText.textContent = 'Optimize Document';
+      btnText.textContent = 'Compress PDF';
     } else if (compressSelectedFile && !isGhostscriptWorking) {
       compressBtn.disabled = true;
       btnText.textContent = 'Ghostscript Required';
     } else {
       compressBtn.disabled = true;
-      btnText.textContent = 'Optimize Document';
+      btnText.textContent = 'Compress PDF';
     }
   }
 
@@ -331,12 +350,33 @@ document.addEventListener('DOMContentLoaded', () => {
       dropZone.style.pointerEvents = 'auto';
     };
 
+    const resultsBadge = document.getElementById('resultsBadge');
+    const resultsStatus = document.getElementById('resultsStatus');
+
     const renderSuccess = (data) => {
       originalSizeResult.textContent = formatBytes(data.originalSize);
       compressedSizeResult.textContent = formatBytes(data.compressedSize);
       
       const percentage = Math.round(data.savedPercent);
       savingsVal.textContent = `${percentage}%`;
+
+      if (resultsBadge) {
+        if (data.alreadyOptimized || percentage <= 0) {
+          resultsBadge.textContent = 'Already Optimized';
+          resultsBadge.className = 'badge badge-info';
+        } else {
+          resultsBadge.textContent = 'Saved Successfully';
+          resultsBadge.className = 'badge badge-success';
+        }
+      }
+
+      if (resultsStatus) {
+        if (data.alreadyOptimized || percentage <= 0) {
+          resultsStatus.textContent = 'Already at optimal size (original preserved)';
+        } else {
+          resultsStatus.textContent = 'Ready for Download';
+        }
+      }
       
       const radius = 70;
       const circumference = 2 * Math.PI * radius; // 439.82
@@ -359,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error(err);
       alert(`Compression Failed:\n${err.message}`);
       compressBtn.disabled = false;
-      btnText.textContent = 'Optimize Document';
+      btnText.textContent = 'Compress PDF';
       btnLoader.classList.add('hidden');
       unlockUI();
     };
@@ -407,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
     savingsRingFill.style.strokeDashoffset = '439.82';
     
     compressBtn.disabled = true;
-    btnText.textContent = 'Optimize Document';
+    btnText.textContent = 'Compress PDF';
     dropZone.style.pointerEvents = 'auto';
     isCompressing = false;
     presetCards.forEach(c => {

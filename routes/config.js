@@ -132,6 +132,7 @@ const isGsInstalled = detectGhostscript();
 function getGsDiagnosticInfo() {
   return {
     installed: isGsInstalled,
+    working: isGsInstalled,
     executable: GHOSTSCRIPT_PATH,
     source: ghostscriptSource
   };

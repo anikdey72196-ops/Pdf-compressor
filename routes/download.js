@@ -54,6 +54,11 @@ router.get('/download/:filename', (req, res) => {
     } else if (filename.startsWith('unlocked-')) {
       clientFilename = filename.replace(/^unlocked-\d+-\d+-/, 'unlocked_');
       if (!clientFilename.endsWith('.pdf')) clientFilename += '.pdf';
+    } else if (filename.startsWith('merged-')) {
+      clientFilename = filename.replace(/^merged-\d+-\d+-/, 'merged_');
+      if (!clientFilename.endsWith('.pdf')) clientFilename += '.pdf';
+    } else if (filename.startsWith('split-')) {
+      clientFilename = filename.replace(/^split-\d+-\d+-/, 'split_');
     }
 
     res.setHeader('X-Content-Type-Options', 'nosniff');

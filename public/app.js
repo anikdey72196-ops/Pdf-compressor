@@ -113,6 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (tabName === 'compress') {
       document.getElementById('panelCompress').classList.remove('hidden');
+    } else if (tabName === 'merge-pdf') {
+      document.getElementById('panelMergePdf').classList.remove('hidden');
+    } else if (tabName === 'split-pdf') {
+      document.getElementById('panelSplitPdf').classList.remove('hidden');
     } else if (tabName === 'compress-img') {
       document.getElementById('panelCompressImg').classList.remove('hidden');
     } else if (tabName === 'pdf-to-img') {
@@ -1188,15 +1192,8 @@ document.addEventListener('DOMContentLoaded', () => {
     unlockBtn.disabled = false;
   }
 
-  unlockDropZone.addEventListener('dragover', (e) => { e.preventDefault(); unlockDropZone.classList.add('drag-over'); });
-  unlockDropZone.addEventListener('dragleave', () => unlockDropZone.classList.remove('drag-over'));
-  unlockDropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    unlockDropZone.classList.remove('drag-over');
-    if (e.dataTransfer.files.length > 0) handleUnlockFileSelect(e.dataTransfer.files[0]);
-  });
-  unlockFileInput.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) handleUnlockFileSelect(e.target.files[0]);
+  setupDragAndDrop(unlockDropZone, unlockFileInput, (file) => {
+    handleUnlockFileSelect(file);
   });
   unlockRemoveBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -1231,6 +1228,259 @@ document.addEventListener('DOMContentLoaded', () => {
     unlockFileInfo.classList.add('hidden');
     unlockResults.classList.add('hidden');
     unlockBtn.disabled = true;
+  });
+
+  // ==========================================
+  // TOOL 10: Merge PDF Controllers
+  // ==========================================
+  const mergeDropZone = document.getElementById('mergeDropZone');
+  const mergeFileInput = document.getElementById('mergeFileInput');
+  const mergeListContainer = document.getElementById('mergeListContainer');
+  const mergeQueueCount = document.getElementById('mergeQueueCount');
+  const mergeSortableList = document.getElementById('mergeSortableList');
+  const mergeBtn = document.getElementById('mergeBtn');
+  const mergeResults = document.getElementById('mergeResults');
+  const mergeFilesCountResult = document.getElementById('mergeFilesCountResult');
+  const mergePagesCountResult = document.getElementById('mergePagesCountResult');
+  const mergeFileSizeResult = document.getElementById('mergeFileSizeResult');
+  const mergeDownloadBtn = document.getElementById('mergeDownloadBtn');
+  const mergeResetBtn = document.getElementById('mergeResetBtn');
+
+  let mergeSelectedFiles = [];
+
+  function renderMergeQueue() {
+    mergeSortableList.innerHTML = '';
+
+    if (mergeSelectedFiles.length === 0) {
+      mergeListContainer.classList.add('hidden');
+      mergeBtn.disabled = true;
+      return;
+    }
+
+    mergeQueueCount.textContent = `${mergeSelectedFiles.length} PDFs`;
+    mergeListContainer.classList.remove('hidden');
+    mergeBtn.disabled = mergeSelectedFiles.length < 2;
+
+    mergeSelectedFiles.forEach((file, index) => {
+      const row = document.createElement('div');
+      row.className = 'sortable-item';
+      row.innerHTML = `
+        <div style="width:36px; height:36px; border-radius:6px; background:rgba(0,242,254,0.1); border:1px solid rgba(0,242,254,0.25); display:flex; align-items:center; justify-content:center; color:var(--color-primary); font-weight:700; font-size:0.75rem; flex-shrink:0;">
+          PDF
+        </div>
+        <div class="sortable-info">
+          <span class="sortable-name" title="${file.name}">${file.name}</span>
+          <span class="sortable-size">${formatBytes(file.size)}</span>
+        </div>
+        <div class="sortable-controls">
+          <button class="sort-control-btn sort-up-btn" title="Move Up" ${index === 0 ? 'disabled' : ''}>&uarr;</button>
+          <button class="sort-control-btn sort-down-btn" title="Move Down" ${index === mergeSelectedFiles.length - 1 ? 'disabled' : ''}>&darr;</button>
+          <button class="sort-control-btn sort-delete-btn" title="Remove">&times;</button>
+        </div>
+      `;
+
+      row.querySelector('.sort-up-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        const temp = mergeSelectedFiles[index];
+        mergeSelectedFiles[index] = mergeSelectedFiles[index - 1];
+        mergeSelectedFiles[index - 1] = temp;
+        renderMergeQueue();
+      });
+
+      row.querySelector('.sort-down-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        const temp = mergeSelectedFiles[index];
+        mergeSelectedFiles[index] = mergeSelectedFiles[index + 1];
+        mergeSelectedFiles[index + 1] = temp;
+        renderMergeQueue();
+      });
+
+      row.querySelector('.sort-delete-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        mergeSelectedFiles.splice(index, 1);
+        renderMergeQueue();
+      });
+
+      mergeSortableList.appendChild(row);
+    });
+  }
+
+  function handleMergeFiles(files) {
+    for (const f of files) {
+      if (f.name.toLowerCase().endsWith('.pdf')) {
+        mergeSelectedFiles.push(f);
+      }
+    }
+    renderMergeQueue();
+  }
+
+  setupDragAndDrop(mergeDropZone, mergeFileInput, (file) => {
+    if (file && file.name.toLowerCase().endsWith('.pdf')) {
+      mergeSelectedFiles.push(file);
+      renderMergeQueue();
+    }
+  }, true);
+
+  mergeBtn.addEventListener('click', async () => {
+    if (mergeSelectedFiles.length < 2) return;
+    mergeBtn.disabled = true;
+    const btnText = mergeBtn.querySelector('.btn-text');
+    const btnLoader = mergeBtn.querySelector('.btn-loader');
+    btnText.textContent = 'Merging PDFs...';
+    btnLoader.classList.remove('hidden');
+
+    const formData = new FormData();
+    const orderList = [];
+    mergeSelectedFiles.forEach((file) => {
+      formData.append('pdfs', file);
+      orderList.push(file.name);
+    });
+    formData.append('order', JSON.stringify(orderList));
+
+    try {
+      const res = await fetch('/api/merge-pdf', { method: 'POST', body: formData });
+      const data = await parseResponseJson(res, 'Failed to merge PDF files');
+
+      mergeFilesCountResult.textContent = `${data.totalFiles} Files`;
+      mergePagesCountResult.textContent = `${data.totalPages} Pages`;
+      mergeFileSizeResult.textContent = formatBytes(data.fileSize);
+      mergeDownloadBtn.href = data.downloadUrl;
+
+      mergeResults.classList.remove('hidden');
+      mergeResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } catch (err) {
+      alert(`Merge Error:\n${err.message}`);
+    } finally {
+      mergeBtn.disabled = false;
+      btnText.textContent = 'Merge PDFs';
+      btnLoader.classList.add('hidden');
+    }
+  });
+
+  mergeResetBtn.addEventListener('click', () => {
+    mergeSelectedFiles = [];
+    renderMergeQueue();
+    mergeResults.classList.add('hidden');
+  });
+
+  // ==========================================
+  // TOOL 11: Split PDF Controllers
+  // ==========================================
+  const splitDropZone = document.getElementById('splitDropZone');
+  const splitFileInput = document.getElementById('splitFileInput');
+  const splitFileInfo = document.getElementById('splitFileInfo');
+  const splitFileName = document.getElementById('splitFileName');
+  const splitFileSize = document.getElementById('splitFileSize');
+  const splitRemoveBtn = document.getElementById('splitRemoveBtn');
+  const splitModeBtns = document.querySelectorAll('#splitModeSelector .segment-btn');
+  const splitRangeContainer = document.getElementById('splitRangeContainer');
+  const splitRangeInput = document.getElementById('splitRangeInput');
+  const splitModeHint = document.getElementById('splitModeHint');
+  const splitBtn = document.getElementById('splitBtn');
+  const splitResults = document.getElementById('splitResults');
+  const splitTotalPagesResult = document.getElementById('splitTotalPagesResult');
+  const splitExtractedPagesResult = document.getElementById('splitExtractedPagesResult');
+  const splitFormatResult = document.getElementById('splitFormatResult');
+  const splitDownloadBtn = document.getElementById('splitDownloadBtn');
+  const splitResetBtn = document.getElementById('splitResetBtn');
+
+  let splitFile = null;
+  let splitMode = 'all';
+
+  splitModeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      splitModeBtns.forEach(b => {
+        b.classList.remove('active');
+        b.style.fontWeight = '500';
+        b.style.color = 'var(--text-muted)';
+      });
+      btn.classList.add('active');
+      btn.style.fontWeight = '600';
+      btn.style.color = 'var(--text-main)';
+
+      splitMode = btn.getAttribute('data-mode');
+      if (splitMode === 'range') {
+        splitRangeContainer.classList.remove('hidden');
+        splitModeHint.textContent = 'Enter the pages you want to keep as a single extracted PDF (e.g. 1-3, 5).';
+      } else {
+        splitRangeContainer.classList.add('hidden');
+        splitModeHint.textContent = 'Every page of your PDF will be extracted as a separate document and bundled in a ZIP download.';
+      }
+    });
+  });
+
+  function handleSplitFileSelect(file) {
+    if (!file || !file.name.toLowerCase().endsWith('.pdf')) {
+      alert('Please select a valid PDF file.');
+      return;
+    }
+    splitFile = file;
+    splitFileName.textContent = file.name;
+    splitFileSize.textContent = formatBytes(file.size);
+    splitFileInfo.classList.remove('hidden');
+    splitBtn.disabled = false;
+  }
+
+  setupDragAndDrop(splitDropZone, splitFileInput, (file) => {
+    handleSplitFileSelect(file);
+  });
+  splitRemoveBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    splitFile = null;
+    splitFileInput.value = '';
+    splitFileInfo.classList.add('hidden');
+    splitBtn.disabled = true;
+  });
+
+  splitBtn.addEventListener('click', async () => {
+    if (!splitFile) return;
+    if (splitMode === 'range' && !splitRangeInput.value.trim()) {
+      alert('Please specify the page numbers or ranges to extract (e.g. 1-3, 5).');
+      splitRangeInput.focus();
+      return;
+    }
+
+    splitBtn.disabled = true;
+    const btnText = splitBtn.querySelector('.btn-text');
+    const btnLoader = splitBtn.querySelector('.btn-loader');
+    btnText.textContent = 'Splitting PDF...';
+    btnLoader.classList.remove('hidden');
+
+    const formData = new FormData();
+    formData.append('pdf', splitFile);
+    formData.append('mode', splitMode);
+    if (splitMode === 'range') {
+      formData.append('range', splitRangeInput.value.trim());
+    }
+
+    try {
+      const res = await fetch('/api/split-pdf', { method: 'POST', body: formData });
+      const data = await parseResponseJson(res, 'Failed to split PDF');
+
+      splitTotalPagesResult.textContent = `${data.totalPages} Pages`;
+      splitExtractedPagesResult.textContent = `${data.extractedCount} Pages`;
+      splitFormatResult.textContent = data.isZip ? 'ZIP Archive' : 'PDF Document';
+      splitDownloadBtn.href = data.downloadUrl;
+      splitDownloadBtn.textContent = data.isZip ? 'Download All Pages (ZIP)' : 'Download Extracted PDF';
+
+      splitResults.classList.remove('hidden');
+      splitResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } catch (err) {
+      alert(`Split Error:\n${err.message}`);
+    } finally {
+      splitBtn.disabled = false;
+      btnText.textContent = 'Split PDF';
+      btnLoader.classList.add('hidden');
+    }
+  });
+
+  splitResetBtn.addEventListener('click', () => {
+    splitFile = null;
+    splitFileInput.value = '';
+    splitRangeInput.value = '';
+    splitFileInfo.classList.add('hidden');
+    splitResults.classList.add('hidden');
+    splitBtn.disabled = true;
   });
 
   // Watch for dynamic updates to Ghostscript diagnostic status

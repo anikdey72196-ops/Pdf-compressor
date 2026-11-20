@@ -72,6 +72,8 @@
       <!-- PDF Sub-tools -->
       <div class="sub-tool-group" id="subGroupPdf">
         <button class="sub-tab-btn active" data-tab="compress">Compress PDF</button>
+        <button class="sub-tab-btn" data-tab="merge-pdf">Merge PDF</button>
+        <button class="sub-tab-btn" data-tab="split-pdf">Split PDF</button>
         <button class="sub-tab-btn" data-tab="pdf-to-img">PDF to Image</button>
         <button class="sub-tab-btn" data-tab="office-to-pdf">Office to PDF</button>
         <button class="sub-tab-btn" data-tab="pdf-to-excel">PDF to Excel</button>
@@ -859,6 +861,8 @@
             </div>
           </div>
         </section>
+      </div>
+
       <!-- 9. UNLOCK PDF PANEL -->
       <div class="tool-panel grid-panel hidden" id="panelUnlock">
         <section class="upload-section">
@@ -911,6 +915,204 @@
             <div class="action-bar" style="margin-top:16px;">
               <button class="btn btn-secondary" id="unlockResetBtn">Unlock Another</button>
               <a href="#" class="btn btn-primary" id="unlockDownloadBtn">Download Unlocked PDF</a>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 10. MERGE PDF PANEL -->
+      <div class="tool-panel grid-panel hidden" id="panelMergePdf">
+        <section class="upload-section">
+          <div class="card glass-card" style="display: flex; flex-direction: column; gap: 16px; min-height: 380px;">
+            <div class="drop-zone" id="mergeDropZone">
+              <input type="file" id="mergeFileInput" class="file-input" accept=".pdf" multiple />
+              <div class="drop-content">
+                <div class="drop-illustration">
+                  <svg viewBox="0 0 24 24" width="56" height="56" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <polyline points="9 15 12 12 15 15"></polyline>
+                  </svg>
+                </div>
+                <h2 class="drop-title">Drag & drop multiple PDFs here</h2>
+                <p class="drop-subtitle">or <span class="browse-link">browse files</span></p>
+                <p class="drop-small-text" style="font-size:0.75rem; color:var(--text-dim); margin-top:4px;">Select 2 or more PDF documents</p>
+              </div>
+            </div>
+
+            <!-- Sortable PDF merge queue -->
+            <div class="sortable-list-container hidden" id="mergeListContainer" style="display:flex; flex-direction:column; gap:12px; border-top:1px solid var(--border-color); padding-top:16px;">
+              <div class="sortable-list-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="font-size:0.9rem; font-weight:600; color:var(--text-main);">Merge Order Queue</h4>
+                <span class="badge" id="mergeQueueCount">0 PDFs</span>
+              </div>
+              <div class="sortable-image-list" id="mergeSortableList" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; padding-right:4px;">
+                <!-- Dynamically generated uploaded PDF rows will render here -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Merge Settings & Trigger Card -->
+        <section class="settings-section">
+          <div class="card glass-card settings-card">
+            <div class="card-header">
+              <h3>Merge Settings</h3>
+              <span class="badge">Combine PDFs</span>
+            </div>
+            <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6; margin-bottom:20px;">
+              Combine multiple PDF documents into a single unified file in your desired order. Use the up and down arrows on the left to arrange file sequence.
+            </p>
+            <div class="trigger-area" style="margin-top: auto; padding-top: 16px;">
+              <button class="btn btn-primary btn-block" id="mergeBtn" disabled>
+                <span class="btn-text">Merge PDFs</span>
+                <span class="btn-loader hidden"></span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Merge Result Card -->
+        <section class="results-section hidden" id="mergeResults" style="grid-column: 1 / -1;">
+          <div class="card glass-card results-card">
+            <div class="card-header">
+              <h3>PDF Merge Finished</h3>
+              <span class="badge badge-success">Merged Successfully</span>
+            </div>
+            <div class="results-visual" style="border:none; margin:0; padding:10px 0; justify-content:center; gap:40px;">
+              <div class="success-ring-badge" style="background:rgba(0, 242, 254, 0.05); border:1px solid rgba(0, 242, 254, 0.15); border-radius:50%; width:100px; height:100px; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 20px rgba(0,242,254,0.1);">
+                <svg viewBox="0 0 24 24" width="48" height="48" stroke="var(--color-primary)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+              </div>
+              <div class="stats-comparison" style="min-width: 280px;">
+                <div class="stat-row">
+                  <span class="stat-lbl">Files Merged:</span>
+                  <span class="stat-val font-light" id="mergeFilesCountResult">0 Files</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-lbl">Total Pages:</span>
+                  <span class="stat-val" id="mergePagesCountResult" style="color:var(--color-primary); font-weight:700;">0 Pages</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-lbl">Merged File Size:</span>
+                  <span class="stat-val accent-glow" id="mergeFileSizeResult">0 MB</span>
+                </div>
+                <div class="stat-row progress-stat">
+                  <span class="stat-lbl">Status:</span>
+                  <span class="stat-val status-completed">Ready for Download</span>
+                </div>
+              </div>
+            </div>
+            <div class="action-bar" style="margin-top:16px;">
+              <button class="btn btn-secondary" id="mergeResetBtn">Merge More PDFs</button>
+              <a href="#" class="btn btn-primary" id="mergeDownloadBtn">Download Merged PDF</a>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 11. SPLIT PDF PANEL -->
+      <div class="tool-panel grid-panel hidden" id="panelSplitPdf">
+        <section class="upload-section">
+          <div class="card glass-card">
+            <div class="drop-zone" id="splitDropZone">
+              <input type="file" id="splitFileInput" class="file-input" accept=".pdf" />
+              <div class="drop-content">
+                <div class="drop-illustration">
+                  <svg viewBox="0 0 24 24" width="56" height="56" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="8" y1="13" x2="16" y2="13"></line>
+                  </svg>
+                </div>
+                <h2 class="drop-title">Drag & drop PDF to split</h2>
+                <p class="drop-subtitle">or <span class="browse-link">browse files</span></p>
+                <div class="file-info-badge hidden" id="splitFileInfo">
+                  <span class="file-name" id="splitFileName">document.pdf</span>
+                  <span class="file-size" id="splitFileSize">0 MB</span>
+                  <button class="remove-file-btn" id="splitRemoveBtn" title="Remove file">&times;</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Split Settings & Trigger Card -->
+        <section class="settings-section">
+          <div class="card glass-card settings-card">
+            <div class="card-header">
+              <h3>Split Settings</h3>
+              <span class="badge">Extract Pages</span>
+            </div>
+
+            <!-- Mode Selector: All pages vs Range -->
+            <div class="form-group" style="display:flex; flex-direction:column; gap:8px;">
+              <label class="form-label" style="font-size: 0.88rem; font-weight: 500; color: var(--text-muted);">Split Method</label>
+              <div class="segment-selector" id="splitModeSelector" style="display:flex; background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:10px; padding:4px;">
+                <button class="segment-btn active" data-mode="all" style="flex:1; background:none; border:none; padding:8px; border-radius:6px; color:var(--text-main); font-weight:600; cursor:pointer; font-family:var(--font-family); font-size:0.82rem; transition:all 0.2s; white-space:nowrap;">Extract All Pages</button>
+                <button class="segment-btn" data-mode="range" style="flex:1; background:none; border:none; padding:8px; border-radius:6px; color:var(--text-muted); font-weight:500; cursor:pointer; font-family:var(--font-family); font-size:0.82rem; transition:all 0.2s; white-space:nowrap;">Select Page Range</button>
+              </div>
+            </div>
+
+            <!-- Range Input Container (hidden by default, shown when mode is range) -->
+            <div class="form-group hidden" id="splitRangeContainer" style="margin-top: 18px; display:flex; flex-direction:column; gap:8px;">
+              <label class="form-label" style="font-size: 0.88rem; font-weight: 500; color: var(--text-muted);">Pages to Extract</label>
+              <input type="text" id="splitRangeInput" class="form-input" placeholder="e.g. 1-3, 5, 8" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:8px; padding:10px 14px; color:var(--text-main); font-family:var(--font-family); font-size:0.9rem;" />
+              <span style="font-size:0.75rem; color:var(--text-dim);">Separate numbers and ranges with commas (e.g. 1-2, 4).</span>
+            </div>
+
+            <p id="splitModeHint" style="font-size:0.82rem; color:var(--text-muted); line-height:1.5; margin-top:16px;">
+              Every page of your PDF will be extracted as a separate document and bundled in a ZIP download.
+            </p>
+
+            <div class="trigger-area" style="margin-top: auto; padding-top: 16px;">
+              <button class="btn btn-primary btn-block" id="splitBtn" disabled>
+                <span class="btn-text">Split PDF</span>
+                <span class="btn-loader hidden"></span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Split Result Card -->
+        <section class="results-section hidden" id="splitResults" style="grid-column: 1 / -1;">
+          <div class="card glass-card results-card">
+            <div class="card-header">
+              <h3>PDF Split Complete</h3>
+              <span class="badge badge-success">Processed</span>
+            </div>
+            <div class="results-visual" style="border:none; margin:0; padding:10px 0; justify-content:center; gap:40px;">
+              <div class="success-ring-badge" style="background:rgba(0, 242, 254, 0.05); border:1px solid rgba(0, 242, 254, 0.15); border-radius:50%; width:100px; height:100px; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 20px rgba(0,242,254,0.1);">
+                <svg viewBox="0 0 24 24" width="48" height="48" stroke="var(--color-primary)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+              </div>
+              <div class="stats-comparison" style="min-width: 280px;">
+                <div class="stat-row">
+                  <span class="stat-lbl">Original Pages:</span>
+                  <span class="stat-val font-light" id="splitTotalPagesResult">0 Pages</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-lbl">Extracted Pages:</span>
+                  <span class="stat-val" id="splitExtractedPagesResult" style="color:var(--color-primary); font-weight:700;">0 Pages</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-lbl">Output Format:</span>
+                  <span class="stat-val accent-glow" id="splitFormatResult">ZIP Archive</span>
+                </div>
+                <div class="stat-row progress-stat">
+                  <span class="stat-lbl">Status:</span>
+                  <span class="stat-val status-completed">Ready for Download</span>
+                </div>
+              </div>
+            </div>
+            <div class="action-bar" style="margin-top:16px;">
+              <button class="btn btn-secondary" id="splitResetBtn">Split Another PDF</button>
+              <a href="#" class="btn btn-primary" id="splitDownloadBtn">Download Split Result</a>
             </div>
           </div>
         </section>

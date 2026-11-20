@@ -56,6 +56,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Mount Modular Tool Routers
 app.use('/api', require('./routes/compressPdf'));
+app.use('/api', require('./routes/mergePdf'));
+app.use('/api', require('./routes/splitPdf'));
 app.use('/api', require('./routes/compressImg'));
 app.use('/api', require('./routes/pdfToImg'));
 app.use('/api', require('./routes/imgToPdf'));

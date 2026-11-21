@@ -53,8 +53,10 @@ router.post('/protect', upload.single('pdf'), async (req, res) => {
     '-dNOPAUSE',
     '-dQUIET',
     '-dBATCH',
-    `-sOwnerPassword=${password}`,
-    `-sUserPassword=${password}`,
+    '-dEncryptionR=3',          // AES-128 encryption revision
+    '-dKeyLength=128',           // 128-bit key strength
+    '-dOwnerPasswordString=' + password,
+    '-dUserPasswordString=' + password,
     `-sOutputFile=${outputPath}`,
     inputPath
   ];

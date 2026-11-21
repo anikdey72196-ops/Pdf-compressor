@@ -131,8 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('panelPdfToExcel').classList.remove('hidden');
     } else if (tabName === 'protect') {
       document.getElementById('panelProtect').classList.remove('hidden');
-    } else if (tabName === 'unlock') {
-      document.getElementById('panelUnlock').classList.remove('hidden');
     }
   }
 
@@ -343,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const formData = new FormData();
     formData.append('pdf', compressSelectedFile);
-    formData.append('quality', compressSelectedQuality);
+    formData.append('preset', compressSelectedQuality);
 
     const unlockUI = () => {
       isCompressing = false;
@@ -358,14 +356,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsStatus = document.getElementById('resultsStatus');
 
     const renderSuccess = (data) => {
+      const isAlreadyOptimized = data.alreadyOptimized || data.savedPercent <= 0;
       originalSizeResult.textContent = formatBytes(data.originalSize);
-      compressedSizeResult.textContent = formatBytes(data.compressedSize);
+      compressedSizeResult.textContent = isAlreadyOptimized
+        ? formatBytes(data.originalSize) + ' (unchanged)'
+        : formatBytes(data.compressedSize);
       
-      const percentage = Math.round(data.savedPercent);
+      const percentage = isAlreadyOptimized ? 0 : Math.round(data.savedPercent);
       savingsVal.textContent = `${percentage}%`;
 
+      // Update "Optimized File" label to reflect preserved state
+      const optimizedLabel = document.querySelector('#resultsSection .result-item:nth-child(2) .result-label');
+      if (optimizedLabel) {
+        optimizedLabel.textContent = isAlreadyOptimized ? 'File Size (Original Kept):' : 'Optimized File:';
+      }
+
       if (resultsBadge) {
-        if (data.alreadyOptimized || percentage <= 0) {
+        if (isAlreadyOptimized) {
           resultsBadge.textContent = 'Already Optimized';
           resultsBadge.className = 'badge badge-info';
         } else {
@@ -375,8 +382,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (resultsStatus) {
-        if (data.alreadyOptimized || percentage <= 0) {
-          resultsStatus.textContent = 'Already at optimal size (original preserved)';
+        if (isAlreadyOptimized) {
+          resultsStatus.textContent = 'Already at optimal size — original file preserved';
         } else {
           resultsStatus.textContent = 'Ready for Download';
         }
@@ -787,18 +794,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
 
   function updateProtectButtonState() {
-    if (protectSelectedFile && isGhostscriptWorking && protectPasswordInput.value.length > 0 && !isProtecting) {
+    if (protectSelectedFile && !isProtecting) {
       protectBtn.disabled = false;
     } else {
       protectBtn.disabled = true;
     }
   }
 
-  protectPasswordInput.addEventListener('input', updateProtectButtonState);
+  protectPasswordInput.addEventListener('input', () => {
+    protectPasswordInput.style.borderColor = 'var(--border-color)';
+    updateProtectButtonState();
+  });
 
   setupDragAndDrop(protectDropZone, protectFileInput, (file) => {
     if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-      alert('Nano Doc only supports PDF files.');
+      alert('Zip doc only supports PDF files.');
       return;
     }
     protectSelectedFile = file;
@@ -870,11 +880,27 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   protectBtn.addEventListener('click', async () => {
-    if (!protectSelectedFile || !protectPasswordInput.value) return;
+    if (!protectSelectedFile) {
+      alert('Please upload a PDF file first.');
+      return;
+    }
+
+    const password = protectPasswordInput.value;
+    if (!password || password.trim().length === 0) {
+      protectPasswordInput.style.borderColor = '#00f2fe';
+      protectPasswordInput.focus();
+      alert('Please enter a password to lock this PDF.');
+      return;
+    }
+
+    if (!isGhostscriptWorking) {
+      alert('Ghostscript engine is required on the server to lock PDF files.');
+      return;
+    }
 
     const formData = new FormData();
     formData.append('pdf', protectSelectedFile);
-    formData.append('password', protectPasswordInput.value);
+    formData.append('password', password);
 
     protectBtn.disabled = true;
     isProtecting = true;
@@ -1163,71 +1189,6 @@ document.addEventListener('DOMContentLoaded', () => {
     pdfToExcelFileInfo.classList.add('hidden');
     pdfToExcelResults.classList.add('hidden');
     pdfToExcelBtn.disabled = true;
-  });
-
-  // ==========================================
-  // UNLOCK PDF TOOL HANDLERS
-  // ==========================================
-  const unlockDropZone = document.getElementById('unlockDropZone');
-  const unlockFileInput = document.getElementById('unlockFileInput');
-  const unlockFileInfo = document.getElementById('unlockFileInfo');
-  const unlockFileName = document.getElementById('unlockFileName');
-  const unlockFileSize = document.getElementById('unlockFileSize');
-  const unlockRemoveBtn = document.getElementById('unlockRemoveBtn');
-  const unlockBtn = document.getElementById('unlockBtn');
-  const unlockResults = document.getElementById('unlockResults');
-  const unlockDownloadBtn = document.getElementById('unlockDownloadBtn');
-  const unlockResetBtn = document.getElementById('unlockResetBtn');
-  let unlockFile = null;
-
-  function handleUnlockFileSelect(file) {
-    if (!file || !file.name.toLowerCase().endsWith('.pdf')) {
-      alert('Please select a valid PDF file.');
-      return;
-    }
-    unlockFile = file;
-    unlockFileName.textContent = file.name;
-    unlockFileSize.textContent = formatBytes(file.size);
-    unlockFileInfo.classList.remove('hidden');
-    unlockBtn.disabled = false;
-  }
-
-  setupDragAndDrop(unlockDropZone, unlockFileInput, (file) => {
-    handleUnlockFileSelect(file);
-  });
-  unlockRemoveBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    unlockFile = null;
-    unlockFileInput.value = '';
-    unlockFileInfo.classList.add('hidden');
-    unlockBtn.disabled = true;
-  });
-
-  unlockBtn.addEventListener('click', async () => {
-    if (!unlockFile) return;
-    unlockBtn.disabled = true;
-    const formData = new FormData();
-    formData.append('pdf', unlockFile);
-
-    try {
-      const res = await fetch('/api/unlock', { method: 'POST', body: formData });
-      const data = await parseResponseJson(res, 'Failed to unlock PDF');
-
-      unlockDownloadBtn.href = data.downloadUrl;
-      unlockResults.classList.remove('hidden');
-    } catch (err) {
-      alert(`Unlock PDF Error:\n${err.message}`);
-    } finally {
-      unlockBtn.disabled = false;
-    }
-  });
-
-  unlockResetBtn.addEventListener('click', () => {
-    unlockFile = null;
-    unlockFileInput.value = '';
-    unlockFileInfo.classList.add('hidden');
-    unlockResults.classList.add('hidden');
-    unlockBtn.disabled = true;
   });
 
   // ==========================================

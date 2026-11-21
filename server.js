@@ -65,7 +65,7 @@ app.use('/api', require('./routes/imgToWord'));
 app.use('/api', require('./routes/officeToPdf'));
 app.use('/api', require('./routes/pdfToExcel'));
 app.use('/api', require('./routes/protectPdf'));
-app.use('/api', require('./routes/unlockPdf'));
+
 app.use('/api', require('./routes/download'));
 
 // Fallback 404 handler for API routes to always return JSON errors
